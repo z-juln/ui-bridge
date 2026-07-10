@@ -8,6 +8,7 @@ let package = Package(
     products: [
         .library(name: "UIBridgeProtocol", targets: ["UIBridgeProtocol"]),
         .library(name: "UIBridgeMacCore", targets: ["UIBridgeMacCore"]),
+        .library(name: "UIBridgeServer", targets: ["UIBridgeServer"]),
         .executable(name: "macos-ui-bridge", targets: ["macos-ui-bridge"]),
     ],
     targets: [
@@ -16,9 +17,13 @@ let package = Package(
             name: "UIBridgeMacCore",
             dependencies: ["UIBridgeProtocol"]
         ),
+        .target(
+            name: "UIBridgeServer",
+            dependencies: ["UIBridgeProtocol", "UIBridgeMacCore"]
+        ),
         .executableTarget(
             name: "macos-ui-bridge",
-            dependencies: ["UIBridgeProtocol"]
+            dependencies: ["UIBridgeProtocol", "UIBridgeMacCore", "UIBridgeServer"]
         ),
         .executableTarget(
             name: "protocol-self-test",

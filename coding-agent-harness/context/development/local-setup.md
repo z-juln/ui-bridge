@@ -17,6 +17,10 @@ Confidence: medium
 ```bash
 swift build
 swift run protocol-self-test
+swift run core-self-test
+swift run macos-ui-bridge start
+swift run macos-ui-bridge status
+swift run macos-ui-bridge stop
 npx --yes coding-agent-harness check --profile target-project .
 npx --yes coding-agent-harness status --json .
 ```
@@ -24,5 +28,4 @@ npx --yes coding-agent-harness status --json .
 当前机器只有 Command Line Tools，没有完整 Xcode，因此基础测试使用仓库自带的
 `protocol-self-test`。完整 Xcode 环境建立后再增加 XCTest/Swift Testing 目标。
 
-服务与权限命令会在 CLI 骨架建立后补充。系统权限只授予构建出的稳定 App Bundle；
-不要让不同临时二进制反复触发授权。
+系统权限只授予构建出的稳定 App Bundle；不要让不同临时二进制反复触发授权。

@@ -4,9 +4,9 @@
 
 ## 当前阶段
 
-- 阶段：截图、动作与验证。
-- 最近完成：CORE-03 已实现并通过真实窗口截图与验证冒烟。
-- 下一步：提交 CORE-03，随后实现本地 HTTP 服务、令牌和管理命令。
+- 阶段：本地 HTTP 服务与管理命令。
+- 最近完成：SRV-01 已实现并通过真实端口、鉴权和进程生命周期冒烟。
+- 下一步：提交 SRV-01，随后接入官方 MCP Swift SDK。
 
 ## 进度记录
 
@@ -52,6 +52,13 @@
 - 验证：构建和两组自检通过；本机发现 74 个应用、234 个窗口，读取 100 个控件节点，并真实捕获 4,557,670 字节 PNG；验证引擎正确观察预期元素。
 - 下一步：实现回环 HTTP 服务与 CLI 管理入口。
 - 证据：`command:TARGET:Sources/UIBridgeMacCore:window capture and verification smoke passed`
+
+### 2026-07-10 - SRV-01 HTTP 与 CLI
+
+- 做了什么：实现仅回环监听的 HTTP 服务、持久随机令牌、健康/权限/应用/窗口接口，以及 start/stop/status/serve/token/permissions/version 命令。
+- 验证：后台启动后 `/health` 返回 ok；无令牌访问应用接口返回 401；正确令牌返回 72 个应用和权限状态；start/status/stop 生命周期全部通过。
+- 下一步：添加 MCP stdio 与 Streamable HTTP 映射。
+- 证据：`command:TARGET:Sources/UIBridgeServer:HTTP auth and daemon lifecycle smoke passed`
 
 ## 残余
 
