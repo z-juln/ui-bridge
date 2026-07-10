@@ -4,9 +4,9 @@
 
 ## 当前阶段
 
-- 阶段：Swift 与协议核心。
-- 最近完成：Swift 包、通用协议模型、CLI 占位入口和基础自检已构建通过。
-- 下一步：提交 CORE-01，随后实现通用应用/窗口发现与 AX 控件树。
+- 阶段：通用应用、窗口与控件树。
+- 最近完成：CORE-02 已实现并通过本机真实只读冒烟。
+- 下一步：提交 CORE-02，随后实现截图、动作执行与结果验证。
 
 ## 进度记录
 
@@ -38,6 +38,13 @@
 - 环境发现：当前只有 Command Line Tools，缺少完整 Xcode 测试模块；改用无外部依赖的项目自检程序，完整 Xcode 阶段再补标准测试目标。
 - 下一步：实现 `UIBridgeMacCore` 的应用、窗口和 AX 读取。
 - 证据：`command:TARGET:Package.swift:build and protocol self-test passed`
+
+### 2026-07-10 - CORE-02 发现与控件树
+
+- 做了什么：实现通用运行应用发现、Core Graphics 窗口发现、辅助功能权限检查，以及递归读取 children/rows/visible rows/contents 等关系的 AX 树读取器。
+- 验证：`swift build`、协议自检和核心自检通过；本机发现 72 个应用、215 个窗口，并从当前前台应用读取 100 个连续编号控件节点，结构质量正确标记为 partial。
+- 下一步：实现目标窗口截图、动作执行和验证。
+- 证据：`command:TARGET:Sources/UIBridgeMacCore:live app/window/AX smoke passed`
 
 ## 残余
 
