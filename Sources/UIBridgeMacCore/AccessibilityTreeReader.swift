@@ -36,6 +36,9 @@ public final class AccessibilityTreeReader: @unchecked Sendable {
         "AXSelectedChildren",
     ]
 
+    private let registryLock = NSLock()
+    private var elementRegistry: [String: AXUIElement] = [:]
+
     public init() {}
 
     public func readApplication(pid: Int32, snapshotID: String, options: AccessibilityReadOptions = .init()) throws -> AccessibilityReadResult {
@@ -108,9 +111,14 @@ public final class AccessibilityTreeReader: @unchecked Sendable {
             isExpanded: boolAttribute(element, kAXExpandedAttribute)
         )
 
+        let handle = "\(snapshotID):\(index):\(identity)"
+        registryLock.withLock {
+            elementRegistry[handle] = element
+        }
+
         elements.append(
             ElementDescriptor(
-                handle: "\(snapshotID):\(index):\(identity)",
+                handle: handle,
                 index: index,
                 parentIndex: parentIndex,
                 role: role,
@@ -134,6 +142,16 @@ public final class AccessibilityTreeReader: @unchecked Sendable {
                 truncated: &truncated
             )
             if elements.count >= options.maxElements { break }
+        }
+    }
+
+    public func element(forHandle handle: String) -> AXUIElement? {
+        registryLock.withLock { elementRegistry[handle] }
+    }
+
+    public func discard(snapshotID: String) {
+        registryLock.withLock {
+            elementRegistry = elementRegistry.filter { !$0.key.hasPrefix("\(snapshotID):") }
         }
     }
 
