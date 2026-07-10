@@ -1,6 +1,6 @@
 # 实现 macOS 通用 UI Bridge 第一轮 - 进度
 
-## 状态：计划中
+## 状态：进行中
 
 ## 当前阶段
 
@@ -41,3 +41,10 @@
 - 当前 Owner：coordinator。
 - 恢复命令：`git status --short && git log --oneline -8`。
 - 下一文件：本目录 `task_plan.md` 的阶段 1。
+
+### [2026-07-10 08:58] - task-start
+
+- 做了什么：Harness 已配置并验证，开始 Swift 通用核心实现
+- 验证结果：已记录
+- 下一步：继续执行
+- 证据：n/a

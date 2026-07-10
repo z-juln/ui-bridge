@@ -20,7 +20,7 @@ flowchart LR
 
 | Phase ID | Kind | Depends On | State | Completion | Output | Required Evidence | Exit Command | Actor | Evidence Status | Blocking Risk | Owner / Handoff |
 | --- | --- | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| HARN-01 | init | none | in_progress | 70 | Harness、任务合同、交接规范 | harness check、commit | `harness task-start 2026-07-10-macos-ui-bridge-96db7c45` | agent | partial | none | coordinator |
+| HARN-01 | init | none | done | 100 | Harness、任务合同、交接规范 | harness check、commit | `harness task-start 2026-07-10-macos-ui-bridge-96db7c45` | agent | present | none | coordinator |
 | CORE-01 | execution | HARN-01 | planned | 0 | Swift 包、协议模型、基础测试 | swift build/test | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 CORE-01 --state done --completion 100 --evidence present` | agent | missing | toolchain compatibility | next agent reads progress |
 | CORE-02 | execution | CORE-01 | planned | 0 | 通用应用/窗口/控件树 | unit + local read smoke | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 CORE-02 --state done --completion 100 --evidence present` | agent | missing | AX variation | commit-backed handoff |
 | CORE-03 | execution | CORE-02 | planned | 0 | 截图、动作和验证 | unit + test app | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 CORE-03 --state done --completion 100 --evidence present` | agent | missing | permissions | commit-backed handoff |
