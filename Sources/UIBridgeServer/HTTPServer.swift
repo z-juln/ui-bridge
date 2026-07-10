@@ -38,13 +38,15 @@ public final class HTTPServer: @unchecked Sendable {
         connection.start(queue: queue)
         connection.receive(minimumIncompleteLength: 1, maximumLength: 1_048_576) { [weak self] data, _, _, error in
             guard let self else { return }
-            let response: HTTPResponse
-            if let data, let request = HTTPRequest.parse(data) {
-                response = self.router.route(request)
-            } else {
-                response = HTTPResponse(status: 400, body: Data("{\"error\":\"bad_request\"}".utf8))
+            Task {
+                let response: HTTPResponse
+                if let data, let request = HTTPRequest.parse(data) {
+                    response = await self.router.route(request)
+                } else {
+                    response = HTTPResponse(status: 400, body: Data("{\"error\":\"bad_request\"}".utf8))
+                }
+                connection.send(content: response.serialized(), completion: .contentProcessed { _ in connection.cancel() })
             }
-            connection.send(content: response.serialized(), completion: .contentProcessed { _ in connection.cancel() })
             if error != nil { connection.cancel() }
         }
     }

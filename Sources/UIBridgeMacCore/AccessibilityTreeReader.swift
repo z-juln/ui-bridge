@@ -100,7 +100,7 @@ public final class AccessibilityTreeReader: @unchecked Sendable {
             stringAttribute(element, kAXDescriptionAttribute),
             stringAttribute(element, kAXHelpAttribute),
         ])
-        let value = safeStringValue(copyAttribute(element, kAXValueAttribute))
+        let value = role == "AXSecureTextField" ? nil : safeStringValue(copyAttribute(element, kAXValueAttribute))
         let frame = frameAttribute(element)
         let actions = actionNames(element)
         let state = ElementState(

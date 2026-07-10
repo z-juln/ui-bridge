@@ -4,10 +4,11 @@ struct HTTPRequest: Sendable {
     let method: String
     let path: String
     let headers: [String: String]
+    let body: Data
 
     static func parse(_ data: Data) -> HTTPRequest? {
-        guard let string = String(data: data, encoding: .utf8),
-              let headerPart = string.components(separatedBy: "\r\n\r\n").first else { return nil }
+        guard let separator = data.range(of: Data("\r\n\r\n".utf8)),
+              let headerPart = String(data: data[..<separator.lowerBound], encoding: .utf8) else { return nil }
         let lines = headerPart.components(separatedBy: "\r\n")
         guard let requestLine = lines.first else { return nil }
         let parts = requestLine.split(separator: " ")
@@ -20,7 +21,12 @@ struct HTTPRequest: Sendable {
             let value = line[line.index(after: separator)...].trimmingCharacters(in: .whitespaces)
             headers[key] = value
         }
-        return HTTPRequest(method: String(parts[0]), path: String(parts[1]), headers: headers)
+        return HTTPRequest(
+            method: String(parts[0]),
+            path: String(parts[1]),
+            headers: headers,
+            body: Data(data[separator.upperBound...])
+        )
     }
 }
 
@@ -40,6 +46,7 @@ struct HTTPResponse: Sendable {
         case 200: "OK"
         case 400: "Bad Request"
         case 401: "Unauthorized"
+        case 409: "Conflict"
         case 404: "Not Found"
         case 405: "Method Not Allowed"
         default: "Internal Server Error"

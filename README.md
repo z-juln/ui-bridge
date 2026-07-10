@@ -62,6 +62,8 @@ swift run macos-ui-bridge stop
 - `GET /v1/permissions`
 - `GET /v1/apps`
 - `GET /v1/apps/{pid}/windows`
+- `POST /v1/snapshots`
+- `POST /v1/actions`
 
 除 `/health` 外均需 `Authorization: Bearer <token>`。
 

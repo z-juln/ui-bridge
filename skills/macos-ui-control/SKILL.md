@@ -18,8 +18,9 @@ Start every task with `permissions_get`. The bridge presents a native dialog wit
 1. Call `apps_list`; match by bundle identifier and name. Return candidates instead of guessing when multiple apps match.
 2. Call `windows_list` with the selected app's `pid`; prefer a visible, capturable window whose title fits the request.
 3. Refresh app and window state after an app relaunch, navigation, dialog, or unexpected result.
-4. Use snapshot and action tools only when the connected server advertises them. This build may expose discovery tools before write tools.
-5. After every write, read the UI again and verify the requested result. If verification is unclear, stop instead of repeating the write.
+4. Call `snapshot_get` for the selected pid and window. Search its current `elements` by role, label, value, state, and parent relationship; return candidates instead of choosing an ambiguous match.
+5. Call `action_run` only with a handle from that snapshot and a concrete verification condition. Mark external-impact actions as `high_impact`; set `confirmed` only after the user explicitly approves the exact final action.
+6. Trust `confirmed` only when the returned status is `confirmed`. On `not_observed`, refresh the snapshot and diagnose instead of repeating the write.
 
 ## Protect the user
 

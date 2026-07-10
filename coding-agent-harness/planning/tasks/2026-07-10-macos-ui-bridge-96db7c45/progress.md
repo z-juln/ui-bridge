@@ -5,8 +5,8 @@
 ## 当前阶段
 
 - 阶段：MCP 与 Agent 接入。
-- 最近完成：SKILL-01 已创建通用 Skill、客户端配置和一键只读自测。
-- 下一步：提交 SKILL-01，随后把快照和动作能力开放到 MCP/HTTP 并做代表应用回归。
+- 最近完成：快照与已验证动作已开放到 MCP/HTTP，并通过临时 TextEdit 真实写入回归。
+- 下一步：更新已安装 App，补齐其余动作类型与代表应用回归。
 
 ## 进度记录
 
@@ -88,6 +88,13 @@
 - 验证：生产构建、配置文件和系统签名检查通过；App 已安装到 `/Applications`，系统识别固定标识；用户确认它已出现在辅助功能列表并启用；重新打开后进程保持运行且健康接口返回 ok；App 自检读取到两项权限均为 true。
 - 下一步：开放快照和动作 MCP/HTTP 接口，再使用代表应用做端到端回归。
 - 证据：`command:TARGET:scripts/build-app.sh:installed app launch, permissions and health passed`
+
+### 2026-07-10 - 快照与已验证动作接口
+
+- 做了什么：增加会过期的实时快照、截图内存保管、控件句柄注册、动作后重新读取验证、高影响动作确认拦截；MCP 增加 snapshot_get/action_run，HTTP 增加 snapshots/actions；密码控件不再返回值，Skill 改用完整读写流程。
+- 验证：MCP 和 HTTP 均从真实窗口读取 100 个控件；独立临时 TextEdit 通过 set_value 写入并重新读取，返回 confirmed，测试进程和临时文件已清理；未确认的高影响动作返回 confirmation_required 且未执行；完整构建、两组核心自检和 Skill 校验通过。
+- 下一步：重建安装 App，补齐按键、滚动、坐标后备与四类代表应用回归。
+- 证据：`command:TARGET:Sources/UIBridgeMacCore/AutomationRuntime.swift:real MCP/HTTP snapshot and verified TextEdit action passed`
 
 ## 残余
 

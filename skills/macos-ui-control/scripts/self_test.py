@@ -2,6 +2,7 @@
 """Read-only end-to-end smoke test for the local MCP stdio server."""
 
 import json
+import os
 import select
 import subprocess
 import sys
@@ -11,7 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 INSTALLED_BINARY = Path("/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge")
-BINARY = INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "macos-ui-bridge"
+BINARY = Path(os.environ["UIBRIDGE_BINARY"]) if "UIBRIDGE_BINARY" in os.environ else (
+    INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "macos-ui-bridge"
+)
 
 
 def main() -> int:
@@ -48,10 +51,48 @@ def main() -> int:
         server_name = initialized["result"]["serverInfo"]["name"]
         tool_names = [tool["name"] for tool in listed["result"]["tools"]]
         apps = json.loads(called["result"]["content"][0]["text"])
-        required = {"permissions_get", "apps_list", "windows_list"}
+        required = {"permissions_get", "apps_list", "windows_list", "snapshot_get", "action_run"}
         if server_name != "macos-ui-bridge" or not required.issubset(tool_names) or not isinstance(apps, list):
             raise RuntimeError("MCP response did not match the expected bridge contract")
-        print(f"self-test passed: server={server_name} tools={','.join(tool_names)} apps={len(apps)}")
+
+        candidate = next((app for app in apps if app.get("isFrontmost")), apps[0])
+        send(process, {
+            "jsonrpc": "2.0", "id": 4, "method": "tools/call",
+            "params": {"name": "windows_list", "arguments": {"pid": candidate["pid"]}},
+        })
+        windows_result = receive(process, 4)
+        windows = json.loads(windows_result["result"]["content"][0]["text"])
+        window = next((item for item in windows if item.get("isVisible") and item.get("isCapturable")), None)
+        if window is None:
+            raise RuntimeError("frontmost application has no visible capturable window")
+        send(process, {
+            "jsonrpc": "2.0", "id": 5, "method": "tools/call",
+            "params": {"name": "snapshot_get", "arguments": {
+                "pid": candidate["pid"], "window_id": window["windowID"],
+                "include_screenshot": False, "max_elements": 100, "max_depth": 8,
+            }},
+        })
+        snapshot_result = receive(process, 5)
+        snapshot = json.loads(snapshot_result["result"]["content"][0]["text"])
+        if not snapshot.get("snapshotID") or not snapshot.get("elements"):
+            raise RuntimeError("snapshot_get returned no usable accessibility elements")
+        target = snapshot["elements"][0]
+        send(process, {
+            "jsonrpc": "2.0", "id": 6, "method": "tools/call",
+            "params": {"name": "action_run", "arguments": {
+                "snapshot_id": snapshot["snapshotID"], "element_handle": target["handle"],
+                "action": "press", "verification_kind": "element_present",
+                "verification_value": target.get("label") or target.get("role"),
+                "high_impact": True, "confirmed": False,
+            }},
+        })
+        confirmation = json.loads(receive(process, 6)["result"]["content"][0]["text"])
+        if confirmation.get("status") != "confirmation_required":
+            raise RuntimeError("high-impact action did not stop for explicit confirmation")
+        print(
+            f"self-test passed: server={server_name} tools={','.join(tool_names)} "
+            f"apps={len(apps)} snapshot_elements={len(snapshot['elements'])} confirmation=protected"
+        )
         return 0
     except (KeyError, ValueError, RuntimeError) as error:
         print(f"self-test failed: {error}", file=sys.stderr)
