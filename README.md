@@ -1,7 +1,7 @@
 # macOS UI Bridge
 
 本机 macOS 桌面操作服务，当前提供通用应用/窗口发现、控件树核心、窗口截图、
-动作验证和带令牌保护的本地 HTTP 接口。MCP 与 Skill 正在后续阶段实现。
+动作验证、带令牌保护的本地 HTTP 接口、MCP 接入和通用 Skill。
 
 ## 构建与自检
 
@@ -9,6 +9,7 @@
 swift build
 swift run protocol-self-test
 swift run core-self-test
+python3 skills/macos-ui-control/scripts/self_test.py
 ```
 
 ## 启动服务
@@ -47,3 +48,20 @@ swift run macos-ui-bridge stop
 - `GET /v1/apps/{pid}/windows`
 
 除 `/health` 外均需 `Authorization: Bearer <token>`。
+
+## 接入 Cursor 或 WorkBuddy
+
+先执行 `swift build`，再把本机 MCP 服务配置为：
+
+```json
+{
+  "mcpServers": {
+    "macos-ui-bridge": {
+      "command": "/Users/juln/Desktop/workspace/macos-ui-bridge/.build/debug/macos-ui-bridge",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+详细权限和排错说明见 `skills/macos-ui-control/references/setup.md`。

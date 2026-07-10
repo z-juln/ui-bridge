@@ -5,8 +5,8 @@
 ## 当前阶段
 
 - 阶段：MCP 与 Agent 接入。
-- 最近完成：MCP-01 stdio 已实现并通过真实客户端协议往返。
-- 下一步：提交 MCP-01，随后制作通用 Skill 和 Cursor/WorkBuddy 接入说明。
+- 最近完成：SKILL-01 已创建通用 Skill、客户端配置和一键只读自测。
+- 下一步：提交 SKILL-01，随后把快照和动作能力开放到 MCP/HTTP 并做代表应用回归。
 
 ## 进度记录
 
@@ -66,6 +66,13 @@
 - 验证：完整构建、协议自检、核心真实截图自检通过；真实 stdio 客户端完成初始化、工具列表和工具调用，识别 3 个工具并返回 70 个当前应用。
 - 下一步：制作仓库内通用 Skill、Cursor/WorkBuddy 配置示例和一键自测脚本。
 - 证据：`command:TARGET:Sources/UIBridgeMCP:real stdio initialize/list/call smoke passed`
+
+### 2026-07-10 - SKILL-01 通用 Skill 与客户端接入
+
+- 做了什么：创建与具体应用无关的 macOS UI Skill，加入安全操作流程、Cursor/WorkBuddy stdio 配置、权限排错说明和一键只读自测；同步更新项目使用说明。
+- 验证：Skill 官方校验通过；自测真实启动 MCP、完成初始化/工具发现/应用调用，识别 3 个工具和 70 个当前应用；完整构建通过。
+- 下一步：开放快照和动作 MCP/HTTP 接口，再使用代表应用做端到端回归。
+- 证据：`command:TARGET:skills/macos-ui-control:validator and real MCP self-test passed`
 
 ## 残余
 
