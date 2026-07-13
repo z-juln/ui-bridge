@@ -225,6 +225,12 @@
 - 下一步：用户确认系统权限提示中的图标外观。
 - 证据：`screenshot:TARGET:/tmp/macos-ui-bridge-system-icon.png:macOS resolved installed bundle icon correctly`
 
+### 2026-07-13 - 正式图标人工验收
+
+- 验证：用户确认系统界面中的新版 App 图标显示正常，可以提交。
+- 下一步：继续最终任务审查与剩余功能收口。
+- 证据：`human-confirmation:TARGET:/Applications/macOS UI Bridge.app:bundle icon accepted`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。
