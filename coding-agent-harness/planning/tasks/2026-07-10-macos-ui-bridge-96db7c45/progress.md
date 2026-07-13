@@ -247,6 +247,15 @@
 - 下一步：用稳定客户端或专用 MCP 测试客户端完成一个 TextEdit 写入与回读闭环，再做最终审查。
 - 证据：`command:TARGET:skills/macos-ui-control/scripts/self_test.py:ten tools, plan checked, confirmation protected`
 
+### 2026-07-13 - 可见操控反馈
+
+- 做了什么：目标窗口左上角增加紫色“操作中”胶囊；菜单栏动态列出最近操控的目标应用；动作位置增加 128 点大范围蓝色渐变模拟指针。三者都不接收鼠标事件，不会挡住原应用操作。
+- 跨客户端：操控状态使用进程间通知并由权限为 600 的本机状态文件兜底，因此 App 内本地地址和 Cursor 直接启动的进程都能驱动同一套反馈；状态不包含界面正文。
+- 修复：macOS App 主事件循环会阻塞主派发队列，普通定时任务不执行；改为在 App 完成启动后注册主事件循环计时，提示和指针可稳定出现并自动消失。
+- 验证：真实 MCP 只读快照在飞书窗口左上角显示“操作中”；动作预览显示大范围渐变指针；2.4 秒后两者均从截图消失。菜单内容按当前活动目标动态构建；系统菜单栏无法由当前 Computer Use 窗口接口自动点击，仍需自然使用时肉眼确认。
+- 下一步：用户在一次真实 Cursor/WorkBuddy 操作中确认菜单列表外观，再完成最终收口。
+- 证据：`screenshot:TARGET:/tmp/macos-ui-bridge-visible.png:badge and gradient cursor visible; /tmp/macos-ui-bridge-hidden.png:both overlays dismissed`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。

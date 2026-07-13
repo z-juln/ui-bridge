@@ -65,6 +65,7 @@ public final class AutomationRuntime: @unchecked Sendable {
             )
             if let captured { screenshots[captured.descriptor.handle] = captured.pngData }
         }
+        AutomationActivityCenter.publish(phase: .observed, snapshot: snapshot)
         return snapshot
     }
 
@@ -213,6 +214,19 @@ public final class AutomationRuntime: @unchecked Sendable {
             throw BridgeError(code: .snapshotStale, message: "Snapshot expired before the action.", retryable: true)
         }
 
+        let activityPointer = pointerLocation(for: request, in: context.snapshot)
+        AutomationActivityCenter.publish(
+            phase: .actionStarted,
+            snapshot: context.snapshot,
+            pointer: activityPointer
+        )
+        defer {
+            AutomationActivityCenter.publish(
+                phase: .actionFinished,
+                snapshot: context.snapshot,
+                pointer: activityPointer
+            )
+        }
         let delivered: ActionResult
         switch request.action {
         case .pressKey, .scroll, .coordinateClick:
@@ -264,6 +278,24 @@ public final class AutomationRuntime: @unchecked Sendable {
             contexts.removeValue(forKey: context.snapshot.snapshotID)
             if let handle = context.snapshot.screenshot?.handle { screenshots.removeValue(forKey: handle) }
             treeReader.discard(snapshotID: context.snapshot.snapshotID)
+        }
+    }
+
+    private func pointerLocation(for request: ActionRequest, in snapshot: Snapshot) -> UIBPoint? {
+        switch request.target {
+        case let .coordinate(point):
+            return UIBPoint(
+                x: snapshot.windowBounds.origin.x + point.x,
+                y: snapshot.windowBounds.origin.y + point.y
+            )
+        case let .element(handle):
+            guard let frame = snapshot.elements.first(where: { $0.handle == handle })?.frameInWindow else {
+                return nil
+            }
+            return UIBPoint(
+                x: snapshot.windowBounds.origin.x + frame.origin.x + frame.size.width / 2,
+                y: snapshot.windowBounds.origin.y + frame.origin.y + frame.size.height / 2
+            )
         }
     }
 }

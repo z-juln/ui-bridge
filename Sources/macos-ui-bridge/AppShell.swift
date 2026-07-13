@@ -3,9 +3,10 @@ import Foundation
 import UIBridgeMacCore
 
 @MainActor
-final class AppShell: NSObject, NSApplicationDelegate {
+final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let statusItem: NSStatusItem
     private let token: String
+    private var overlayController: ControlOverlayController!
 
     init(token: String) {
         self.token = token
@@ -15,12 +16,15 @@ final class AppShell: NSObject, NSApplicationDelegate {
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         super.init()
+        overlayController = ControlOverlayController()
 
         let menuBarIcon = Self.makeMenuBarIcon()
         statusItem.button?.image = menuBarIcon
         statusItem.button?.imageScaling = .scaleProportionallyDown
         statusItem.button?.toolTip = "macOS UI Bridge"
-        statusItem.menu = makeMenu()
+        let menu = makeMenu()
+        menu.delegate = self
+        statusItem.menu = menu
         NSApplication.shared.delegate = self
     }
 
@@ -29,20 +33,43 @@ final class AppShell: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        overlayController.startPolling()
         PermissionGuidance.presentIfNeeded(for: PermissionInspector.current())
     }
 
     private func makeMenu() -> NSMenu {
         let menu = NSMenu(title: "macOS UI Bridge")
+        populateMenu(menu)
+        return menu
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        populateMenu(menu)
+    }
+
+    private func populateMenu(_ menu: NSMenu) {
         let status = NSMenuItem(title: "服务运行中 · 127.0.0.1:8765", action: nil, keyEquivalent: "")
         status.isEnabled = false
         menu.addItem(status)
+        let targets = overlayController.activeTargets
+        if !targets.isEmpty {
+            menu.addItem(.separator())
+            let heading = NSMenuItem(title: "正在操控", action: nil, keyEquivalent: "")
+            heading.isEnabled = false
+            menu.addItem(heading)
+            for target in targets {
+                let active = NSMenuItem(title: "  正在操控 \(target.name)", action: nil, keyEquivalent: "")
+                active.isEnabled = false
+                active.image = NSImage(systemSymbolName: "cursorarrow.rays", accessibilityDescription: nil)
+                menu.addItem(active)
+            }
+        }
         menu.addItem(.separator())
         menu.addItem(item(title: "检查系统权限", action: #selector(checkPermissions)))
         menu.addItem(item(title: "复制 MCP 连接配置", action: #selector(copyConnection)))
         menu.addItem(.separator())
         menu.addItem(item(title: "退出 macOS UI Bridge", action: #selector(quitApp), key: "q"))
-        return menu
     }
 
     private func item(title: String, action: Selector, key: String = "") -> NSMenuItem {

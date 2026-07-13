@@ -33,6 +33,7 @@ Task Package Index: required
 7. Skill 和客户端：格式检查、Cursor/WorkBuddy 入口验证并提交。
 8. 四类应用回归、审查和收口：证据、walkthrough 和残余完整并提交。
 9. 客户端与智能规划增强：Cursor/WorkBuddy 真实接入、安全完整任务、截图判断与步骤规划入口通过并提交。
+10. 可见操控反馈：目标窗口提示、菜单栏目标列表和渐变模拟指针完成实机视觉验收并提交。
 
 ## 验收标准
 
