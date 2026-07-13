@@ -28,6 +28,6 @@ flowchart LR
 | MCP-01 | execution | SRV-01 | done | 100 | stdio 与 Streamable HTTP MCP | MCP smoke | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 MCP-01 --state done --completion 100 --evidence present` | agent | present | SDK integration | commit-backed handoff |
 | SKILL-01 | execution | MCP-01 | done | 100 | 通用 Skill 与客户端配置 | validator + scenarios | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 SKILL-01 --state done --completion 100 --evidence present` | agent | present | WorkBuddy capability | commit-backed handoff |
 | REG-01 | execution | SKILL-01 | done | 100 | 四类应用回归 | live evidence | `harness task-phase 2026-07-10-macos-ui-bridge-96db7c45 REG-01 --state done --completion 100 --evidence present` | agent | present | app permissions | commit-backed handoff |
-| GATE-01 | gate | REG-01 | planned | 0 | Agent Review Submission | review、walkthrough、lessons | `harness task-review 2026-07-10-macos-ui-bridge-96db7c45 --message "first-round ready"` | agent | missing | no open P0/P1 | coordinator |
+| GATE-01 | gate | REG-01 | done | 100 | Agent Review Submission | review、walkthrough、lessons | `harness task-review 2026-07-10-macos-ui-bridge-96db7c45 --message "first-round ready"` | agent | present | no open P0/P1 | coordinator |
 
 允许的 `State`：`planned`, `in_progress`, `review`, `blocked`, `done`, `skipped`。

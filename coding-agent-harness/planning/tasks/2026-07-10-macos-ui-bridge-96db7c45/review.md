@@ -75,3 +75,17 @@
 ## 最终信心依据（Final Confidence Basis）
 
 信心来自安装版真实权限、登录启动、HTTP/stdin MCP、端口鉴权、临时 TextEdit 写动作验证及 Finder/企业微信/Electron 结构回归；正式发布和 WorkBuddy UI 明确保留为后续风险。
+
+## Agent Review Submission
+
+| Field | Value |
+| --- | --- |
+| Submission ID | ARS-202607130320 |
+| Submitted At | 2026-07-13 03:20 |
+| Submitted By | agent |
+| Task Key | TASKS/2026-07-10-macos-ui-bridge-96db7c45 |
+| Materials Checklist Hash | c3b11a7d9dd73cb0 |
+| Evidence Summary | first-round ready |
+| Open Findings Count | 0 |
+| Scanner Version | task-scanner/2026-05-25-phase-kind |
+| Target | TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45 |
