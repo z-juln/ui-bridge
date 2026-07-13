@@ -292,6 +292,13 @@
 - 验证：真实后台访达快照后，状态栏截图明确显示访达图标蓝色胶囊；176 秒后截图恢复普通 Bridge 图标。debug/release 构建、覆盖安装、签名、协议自检和健康检查通过；临时运行记录代码已删除。
 - 证据：`screenshot:TARGET:/tmp/macos-ui-bridge-status-active-final2.png:Finder icon pill visible; screenshot:TARGET:/tmp/macos-ui-bridge-status-expired-final.png:idle Bridge icon restored`
 
+### 2026-07-13 - 产品改名为 App MCP Bridge
+
+- 做了什么：面向用户的 App、菜单、权限提示、安装路径和文档统一改名为 `App MCP Bridge`，为后续 Windows 实现保留平台无关的产品名；macOS 程序身份和现有 MCP 连接名保持兼容。
+- 迁移：新版安装到 `/Applications/App MCP Bridge.app`，安装成功后移除旧路径；Cursor 的程序路径已迁移，WorkBuddy 的本地地址保持不变。
+- 验证：debug/release 构建、协议自检、正式签名、覆盖安装和 10 工具 MCP 自测通过；系统运行信息显示 `App MCP Bridge`，旧 App 路径已移除，两项系统权限均保持 true。
+- 证据：`command:TARGET:/Applications/App MCP Bridge.app:installed display name, permissions, health and MCP self-test passed`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。

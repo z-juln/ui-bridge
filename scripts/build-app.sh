@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT=${0:A:h:h}
 BUILD_ROOT="$ROOT/.build/app"
-APP="$BUILD_ROOT/macOS UI Bridge.app"
+APP="$BUILD_ROOT/App MCP Bridge.app"
 
 cd "$ROOT"
 swift build -c release --product macos-ui-bridge

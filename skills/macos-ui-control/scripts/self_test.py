@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[3]
-INSTALLED_BINARY = Path("/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge")
+INSTALLED_BINARY = Path("/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge")
 BINARY = Path(os.environ["UIBRIDGE_BINARY"]) if "UIBRIDGE_BINARY" in os.environ else (
     INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "macos-ui-bridge"
 )

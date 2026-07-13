@@ -1,6 +1,10 @@
-# macOS UI Bridge：产品与架构设计
+# App MCP Bridge：macOS 产品与架构设计
 
-状态：等待确认，尚未进入开发
+状态：macOS 第一版开发中
+
+产品名称为 `App MCP Bridge`，不把平台写进产品名，为后续增加 Windows 实现保留空间。
+当前安装包仍只支持 macOS；内部的 `macos-ui-bridge` 连接名和程序身份作为兼容标识保留，
+避免现有客户端配置与系统权限失效。
 
 ## 1. 目标
 

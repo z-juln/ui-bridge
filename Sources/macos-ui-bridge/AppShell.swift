@@ -58,7 +58,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func makeMenu() -> NSMenu {
-        let menu = NSMenu(title: "macOS UI Bridge")
+        let menu = NSMenu(title: "App MCP Bridge")
         populateMenu(menu)
         return menu
     }
@@ -103,7 +103,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(item(title: "检查系统权限", action: #selector(checkPermissions)))
         menu.addItem(item(title: "复制 MCP 连接配置", action: #selector(copyConnection)))
         menu.addItem(.separator())
-        menu.addItem(item(title: "退出 macOS UI Bridge", action: #selector(quitApp), key: "q"))
+        menu.addItem(item(title: "退出 App MCP Bridge", action: #selector(quitApp), key: "q"))
     }
 
     private func item(title: String, action: Selector, key: String = "") -> NSMenuItem {
@@ -175,7 +175,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
             statusItem.length = NSStatusItem.squareLength
             statusItem.button?.image = Self.makeMenuBarIcon()
             statusItem.button?.imageScaling = .scaleProportionallyDown
-            statusItem.button?.toolTip = "macOS UI Bridge"
+            statusItem.button?.toolTip = "App MCP Bridge"
             return
         }
 

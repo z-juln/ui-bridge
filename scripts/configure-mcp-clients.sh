@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 
-APP_EXECUTABLE="/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge"
+APP_EXECUTABLE="/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge"
 ENDPOINT="http://127.0.0.1:8765/mcp"
 TOKEN=$("$APP_EXECUTABLE" token)
 
@@ -22,7 +22,7 @@ update_config() {
         if $client == "workbuddy" then
           {url: $endpoint, headers: {Authorization: ("Bearer " + $token)}, type: "streamable-http", timeout: 30000}
         else
-          {command: "/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge", args: ["mcp"]}
+          {command: "/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge", args: ["mcp"]}
         end
       )
     ' "$config_file" > "$temp"
@@ -32,7 +32,7 @@ update_config() {
         if $client == "workbuddy" then
           {url: $endpoint, headers: {Authorization: ("Bearer " + $token)}, type: "streamable-http", timeout: 30000}
         else
-          {command: "/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge", args: ["mcp"]}
+          {command: "/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge", args: ["mcp"]}
         end
       )}}
     ' > "$temp"

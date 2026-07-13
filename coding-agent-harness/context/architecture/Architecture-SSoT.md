@@ -8,7 +8,7 @@ Confidence: high
 
 ## 系统边界
 
-macOS UI Bridge 是本机无界面服务。系统输入是来自受信任本地客户端的 HTTP/MCP
+App MCP Bridge 当前是 macOS 本机服务。系统输入是来自受信任本地客户端的 HTTP/MCP
 请求，输出是应用/窗口/控件快照、动作结果和验证证据。服务不监听局域网，不把
 截图默认上传云端。
 

@@ -1,6 +1,6 @@
-# macOS UI Bridge：实施、测试与确认项
+# App MCP Bridge：macOS 实施、测试与确认项
 
-状态：等待确认，尚未进入开发
+状态：macOS 第一版开发中
 
 ## 1. 推荐项目结构
 
@@ -286,9 +286,9 @@ macos-ui-bridge/
 
 ### 决策 6：项目名称
 
-暂定：`macos-ui-bridge`，显示名称为 `macOS UI Bridge`。
+当前兼容标识为 `macos-ui-bridge`，显示名称为 `App MCP Bridge`。兼容标识暂不更改，避免现有 MCP 配置和 macOS 权限失效。
 
-影响：确认后再固定命令名、bundle identifier、端口名和 Skill 名称。
+影响：显示名先采用平台无关名称；命令名、bundle identifier、端口和 Skill 名称在兼容迁移方案确定前保持不变。
 
 ## 10. 确认后的下一步
 

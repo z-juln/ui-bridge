@@ -17,7 +17,7 @@ The self-test is read-only. A successful run prints the server name, tool names,
 Prefer the running App's authenticated local endpoint. Obtain its token:
 
 ```bash
-/Applications/macOS\ UI\ Bridge.app/Contents/MacOS/macos-ui-bridge token
+/Applications/App\ MCP\ Bridge.app/Contents/MacOS/macos-ui-bridge token
 ```
 
 Configure the endpoint and replace `TOKEN_FROM_COMMAND`:
@@ -39,7 +39,7 @@ If the client does not support local HTTP MCP, use stdio:
 {
   "mcpServers": {
     "macos-ui-bridge": {
-      "command": "/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge",
+      "command": "/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge",
       "args": ["mcp"]
     }
   }
@@ -61,7 +61,7 @@ WorkBuddy's own **自定义连接器 → 配置 MCP** screen reports the same fi
 
 Prefer the same authenticated URL when supported. Otherwise create a local stdio MCP server:
 
-- command: `/Applications/macOS UI Bridge.app/Contents/MacOS/macos-ui-bridge`
+- command: `/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge`
 - arguments: `mcp`
 - working directory: `/Users/juln/Desktop/workspace/macos-ui-bridge` when the client requests one
 
@@ -69,7 +69,7 @@ The client must launch one process per MCP connection. Do not run the `mcp` comm
 
 ## macOS permissions
 
-When using the recommended local endpoint, grant Accessibility and Screen Recording only to **macOS UI Bridge.app**. Cursor and WorkBuddy do not need those permissions. Call `permissions_get`; when access is missing, the Bridge App opens its native guidance.
+When using the recommended local endpoint, grant Accessibility and Screen Recording only to **App MCP Bridge.app**. Cursor and WorkBuddy do not need those permissions. Call `permissions_get`; when access is missing, the Bridge App opens its native guidance.
 
 Only the fallback stdio mode runs automation inside the client-launched process. In that mode, the launching client may also need macOS permissions, so prefer the local endpoint.
 

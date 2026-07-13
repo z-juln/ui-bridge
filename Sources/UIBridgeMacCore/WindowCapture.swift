@@ -20,7 +20,7 @@ public enum WindowCapture {
             throw BridgeError(
                 code: .permissionMissing,
                 message: "Screen Recording permission is required to capture a window.",
-                suggestedAction: "Grant Screen Recording permission to macOS UI Bridge in System Settings."
+                suggestedAction: "Grant Screen Recording permission to App MCP Bridge in System Settings."
             )
         }
 

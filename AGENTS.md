@@ -1,6 +1,6 @@
-# macOS UI Bridge Agent 入口
+# App MCP Bridge Agent 入口
 
-本仓库开发一个仅支持 macOS 的通用桌面操作服务，通过本地 HTTP、MCP 和 Skill
+本仓库当前开发 App MCP Bridge 的 macOS 实现，通过本地 HTTP、MCP 和 Skill
 供 Cursor、WorkBuddy 及其他 Agent 使用。详细产品范围见 `docs/`，当前任务事实见
 `coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/`。
 
