@@ -181,6 +181,13 @@
 - 下一步：安装长期身份版，用户重新授权一次后连续覆盖安装验证。
 - 证据：`command:TARGET:scripts/ensure-local-signing-identity.sh:certificate-backed signing prototype passed`
 
+### 2026-07-13 - 辅助功能提示去重
+
+- 做了什么：辅助功能的系统登记提示改为每个授权周期只出现一次，并持久记录；首次提示后立即结束当前流程，避免再叠加自定义弹窗。后续检查只给出前往设置的引导，不重复触发系统提示。
+- 验证：运行中服务已确认录屏权限为 true、辅助功能为 false，与用户截图一致；待安装后验证持久去重分支。
+- 下一步：安装并设置本次迁移标记，用户在设置中打开辅助功能开关后继续覆盖安装验证。
+- 证据：`diff:TARGET:Sources/UIBridgeMacCore/PermissionGuidance.swift:persistent accessibility prompt guard`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。

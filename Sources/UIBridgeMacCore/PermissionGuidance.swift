@@ -6,11 +6,17 @@ import Foundation
 @MainActor
 public enum PermissionGuidance {
     private static var presentedKinds = Set<String>()
+    private static let accessibilityPromptIssuedKey = "accessibilityPromptIssued"
 
     public static func presentIfNeeded(for _: PermissionStatus) {
-        requestMissingPermissions(for: PermissionInspector.current())
+        if requestMissingPermissions(for: PermissionInspector.current()) {
+            return
+        }
 
         let currentStatus = PermissionInspector.current()
+        if currentStatus.accessibilityTrusted {
+            UserDefaults.standard.removeObject(forKey: accessibilityPromptIssuedKey)
+        }
         let missing = missingKinds(for: currentStatus)
         guard !missing.isEmpty else { return }
 
@@ -44,15 +50,21 @@ public enum PermissionGuidance {
         return URL(string: "x-apple.systempreferences:com.apple.preference.security?\(pane)")
     }
 
-    private static func requestMissingPermissions(for status: PermissionStatus) {
+    /// Returns true when macOS has just shown the Accessibility registration
+    /// prompt. The caller must not stack another alert on top of it.
+    private static func requestMissingPermissions(for status: PermissionStatus) -> Bool {
         // Screen capture presents a blocking system prompt; request it first so
         // the non-blocking Accessibility prompt cannot overlap or hide it.
         if status.screenCaptureAllowed == false {
             _ = CGRequestScreenCaptureAccess()
         }
-        if !status.accessibilityTrusted {
+        if !status.accessibilityTrusted,
+           !UserDefaults.standard.bool(forKey: accessibilityPromptIssuedKey) {
+            UserDefaults.standard.set(true, forKey: accessibilityPromptIssuedKey)
             let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
             _ = AXIsProcessTrustedWithOptions(options)
+            return true
         }
+        return false
     }
 }
