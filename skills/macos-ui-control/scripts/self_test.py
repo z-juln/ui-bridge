@@ -55,30 +55,39 @@ def main() -> int:
         if server_name != "macos-ui-bridge" or not required.issubset(tool_names) or not isinstance(apps, list):
             raise RuntimeError("MCP response did not match the expected bridge contract")
 
-        candidate = next((app for app in apps if app.get("isFrontmost")), apps[0])
+        ordered_apps = sorted(apps, key=lambda app: not app.get("isFrontmost", False))
+        candidate = None
+        window = None
+        request_id = 4
+        for app in ordered_apps:
+            send(process, {
+                "jsonrpc": "2.0", "id": request_id, "method": "tools/call",
+                "params": {"name": "windows_list", "arguments": {"pid": app["pid"]}},
+            })
+            windows_result = receive(process, request_id)
+            windows = json.loads(windows_result["result"]["content"][0]["text"])
+            window = next((item for item in windows if item.get("isVisible") and item.get("isCapturable")), None)
+            request_id += 1
+            if window is not None:
+                candidate = app
+                break
+        if candidate is None or window is None:
+            raise RuntimeError("no running application has a visible capturable window")
         send(process, {
-            "jsonrpc": "2.0", "id": 4, "method": "tools/call",
-            "params": {"name": "windows_list", "arguments": {"pid": candidate["pid"]}},
-        })
-        windows_result = receive(process, 4)
-        windows = json.loads(windows_result["result"]["content"][0]["text"])
-        window = next((item for item in windows if item.get("isVisible") and item.get("isCapturable")), None)
-        if window is None:
-            raise RuntimeError("frontmost application has no visible capturable window")
-        send(process, {
-            "jsonrpc": "2.0", "id": 5, "method": "tools/call",
+            "jsonrpc": "2.0", "id": request_id, "method": "tools/call",
             "params": {"name": "snapshot_get", "arguments": {
                 "pid": candidate["pid"], "window_id": window["windowID"],
                 "include_screenshot": False, "max_elements": 100, "max_depth": 8,
             }},
         })
-        snapshot_result = receive(process, 5)
+        snapshot_result = receive(process, request_id)
+        request_id += 1
         snapshot = json.loads(snapshot_result["result"]["content"][0]["text"])
         if not snapshot.get("snapshotID") or not snapshot.get("elements"):
             raise RuntimeError("snapshot_get returned no usable accessibility elements")
         target = snapshot["elements"][0]
         send(process, {
-            "jsonrpc": "2.0", "id": 6, "method": "tools/call",
+            "jsonrpc": "2.0", "id": request_id, "method": "tools/call",
             "params": {"name": "action_run", "arguments": {
                 "snapshot_id": snapshot["snapshotID"], "element_handle": target["handle"],
                 "action": "press", "verification_kind": "element_present",
@@ -86,7 +95,7 @@ def main() -> int:
                 "high_impact": True, "confirmed": False,
             }},
         })
-        confirmation = json.loads(receive(process, 6)["result"]["content"][0]["text"])
+        confirmation = json.loads(receive(process, request_id)["result"]["content"][0]["text"])
         if confirmation.get("status") != "confirmation_required":
             raise RuntimeError("high-impact action did not stop for explicit confirmation")
         print(
