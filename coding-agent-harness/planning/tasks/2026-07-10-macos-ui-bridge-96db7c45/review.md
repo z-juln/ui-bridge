@@ -24,7 +24,7 @@
 
 | ID | Severity | Finding | Evidence Checked | Required Action | Open | Disposition | Blocks Release | Follow-up |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| F-001 | P2 | App 使用本地临时签名，正式分发前权限身份可能随构建变化 | codesign designated requirement | 正式发布时使用开发者签名和公证 | yes | deferred | no | 发布阶段处理 |
+| F-001 | P2 | App 使用本地临时签名，正式分发前权限身份可能随构建变化 | codesign designated requirement | 正式发布时使用开发者签名和公证 | no | accepted-risk | no | 发布阶段处理 |
 | F-002 | P3 | WorkBuddy 仅验证通用接入配置，未在产品界面实际导入 | setup 文档 | 用户使用时做一次客户端验收 | yes | deferred | no | WorkBuddy 验收 |
 
 ## 非阻塞备注（Non-Material Notes）
