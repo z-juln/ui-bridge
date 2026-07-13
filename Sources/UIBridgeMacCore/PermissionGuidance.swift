@@ -45,12 +45,14 @@ public enum PermissionGuidance {
     }
 
     private static func requestMissingPermissions(for status: PermissionStatus) {
+        // Screen capture presents a blocking system prompt; request it first so
+        // the non-blocking Accessibility prompt cannot overlap or hide it.
+        if status.screenCaptureAllowed == false {
+            _ = CGRequestScreenCaptureAccess()
+        }
         if !status.accessibilityTrusted {
             let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
             _ = AXIsProcessTrustedWithOptions(options)
-        }
-        if status.screenCaptureAllowed == false {
-            _ = CGRequestScreenCaptureAccess()
         }
     }
 }
