@@ -124,6 +124,13 @@
 - 下一步：实现 Streamable HTTP MCP 入口与收口文档；桌面动作回归保持暂停。
 - 证据：`command:TARGET:Sources/UIBridgeMCP:headless diagnostics MCP and HTTP smoke passed`
 
+### 2026-07-13 - 权限弹窗误报修复
+
+- 做了什么：移除 App 启动和只读 CLI 查询时的主动弹窗；仅在 Agent 调用权限检查且实时复查仍缺权时显示引导，避免重装后的短暂权限波动造成误报。
+- 验证：重建安装后两项权限均为 true，登录启动任务正常，等待后 Bridge 无任何可见窗口，健康检查正常。
+- 下一步：继续 Streamable HTTP MCP 与最终收口。
+- 证据：`command:TARGET:Sources/macos-ui-bridge/main.swift:authorized startup has no permission dialog`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。

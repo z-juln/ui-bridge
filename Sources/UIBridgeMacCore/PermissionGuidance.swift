@@ -7,8 +7,9 @@ import Foundation
 public enum PermissionGuidance {
     private static var presentedKinds = Set<String>()
 
-    public static func presentIfNeeded(for status: PermissionStatus) {
-        let missing = missingKinds(for: status)
+    public static func presentIfNeeded(for _: PermissionStatus) {
+        let currentStatus = PermissionInspector.current()
+        let missing = missingKinds(for: currentStatus)
         guard !missing.isEmpty else { return }
 
         let key = missing.joined(separator: ",")
@@ -26,7 +27,7 @@ public enum PermissionGuidance {
 
         if alert.runModal() == .alertFirstButtonReturn,
            let url = settingsURL(for: missing[0]) {
-            registerWithSystem(for: status)
+            registerWithSystem(for: currentStatus)
             NSWorkspace.shared.open(url)
         }
     }
