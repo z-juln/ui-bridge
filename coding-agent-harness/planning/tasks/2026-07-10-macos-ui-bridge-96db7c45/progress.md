@@ -202,6 +202,14 @@
 - 下一步：重新提交最终任务审查。
 - 证据：`command:TARGET:Sources/macos-ui-bridge/AppShell.swift:authorized reinstall starts silently with both permissions true`
 
+### 2026-07-13 - 启动校验时机修复
+
+- 发现：用户关闭两项权限并重启后没有提示；安装版实时返回两项 false，且没有产生辅助功能申请标记，证明此前把检查排入主队列并不保证在原生 App 启动阶段执行。
+- 做了什么：改由 macOS 的 App 完成启动事件触发权限校验，确保菜单栏和事件循环就绪后执行。
+- 验证：使用用户当前两项关闭状态完成覆盖安装；安装版仍实时返回两项 false，同时启动后自动生成辅助功能申请标记，证明缺权启动流程已执行，而修复前同条件没有该标记。系统弹窗外观由用户肉眼确认。
+- 下一步：用户确认启动弹窗可见后，恢复授权并继续最终审查。
+- 证据：`command:TARGET:Sources/macos-ui-bridge/AppShell.swift:didFinishLaunching creates permission request marker with both permissions off`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。

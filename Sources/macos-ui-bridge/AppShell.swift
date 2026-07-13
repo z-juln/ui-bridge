@@ -3,7 +3,7 @@ import Foundation
 import UIBridgeMacCore
 
 @MainActor
-final class AppShell: NSObject {
+final class AppShell: NSObject, NSApplicationDelegate {
     private let statusItem: NSStatusItem
     private let token: String
 
@@ -21,13 +21,15 @@ final class AppShell: NSObject {
         statusItem.button?.imageScaling = .scaleProportionallyDown
         statusItem.button?.toolTip = "macOS UI Bridge"
         statusItem.menu = makeMenu()
+        NSApplication.shared.delegate = self
     }
 
     func run() {
-        DispatchQueue.main.async {
-            PermissionGuidance.presentIfNeeded(for: PermissionInspector.current())
-        }
         NSApplication.shared.run()
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        PermissionGuidance.presentIfNeeded(for: PermissionInspector.current())
     }
 
     private func makeMenu() -> NSMenu {
