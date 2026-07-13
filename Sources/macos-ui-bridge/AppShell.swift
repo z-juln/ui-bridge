@@ -52,7 +52,7 @@ final class AppShell: NSObject, NSApplicationDelegate {
     }
 
     @objc private func checkPermissions() {
-        PermissionGuidance.presentIfNeeded(for: PermissionInspector.current())
+        PermissionGuidance.presentIfNeeded(for: PermissionInspector.current(), showSuccess: true)
     }
 
     @objc private func copyConnection() {

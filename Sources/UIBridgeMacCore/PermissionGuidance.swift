@@ -8,7 +8,7 @@ public enum PermissionGuidance {
     private static var presentedKinds = Set<String>()
     private static let accessibilityPromptIssuedKey = "accessibilityPromptIssued"
 
-    public static func presentIfNeeded(for _: PermissionStatus) {
+    public static func presentIfNeeded(for _: PermissionStatus, showSuccess: Bool = false) {
         if requestMissingPermissions(for: PermissionInspector.current()) {
             return
         }
@@ -18,7 +18,12 @@ public enum PermissionGuidance {
             UserDefaults.standard.removeObject(forKey: accessibilityPromptIssuedKey)
         }
         let missing = missingKinds(for: currentStatus)
-        guard !missing.isEmpty else { return }
+        guard !missing.isEmpty else {
+            if showSuccess {
+                presentSuccess()
+            }
+            return
+        }
 
         let key = missing.joined(separator: ",")
         guard presentedKinds.insert(key).inserted else { return }
@@ -48,6 +53,16 @@ public enum PermissionGuidance {
     private static func settingsURL(for kind: String) -> URL? {
         let pane = kind == "辅助功能" ? "Privacy_Accessibility" : "Privacy_ScreenCapture"
         return URL(string: "x-apple.systempreferences:com.apple.preference.security?\(pane)")
+    }
+
+    private static func presentSuccess() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = "系统权限已就绪"
+        alert.informativeText = "辅助功能和屏幕录制权限均已开启。"
+        alert.addButton(withTitle: "好")
+        alert.runModal()
     }
 
     /// Returns true when macOS has just shown the Accessibility registration

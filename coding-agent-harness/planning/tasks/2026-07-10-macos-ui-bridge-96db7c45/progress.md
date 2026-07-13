@@ -210,6 +210,13 @@
 - 下一步：用户确认启动弹窗可见后，恢复授权并继续最终审查。
 - 证据：`command:TARGET:Sources/macos-ui-bridge/AppShell.swift:didFinishLaunching creates permission request marker with both permissions off`
 
+### 2026-07-13 - 手动检查成功反馈
+
+- 做了什么：菜单中的手动权限检查在两项权限都正常时显示“系统权限已就绪”；自动启动检查和 Agent 查询继续静默，避免后台打扰。
+- 验证：当前安装版实时返回两项权限 true；debug/release 构建、协议自检、覆盖安装均通过。Computer Use 能发现 App，但因其没有主窗口，读取状态超时且按规则不能继续点击，弹窗外观留给用户肉眼确认。
+- 下一步：用户点击菜单确认“系统权限已就绪”提示可见。
+- 证据：`command:TARGET:Sources/UIBridgeMacCore/PermissionGuidance.swift:authorized branch built and installed; native menu UI requires human confirmation`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。
