@@ -188,6 +188,13 @@
 - 下一步：安装并设置本次迁移标记，用户在设置中打开辅助功能开关后继续覆盖安装验证。
 - 证据：`diff:TARGET:Sources/UIBridgeMacCore/PermissionGuidance.swift:persistent accessibility prompt guard`
 
+### 2026-07-13 - 权限迁移实机通过
+
+- 做了什么：只清除 macOS UI Bridge 的旧辅助功能授权记录，用户为长期身份版重新开启授权；未改动其他 App 权限，录屏授权保持不变。
+- 验证：安装版服务进程实时返回 `accessibilityTrusted=true`、`screenCaptureAllowed=true`，不再以设置页开关外观代替运行结果。
+- 下一步：增加 App 启动时自动校验；全授权时静默，缺权时才引导。
+- 证据：`command:TARGET:/v1/permissions:installed app reports both permissions true`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。
