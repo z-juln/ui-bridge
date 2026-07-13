@@ -7,6 +7,8 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let statusItem: NSStatusItem
     private let token: String
     private var overlayController: ControlOverlayController!
+    private var statusRefreshTimer: Timer?
+    private var statusSignature: String?
 
     init(token: String) {
         self.token = token
@@ -18,16 +20,15 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         super.init()
         overlayController = ControlOverlayController()
 
-        let menuBarIcon = Self.makeMenuBarIcon()
-        statusItem.button?.image = menuBarIcon
-        statusItem.button?.imageScaling = .scaleProportionallyDown
-        statusItem.button?.toolTip = "macOS UI Bridge"
+        updateStatusItem(for: overlayController.activeTargets)
         let menu = makeMenu()
         menu.delegate = self
         statusItem.menu = menu
         overlayController.onTargetsChanged = { [weak self] in
             self?.refreshMenu()
         }
+        overlayController.startPolling()
+        startStatusRefreshPolling()
         NSApplication.shared.delegate = self
     }
 
@@ -36,29 +37,47 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        overlayController.startPolling()
         PermissionGuidance.presentIfNeeded(for: PermissionInspector.current())
+    }
+
+    private func startStatusRefreshPolling() {
+        guard statusRefreshTimer == nil else { return }
+        let timer = Timer(
+            timeInterval: 0.25,
+            target: self,
+            selector: #selector(refreshStatusItemTimer),
+            userInfo: nil,
+            repeats: true
+        )
+        RunLoop.main.add(timer, forMode: .common)
+        statusRefreshTimer = timer
+    }
+
+    @objc private func refreshStatusItemTimer() {
+        updateStatusItem(for: overlayController.activeTargets)
     }
 
     private func makeMenu() -> NSMenu {
         let menu = NSMenu(title: "macOS UI Bridge")
-        menu.autoenablesItems = false
         populateMenu(menu)
         return menu
     }
 
     func menuNeedsUpdate(_ menu: NSMenu) {
+        updateStatusItem(for: overlayController.activeTargets)
         menu.removeAllItems()
         populateMenu(menu)
     }
 
     func menuWillOpen(_ menu: NSMenu) {
+        updateStatusItem(for: overlayController.activeTargets)
         menu.removeAllItems()
         populateMenu(menu)
     }
 
     private func refreshMenu() {
         guard let menu = statusItem.menu else { return }
+        updateStatusItem(for: overlayController.activeTargets)
         menu.removeAllItems()
         populateMenu(menu)
     }
@@ -75,11 +94,10 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
             menu.addItem(heading)
             for target in targets {
                 let active = NSMenuItem(title: "  正在操控 \(target.name)", action: nil, keyEquivalent: "")
-                active.isEnabled = true
+                active.isEnabled = false
                 active.image = NSImage(systemSymbolName: "cursorarrow.rays", accessibilityDescription: nil)
                 menu.addItem(active)
             }
-            menu.addItem(item(title: "清除操控记录", action: #selector(clearActivity)))
         }
         menu.addItem(.separator())
         menu.addItem(item(title: "检查系统权限", action: #selector(checkPermissions)))
@@ -104,10 +122,6 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         """
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(config, forType: .string)
-    }
-
-    @objc private func clearActivity() {
-        overlayController.clearTargets()
     }
 
     @objc private func quitApp() {
@@ -146,6 +160,77 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         image.unlockFocus()
         image.size = NSSize(width: 19, height: 19)
         image.isTemplate = true
+        return image
+    }
+
+    private func updateStatusItem(for targets: [ControlledTarget]) {
+        let visibleTargets = Array(targets.prefix(3))
+        let signature = visibleTargets.isEmpty
+            ? "idle"
+            : visibleTargets.map { "\($0.pid):\($0.lastSeen.timeIntervalSinceReferenceDate)" }.joined(separator: ",")
+        guard signature != statusSignature else { return }
+        statusSignature = signature
+
+        guard !targets.isEmpty else {
+            statusItem.length = NSStatusItem.squareLength
+            statusItem.button?.image = Self.makeMenuBarIcon()
+            statusItem.button?.imageScaling = .scaleProportionallyDown
+            statusItem.button?.toolTip = "macOS UI Bridge"
+            return
+        }
+
+        let image = Self.makeActiveMenuBarImage(for: visibleTargets)
+        statusItem.length = image.size.width + 4
+        statusItem.button?.image = image
+        statusItem.button?.imageScaling = .scaleNone
+        statusItem.button?.toolTip = "正在操控 " + visibleTargets.map(\.name).joined(separator: "、")
+    }
+
+    private static func makeActiveMenuBarImage(for targets: [ControlledTarget]) -> NSImage {
+        let iconSize: CGFloat = 18
+        let overlap: CGFloat = 6
+        let iconWidth = iconSize + CGFloat(max(0, targets.count - 1)) * (iconSize - overlap)
+        let width = 7 + iconWidth + 7 + 13 + 7
+        let size = NSSize(width: width, height: 24)
+        let image = NSImage(size: size)
+        image.lockFocus()
+
+        let pill = NSBezierPath(roundedRect: NSRect(origin: .zero, size: size), xRadius: 12, yRadius: 12)
+        NSColor.controlAccentColor.withAlphaComponent(0.82).setFill()
+        pill.fill()
+        NSColor.white.withAlphaComponent(0.24).setStroke()
+        pill.lineWidth = 1
+        pill.stroke()
+
+        for (index, target) in targets.enumerated().reversed() {
+            let x = 7 + CGFloat(index) * (iconSize - overlap)
+            let frame = NSRect(x: x, y: 3, width: iconSize, height: iconSize)
+            guard let appIcon = NSRunningApplication(processIdentifier: target.pid)?.icon else { continue }
+            NSGraphicsContext.saveGraphicsState()
+            NSBezierPath(roundedRect: frame, xRadius: 4.5, yRadius: 4.5).addClip()
+            appIcon.draw(in: frame, from: .zero, operation: .sourceOver, fraction: 1)
+            NSGraphicsContext.restoreGraphicsState()
+            NSColor.white.withAlphaComponent(0.78).setStroke()
+            let border = NSBezierPath(roundedRect: frame.insetBy(dx: 0.5, dy: 0.5), xRadius: 4, yRadius: 4)
+            border.lineWidth = 1
+            border.stroke()
+        }
+
+        let arrowX = 7 + iconWidth + 8
+        let arrow = NSBezierPath()
+        arrow.move(to: NSPoint(x: arrowX, y: 18))
+        arrow.line(to: NSPoint(x: arrowX, y: 6))
+        arrow.line(to: NSPoint(x: arrowX + 10, y: 13))
+        arrow.line(to: NSPoint(x: arrowX + 5.5, y: 14))
+        arrow.line(to: NSPoint(x: arrowX + 8, y: 19))
+        arrow.line(to: NSPoint(x: arrowX + 5, y: 20))
+        arrow.line(to: NSPoint(x: arrowX + 2.5, y: 15))
+        arrow.close()
+        NSColor.white.withAlphaComponent(0.96).setFill()
+        arrow.fill()
+
+        image.unlockFocus()
+        image.isTemplate = false
         return image
     }
 }

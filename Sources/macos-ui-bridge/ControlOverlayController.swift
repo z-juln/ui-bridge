@@ -11,6 +11,7 @@ struct ControlledTarget: Sendable {
 
 @MainActor
 final class ControlOverlayController: NSObject {
+    private static let targetRetention: TimeInterval = 90
     private static let visualFeedbackFreshness: TimeInterval = 3
 
     private struct TargetState {
@@ -20,6 +21,7 @@ final class ControlOverlayController: NSObject {
         var cursorPanel: NSPanel?
         var hideBadge: Timer?
         var hideCursor: Timer?
+        var expireTarget: Timer?
     }
 
     private var targets: [Int32: TargetState] = [:]
@@ -32,6 +34,12 @@ final class ControlOverlayController: NSObject {
         DistributedNotificationCenter.default().addObserver(
             self,
             selector: #selector(receiveActivity(_:)),
+            name: AutomationActivityCenter.notification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(receiveLocalActivity(_:)),
             name: AutomationActivityCenter.notification,
             object: nil
         )
@@ -52,29 +60,32 @@ final class ControlOverlayController: NSObject {
 
     deinit {
         DistributedNotificationCenter.default().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
     var activeTargets: [ControlledTarget] {
         recoverLatestTarget()
+        let cutoff = Date().addingTimeInterval(-Self.targetRetention)
         return targets.compactMap { pid, state in
+            guard state.lastSeen >= cutoff else { return nil }
             return ControlledTarget(pid: pid, name: state.name, lastSeen: state.lastSeen)
         }.sorted { $0.lastSeen > $1.lastSeen }
     }
 
-    func clearTargets() {
-        for state in targets.values {
-            state.hideBadge?.invalidate()
-            state.hideCursor?.invalidate()
-            state.badgePanel.orderOut(nil)
-            state.cursorPanel?.orderOut(nil)
-        }
-        targets.removeAll()
-        lastEventID = nil
-        AutomationActivityCenter.clear()
-        onTargetsChanged?()
+    @objc private func receiveActivity(_ notification: Notification) {
+        consumeLatest()
     }
 
-    @objc private func receiveActivity(_ notification: Notification) {
+    @objc nonisolated private func receiveLocalActivity(_ notification: Notification) {
+        performSelector(
+            onMainThread: #selector(receiveActivityOnMainThread),
+            with: nil,
+            waitUntilDone: false,
+            modes: [RunLoop.Mode.common.rawValue]
+        )
+    }
+
+    @objc private func receiveActivityOnMainThread() {
         consumeLatest()
     }
 
@@ -86,7 +97,8 @@ final class ControlOverlayController: NSObject {
         guard let record = AutomationActivityCenter.latest(),
               record.eventID != lastEventID else { return }
         lastEventID = record.eventID
-        retainTarget(record)
+        guard retainTarget(record) else { return }
+        scheduleExpiration(for: record)
         onTargetsChanged?()
         if record.createdAt > Date().addingTimeInterval(-Self.visualFeedbackFreshness) {
             display(record)
@@ -95,10 +107,12 @@ final class ControlOverlayController: NSObject {
 
     private func recoverLatestTarget() {
         guard let record = AutomationActivityCenter.latest() else { return }
-        retainTarget(record)
+        _ = retainTarget(record)
     }
 
-    private func retainTarget(_ record: AutomationActivityRecord) {
+    @discardableResult
+    private func retainTarget(_ record: AutomationActivityRecord) -> Bool {
+        guard record.createdAt > Date().addingTimeInterval(-Self.targetRetention) else { return false }
         let badgePanel = targets[record.pid]?.badgePanel ?? Self.makeBadgePanel()
         var state = targets[record.pid] ?? TargetState(
             name: record.appName,
@@ -108,6 +122,22 @@ final class ControlOverlayController: NSObject {
         state.name = record.appName
         state.lastSeen = max(state.lastSeen, record.createdAt)
         targets[record.pid] = state
+        return true
+    }
+
+    private func scheduleExpiration(for record: AutomationActivityRecord) {
+        guard var state = targets[record.pid] else { return }
+        state.expireTarget?.invalidate()
+        let timer = Timer(
+            timeInterval: max(0.1, record.createdAt.addingTimeInterval(Self.targetRetention).timeIntervalSinceNow),
+            target: self,
+            selector: #selector(expireTargetTimer(_:)),
+            userInfo: NSNumber(value: record.pid),
+            repeats: false
+        )
+        state.expireTarget = timer
+        targets[record.pid] = state
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     private func display(_ record: AutomationActivityRecord) {
@@ -190,6 +220,16 @@ final class ControlOverlayController: NSObject {
     @objc private func hideCursorTimer(_ timer: Timer) {
         guard let pid = (timer.userInfo as? NSNumber)?.int32Value else { return }
         targets[pid]?.cursorPanel?.orderOut(nil)
+    }
+
+    @objc private func expireTargetTimer(_ timer: Timer) {
+        guard let pid = (timer.userInfo as? NSNumber)?.int32Value,
+              let state = targets[pid],
+              state.lastSeen <= Date().addingTimeInterval(-Self.targetRetention) else { return }
+        state.badgePanel.orderOut(nil)
+        state.cursorPanel?.orderOut(nil)
+        targets.removeValue(forKey: pid)
+        onTargetsChanged?()
     }
 
     private static func makeBadgePanel() -> NSPanel {

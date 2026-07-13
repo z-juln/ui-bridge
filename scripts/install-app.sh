@@ -6,9 +6,7 @@ SOURCE="$ROOT/.build/app/macOS UI Bridge.app"
 DESTINATION="/Applications/macOS UI Bridge.app"
 LAUNCH_AGENT="$HOME/Library/LaunchAgents/com.juln.macos-ui-bridge.plist"
 
-if [[ ! -d "$SOURCE" ]]; then
-  "$ROOT/scripts/build-app.sh"
-fi
+"$ROOT/scripts/build-app.sh"
 
 pkill -x macos-ui-bridge 2>/dev/null || true
 rm -rf "$DESTINATION"

@@ -54,6 +54,7 @@ public enum AutomationActivityCenter {
             info["pointer_x"] = pointer.x
             info["pointer_y"] = pointer.y
         }
+        NotificationCenter.default.post(name: notification, object: nil, userInfo: info)
         DistributedNotificationCenter.default().postNotificationName(
             notification,
             object: nil,
@@ -65,10 +66,6 @@ public enum AutomationActivityCenter {
     public static func latest() -> AutomationActivityRecord? {
         guard let data = try? Data(contentsOf: stateURL) else { return nil }
         return try? JSONDecoder().decode(AutomationActivityRecord.self, from: data)
-    }
-
-    public static func clear() {
-        try? FileManager.default.removeItem(at: stateURL)
     }
 
     private static var stateURL: URL {

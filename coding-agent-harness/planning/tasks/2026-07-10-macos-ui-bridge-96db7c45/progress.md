@@ -284,13 +284,13 @@
 - 下一步：用户自然打开菜单确认最终外观；若仍不可见，需核对用户点击的是否为 Bridge 的重叠窗口图标。
 - 证据：`command:TARGET:/Applications/macOS UI Bridge.app:AXExtrasMenuBar contains active Finder target after snapshot`
 
-### 2026-07-13 - 调试期操控记录常驻
+### 2026-07-13 - 状态栏直接展示目标应用
 
-- 用户要求：调试期间取消 90 秒过期，避免为了截图抢时间。
-- 做了什么：操控记录改为一直保留并跨 App 重启恢复；菜单目标项使用正常亮色显示；增加“清除操控记录”，只在用户手动点击时清空；菜单每次即将打开时都会直接读取记录重建，不再依赖后台通知是否及时送达。
-- 验证：当前访达记录已持久保存，安装版与服务已覆盖重启；debug/release 构建、协议自检、签名和健康检查通过。自动辅助功能只能读取关闭状态的菜单，无法替用户按开状态做最终外观确认，因此不再反复尝试该路线。
-- 下一步：用户任意时间打开 Bridge 菜单确认“正在操控 访达”和“清除操控记录”；调试完成后再决定是否恢复自动过期。
-- 证据：`command:TARGET:Sources/macos-ui-bridge/AppShell.swift:persistent menu rebuilds on menuWillOpen`
+- 用户确认菜单记录可见，并要求移除调试常驻，改成类似 Codex Computer Use 的状态栏应用图标堆叠，不打开菜单也能看到。
+- 做了什么：恢复 90 秒自动结束；活动期间把普通 Bridge 图标替换为蓝色胶囊，最多叠放 3 个目标应用图标并显示白色鼠标箭头；菜单继续保留文字详情。补充同进程事件通知和状态栏轮询，兼容 WorkBuddy 本地地址与 Cursor 独立进程。
+- 关键修复：安装脚本此前只在 App 包不存在时才构建，导致多轮覆盖安装实际一直复制旧程序；现改为每次安装都先构建、签名最新版本。
+- 验证：真实后台访达快照后，状态栏截图明确显示访达图标蓝色胶囊；176 秒后截图恢复普通 Bridge 图标。debug/release 构建、覆盖安装、签名、协议自检和健康检查通过；临时运行记录代码已删除。
+- 证据：`screenshot:TARGET:/tmp/macos-ui-bridge-status-active-final2.png:Finder icon pill visible; screenshot:TARGET:/tmp/macos-ui-bridge-status-expired-final.png:idle Bridge icon restored`
 
 ## 残余
 
