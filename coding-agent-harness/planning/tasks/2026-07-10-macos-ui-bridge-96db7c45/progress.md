@@ -103,10 +103,17 @@
 - 下一步：重建安装 App，完成坐标安全冒烟和 Finder/企业微信/Electron 代表应用回归。
 - 证据：`command:TARGET:Sources/UIBridgeMacCore/ProcessEventExecutor.swift:real key/scroll and coordinate bounds smoke passed`
 
+### 2026-07-13 - 通用应用兼容性读取
+
+- 做了什么：使用安装版 MCP 对 TextEdit、Finder、企业微信和 Electron 应用执行同一套应用发现、窗口发现和实时控件快照流程；补修整数坐标输入兼容。
+- 验证：TextEdit 已完成写值、按键、滚动和窗口相对坐标点击并验证；Finder 返回 complete、500 个控件、147 个常用可操作控件；企业微信返回 complete、500/83；Cursor 返回 partial、500/54；飞书返回 partial、500/9。企业微信只读，未搜索联系人或发送消息。
+- 下一步：补充 element_find、截图读取和会话停止能力，再做企业微信受控动作路径验证。
+- 证据：`command:TARGET:Sources/UIBridgeMCP:four application live compatibility smoke passed`
+
 ## 残余
 
-- 完整 Xcode 未安装，App Bundle/系统权限测试暂不可执行；纯 Swift 核心可继续。
-- 系统权限和真实应用验证尚未开始。
+- 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。
+- 企业微信目前只完成只读结构回归，尚未执行涉及联系人或消息的动作。
 
 ## 交接
 

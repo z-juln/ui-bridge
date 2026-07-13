@@ -92,7 +92,7 @@ public enum MCPBridge {
                     return try success(snapshot)
                 case "action_run":
                     guard let request = actionRequest(params.arguments) else {
-                        return failure("snapshot_id, element_handle, action and verification_kind are required")
+                        return failure("snapshot_id, action, verification_kind, and a valid element or coordinate target are required")
                     }
                     return try success(try await runtime.execute(
                         request,
@@ -143,8 +143,8 @@ public enum MCPBridge {
         let delivery = arguments["delivery"]?.stringValue.flatMap(DeliveryPreference.init(rawValue:)) ?? .background
         let target: ActionTarget
         if action == .coordinateClick,
-           let x = arguments["coordinate_x"]?.doubleValue,
-           let y = arguments["coordinate_y"]?.doubleValue {
+           let x = numericValue(arguments["coordinate_x"]),
+           let y = numericValue(arguments["coordinate_y"]) {
             target = .coordinate(point: UIBPoint(x: x, y: y))
         } else if let handle = arguments["element_handle"]?.stringValue {
             target = .element(handle: handle)
@@ -166,6 +166,10 @@ public enum MCPBridge {
 
     private static func uint32(_ value: Value?) -> UInt32? {
         value?.intValue.flatMap(UInt32.init(exactly:))
+    }
+
+    private static func numericValue(_ value: Value?) -> Double? {
+        value?.doubleValue ?? value?.intValue.map(Double.init)
     }
 
     private static func string(_ description: String) -> Value {
