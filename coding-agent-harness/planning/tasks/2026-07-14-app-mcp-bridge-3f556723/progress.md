@@ -1,6 +1,6 @@
 # 统一 App MCP Bridge 内部名称 - 进度
 
-## 状态：进行中
+## 状态：审查中
 
 ## 进度记录
 
@@ -27,6 +27,13 @@
 ### [2026-07-14 04:30] - task-start
 
 - 做了什么：Start full internal name migration
+- 验证结果：已记录
+- 下一步：继续执行
+- 证据：n/a
+
+### [2026-07-14 04:40] - task-review
+
+- 做了什么：App package, installed identity, runtime, client connections and validation all use the new name
 - 验证结果：已记录
 - 下一步：继续执行
 - 证据：n/a
