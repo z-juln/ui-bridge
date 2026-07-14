@@ -84,6 +84,20 @@ Prefer the same authenticated URL when supported. Otherwise create a local stdio
 
 The client must launch one process per MCP connection. Do not run the `mcp` command manually in a terminal for normal use.
 
+If WorkBuddy can read the HTTP connection but does not expose `plan_check` or `action_run`, use the installed App's safe local call entry. It reads the local credential internally, so do not put a token in a prompt, shell command, or file:
+
+```bash
+BRIDGE="/Applications/App MCP Bridge.app/Contents/MacOS/macos-ui-bridge"
+"$BRIDGE" call apps_list
+"$BRIDGE" call windows_list '{"pid":1234}'
+"$BRIDGE" call snapshot_get '{"pid":1234,"window_id":5678}'
+"$BRIDGE" call element_find '{"snapshot_id":"SNAPSHOT","role":"AXTextArea","settable":true}'
+"$BRIDGE" call plan_check '{"snapshot_id":"SNAPSHOT","element_handle":"HANDLE","action":"set_value"}'
+"$BRIDGE" call action_run '{"snapshot_id":"SNAPSHOT","element_handle":"HANDLE","action":"set_value","text":"APP_MCP_BRIDGE_CLIENT_TEST","verification_kind":"element_value_contains","verification_value":"APP_MCP_BRIDGE_CLIENT_TEST"}'
+```
+
+For an Agent prompt, require one `call` command at a time and forbid scripts, pipes, redirects, variables, repository files, and token reads. Always use the action result's new snapshot for the final `element_find`. After a WorkBuddy test, run `git status --short`: WorkBuddy may create its own memory note even when the requested Bridge flow has finished; remove only test-created files after checking their contents.
+
 ## macOS permissions
 
 When using the recommended local endpoint, grant Accessibility and Screen Recording only to **App MCP Bridge.app**. Cursor and WorkBuddy do not need those permissions. Call `permissions_get`; when access is missing, the Bridge App opens its native guidance.
@@ -96,5 +110,6 @@ Call `permissions_get` to confirm the state. Discovery can work with limited per
 
 - No tools: verify that `swift build` succeeded and the configured executable path exists.
 - Process exits: run the self-test and inspect its stderr output.
+- Local call fails: the command prints one concise error and exits non-zero; it must not open a macOS crash dialog.
 - Empty windows: confirm the app is running and retry with the current pid from `apps_list`.
 - Permission remains false: open the Bridge menu, run **检查系统权限**, and restart the Bridge after changing macOS settings.

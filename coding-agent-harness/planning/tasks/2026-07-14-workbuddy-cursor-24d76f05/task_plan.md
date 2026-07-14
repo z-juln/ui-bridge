@@ -48,10 +48,10 @@ WorkBuddy 与 Cursor 均能通过 App MCP Bridge 对独立临时 TextEdit 文稿
 
 ## 验收标准
 
-- [ ] WorkBuddy 真实写入与最新快照回读一致。
-- [ ] Cursor 真实写入与最新快照回读一致。
-- [ ] 测试窗口与用户内容隔离，失败和完成路径均可清理。
-- [ ] 配置、Skill、构建和项目检查通过。
+- [x] WorkBuddy 真实写入与最新快照回读一致。
+- [x] Cursor 真实写入与最新快照回读一致。
+- [x] 测试窗口与用户内容隔离，失败和完成路径均可清理。
+- [x] 配置、Skill、构建和项目检查通过。
 
 ## 工作树（Worktree）
 
@@ -85,14 +85,14 @@ WorkBuddy 与 Cursor 均能通过 App MCP Bridge 对独立临时 TextEdit 文稿
 
 ## 模块关联（启用模块并行时填写）
 
-- Module：[module key，例如 reader / graph / 不适用]
-- Step：[step ID，例如 RDR-02 / 不适用]
-- Module Plan：[link to module_plan.md / 不适用]
+- Module：不适用
+- Step：不适用
+- Module Plan：不适用
 
 ## 协调者交接（Coordinator，启用模块并行时填写）
 
-- Global sync owner：coordinator / 不适用
-- Global sync status：pending-coordinator-pass / synced / n/a
-- Registry update needed：[module key, step, status, branch, updated / 不适用]
-- Harness Ledger update needed：[task plan path, review path, closeout status / 不适用]
-- Closeout / Regression update needed：[路径或 n/a]
+- Global sync owner：coordinator
+- Global sync status：n/a
+- Registry update needed：不适用
+- Harness Ledger update needed：由 lifecycle CLI 重建
+- Closeout / Regression update needed：`walkthrough.md`；Regression SSoT 无需调整

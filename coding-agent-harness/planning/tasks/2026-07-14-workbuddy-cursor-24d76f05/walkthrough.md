@@ -2,7 +2,7 @@
 
 ## 摘要
 
-Cursor 已通过真实客户端对独立 TextEdit 文稿完成写入和最新快照回读。WorkBuddy 正在执行同等测试。
+Cursor 与 WorkBuddy 都已通过真实客户端对各自独立的 TextEdit 文稿完成写入和最新快照回读。
 
 ## 隔离约束
 
@@ -23,40 +23,53 @@ Cursor 已通过真实客户端对独立 TextEdit 文稿完成写入和最新快
 
 ## WorkBuddy 证据
 
-待当前真实任务完成后补充最终结果。
+- 测试标记：`APP_MCP_BRIDGE_WB_20260714_1055`
+- 客户端实际调用：已安装 App 的安全 `call` 入口；依次执行 `apps_list`、`windows_list`、`snapshot_get`、`element_find`、`plan_check`、`action_run`，之后对动作返回的新快照再次执行 `element_find`。
+- `plan_check`：`ready`。
+- `action_run`：`confirmed`，返回新快照 `6C4B19D6-576A-487E-8117-E3B66DB28E95`。
+- 客户端回读：新快照中的输入区值与测试标记完全一致。
+- 独立核对：从 TextEdit “未命名3”直接读取，值仍与测试标记完全一致。
+- 清理状态：WorkBuddy 自行生成的一条测试记忆已删除；文稿未保存并保留给用户核对。
 
 ## 范围
 
 | 范围 | 详情 |
 | --- | --- |
-| 变更模块 | pending |
-| 新增文件 | pending |
-| 删除文件 | pending |
-| 不在范围内 | pending |
+| 变更模块 | 本地调用入口、HTTP 接收、方案检查接口、命令错误处理、接入与验收文档 |
+| 新增文件 | `Sources/macos-ui-bridge/LocalBridgeClient.swift` |
+| 删除文件 | 无；WorkBuddy 测试生成的未跟踪记忆文件已清理 |
+| 不在范围内 | Windows、第三方消息发送、公开签名、公证、用户文稿 |
 
 ## 验证
 
 | 检查 | 命令或过程 | 结果 | 证据 |
 | --- | --- | --- | --- |
-| pending | pending | not run | pending |
+| 构建 | `swift build` | 通过 | 所有目标完成编译 |
+| 协议自检 | `swift run protocol-self-test` | 通过 | 4 checks passed |
+| 核心自检 | `swift run core-self-test` | 通过 | TextEdit 代表窗口读取、范围和截图通过 |
+| Skill 自检 | `python3 skills/macos-ui-control/scripts/self_test.py` | 通过 | 10 个工具、快照、方案和确认保护通过 |
+| 安装冒烟 | `./scripts/install-app.sh`、状态、诊断、健康检查 | 通过 | App 已签名安装，权限可用，服务可访问 |
+| 错误路径 | `call unsupported` | 通过 | 退出码 1，错误清楚，无新增崩溃报告 |
+| 真实客户端 | Cursor、WorkBuddy 各一次隔离写入 | 通过 | 两端均检查、写入、新快照回读、独立界面核对一致 |
 
 ## 审查结论
 
 | 来源 | 重要发现 | 处理 | 证据 |
 | --- | --- | --- | --- |
-| pending | pending | pending | `review.md` |
+| self | 分段请求、令牌泄漏、错误弹窗、写后假阳性 | 已修复并重跑，无开放 P0/P1/P2 | `review.md` |
 
 ## 残余风险
 
 | 风险 | Owner | 是否接受 | 跟进 |
 | --- | --- | --- | --- |
-| pending | owner | pending | pending |
+| WorkBuddy 可能自行写记忆 | coordinator | 接受 | 每次测试后检查工作树并清理测试产物 |
+| 三个测试文稿仍打开 | user | 接受 | 核对后关闭且不保存 |
 
 ## 经验沉淀反思
 
 | 问题 | 答案 |
 | --- | --- |
-| 是否完成经验候选检查？ | pending |
+| 是否完成经验候选检查？ | 是；关键经验已直接写入接入与验收文档，不另建治理候选 |
 | 经验候选详情文件 | `lesson_candidates.md` |
 
 ## 收口链接

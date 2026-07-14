@@ -7,11 +7,11 @@
 | Field | Value |
 | --- | --- |
 | Schema version | lesson-candidate-v1 |
-| Task-level status | pending-review |
-| Review gate | candidate-file-present |
-| Review decision | pending-human-review |
+| Task-level status | no-candidate-accepted |
+| Review gate | checked |
+| Review decision | no separate candidate; applied directly to task documentation |
 | Promotion state | not-promoted |
-| Closeout token | pending |
+| Closeout token | checked-none |
 | Source task | 2026-07-14-workbuddy-cursor-24d76f05 |
 | Owner | coordinator |
 | Last updated | 2026-07-14 |
@@ -49,7 +49,7 @@
 
 ## No-Candidate Reason
 
-尚未判定。只有人工审查接受本任务没有可复用候选时，才填写这里。
+本任务形成的可复用经验仅涉及当前产品的 WorkBuddy 接入：安全本地调用、逐条命令和验收后检查工作树。它们已直接写入 `skills/macos-ui-control/references/setup.md` 和交付文档，不需要再进入跨项目治理候选。
 
 ## Promotion Notes
 

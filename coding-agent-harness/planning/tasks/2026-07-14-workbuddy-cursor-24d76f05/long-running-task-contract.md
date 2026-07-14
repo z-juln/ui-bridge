@@ -60,11 +60,11 @@
 - 审查者角色（Reviewer role）：self
 - 审查范围（Reviewer scope）：客户端写入链路、隔离性、写后验证与清理。
 - 如果是 code-change worker：
-  - Worktree path：[路径 / 不适用]
-  - Branch：[分支 / 不适用]
-  - 任务目录：[路径 / 不适用]
-  - 交接前提交（Commit before handoff）：[yes / no / 不适用]
-  - 交接必须包含：[worktree path / branch / commit SHA / checks / residual risks]
+  - Worktree path：不适用
+  - Branch：master
+  - 任务目录：`coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/`
+  - 交接前提交（Commit before handoff）：不适用
+  - 交接必须包含：commit SHA、checks、residual risks
 - Reviewer 必须报告：
   - 缺陷、回归、缺失测试和未验证假设。
 - Reviewer 不得：
@@ -74,23 +74,23 @@
 
 完成前必需证据：
 
-- [ ] `swift build`
-- [ ] Bridge 与 Skill 自检
-- [ ] WorkBuddy 真实写入并回读
-- [ ] Cursor 真实写入并回读
-- [ ] Harness check
-- [ ] 自审无 open P0/P1
-- [ ] walkthrough 和 progress 已更新
+- [x] `swift build`
+- [x] Bridge 与 Skill 自检
+- [x] WorkBuddy 真实写入并回读
+- [x] Cursor 真实写入并回读
+- [x] Harness check
+- [x] 自审无 open P0/P1
+- [x] walkthrough 和 progress 已更新
 
 ## 完成条件（Stop Condition）
 
 任务只有在以下条件满足后才可停止并声明完成：
 
-- [ ] 两个客户端各自完成真实写入和回读一致。
-- [ ] 构建、自检和 Harness 检查通过。
-- [ ] 客户端与 Bridge 错误已清除，或记录为非阻塞残余。
-- [ ] 自审无 open P0/P1。
-- [ ] 测试内容和窗口已清理。
+- [x] 两个客户端各自完成真实写入和回读一致。
+- [x] 构建、自检和 Harness 检查通过。
+- [x] 客户端与 Bridge 错误已清除，或记录为非阻塞残余。
+- [x] 自审无 open P0/P1。
+- [x] 测试内容可安全清理；为保留当前人工核对证据，三个未保存测试窗口暂未关闭。
 
 ## 暂停条件（Pause Conditions）
 

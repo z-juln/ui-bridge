@@ -1,6 +1,6 @@
 # 实现 WorkBuddy Cursor 真实写入闭环 - 进度
 
-## 状态：进行中
+## 状态：审查中
 
 `## 状态` 是受控机器字段，只能使用以下值之一：
 
@@ -43,23 +43,31 @@
 - 下一步：等待 WorkBuddy 当前真实任务完成并核对目标文稿。
 - 证据：diff:TARGET:skills/macos-ui-control/references/setup.md:真实客户端写入验收步骤；diff:TARGET:docs/03-delivery-and-validation.md:两个客户端均需真实写入回读
 
-### [YYYY-MM-DD HH:MM] - [阶段名称]
+### 2026-07-14 11:16 - WorkBuddy 真实写入通过
 
-- 做了什么：[具体操作]
-- 验证结果：[运行了什么检查，结果如何]
-- 下一步：[下一步动作]
-- 证据：[type:path:summary]
+- 做了什么：为 WorkBuddy 增加不暴露本机凭据的 `call` 入口；WorkBuddy 逐条调用应用、窗口、快照、控件查找、方案检查和写入，并用动作返回的新快照回读。
+- 验证结果：`plan_check` 返回 `ready`，`action_run` 返回 `confirmed`，新快照回读与独立 TextEdit 界面都精确等于 `APP_MCP_BRIDGE_WB_20260714_1055`。WorkBuddy 额外生成的 `.workbuddy/memory/2026-07-14.md` 已检查并删除。
+- 下一步：完成构建、自检、安装和 Harness 检查，提交最终文档。
+- 证据：report:TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/walkthrough.md:WorkBuddy 真实客户端写入与独立回读证据；command:TARGET:git status --short:测试记忆文件已清理
+
+### 2026-07-14 11:24 - Bridge 修复与安装验证
+
+- 做了什么：补充安全本地调用、HTTP 分段请求接收、写入方案检查接口、命令错误收口和 App 运行状态记录；重新构建并安装 App。
+- 验证结果：构建、协议自检、核心自检和 Skill 自检通过；安装后权限均为可用，状态返回实际运行进程；无效调用返回退出码 1 且没有新增崩溃报告。
+- 下一步：运行 Harness 检查并提交审查材料。
+- 证据：command:TARGET:swift build:通过；command:TARGET:swift run protocol-self-test:4 checks passed；command:TARGET:swift run core-self-test:代表性 TextEdit 窗口通过；command:TARGET:python3 skills/macos-ui-control/scripts/self_test.py:self-test passed；command:TARGET:scripts/install-app.sh:签名、安装、运行通过
 
 ## 残余
 
-- WorkBuddy 真实写入任务正在执行，完成后需核对新快照与 TextEdit 实际内容。
+- 三个未保存 TextEdit 测试文稿仍打开，用于用户核对；内容均为唯一测试标记，可直接关闭且不保存。
+- WorkBuddy 5.2.5 会在完成要求后尝试写自己的记忆文件；验收提示词已明确禁止，收尾仍需检查 `git status --short`。
 
 ## 协调者交接（Coordinator，启用模块并行时填写）
 
-- Global sync status：pending-coordinator-pass / synced / n/a
-- Registry update needed：[module key, step, status, branch, updated / 不适用]
-- Harness Ledger update needed：[task plan path, review path, closeout status / 不适用]
-- 负责人：coordinator / 不适用
+- Global sync status：n/a
+- Registry update needed：不适用
+- Harness Ledger update needed：任务完成时由 lifecycle CLI 重建
+- 负责人：coordinator
 
 ### [2026-07-14 02:20] - task-start
 
