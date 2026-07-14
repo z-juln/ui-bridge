@@ -81,6 +81,11 @@ enum UIBridgeCommand {
                 object: nil,
                 deliverImmediately: true
             )
+        case "preview-stream":
+            guard arguments.indices.contains(1), let windowID = UInt32(arguments[1]) else {
+                throw LocalBridgeClientError.invalidArguments("preview-stream requires a window id")
+            }
+            try await PreviewStreamCommand.run(windowID: windowID)
         case "start":
             let port = parsePort(arguments) ?? 8765
             let state = ServiceStateStore()

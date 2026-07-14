@@ -1,4 +1,5 @@
 import Foundation
+import UIBridgeMacCore
 import UIBridgeProtocol
 
 enum LocalBridgeClientError: LocalizedError {
@@ -154,7 +155,9 @@ struct LocalBridgeClient {
             request: request,
             highImpact: arguments["high_impact"] as? Bool,
             confirmed: arguments["confirmed"] as? Bool,
-            foregroundApproved: arguments["foreground_approved"] as? Bool
+            foregroundApproved: arguments["foreground_approved"] as? Bool,
+            riskCategory: (arguments["risk_category"] as? String).flatMap(DangerousActionCategory.init(rawValue:)),
+            confirmationSummary: arguments["confirmation_summary"] as? String
         ))
     }
 
@@ -172,6 +175,8 @@ private struct ActionEnvelope: Encodable {
     let highImpact: Bool?
     let confirmed: Bool?
     let foregroundApproved: Bool?
+    let riskCategory: DangerousActionCategory?
+    let confirmationSummary: String?
 }
 
 private struct SnapshotEnvelope: Encodable {

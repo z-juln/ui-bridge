@@ -30,7 +30,10 @@ public enum AutomationActivityCenter {
     public static func publish(
         phase: AutomationActivityPhase,
         snapshot: Snapshot,
-        pointer: UIBPoint? = nil
+        pointer: UIBPoint? = nil,
+        source: String? = nil,
+        action: String? = nil,
+        risk: String? = nil
     ) {
         let appName = NSRunningApplication(processIdentifier: snapshot.pid)?.localizedName ?? snapshot.appID
         let record = AutomationActivityRecord(
@@ -42,9 +45,9 @@ public enum AutomationActivityCenter {
             windowID: snapshot.windowID,
             windowBounds: snapshot.windowBounds,
             pointer: pointer,
-            source: nil,
-            action: phase == .observed ? "读取界面" : (phase == .actionStarted ? "执行操作" : "验证结果"),
-            risk: nil
+            source: source,
+            action: action ?? (phase == .observed ? "读取界面" : (phase == .actionStarted ? "执行操作" : "验证结果")),
+            risk: risk
         )
         persist(record)
         persistHistory(record)

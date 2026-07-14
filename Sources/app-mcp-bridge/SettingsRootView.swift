@@ -55,11 +55,11 @@ struct SettingsRootView: View {
     private var detail: some View {
         switch model.selectedSection {
         case .overview: OverviewSettingsView(model: model)
-        case .liveControl: LiveControlPlaceholderView(model: model)
+        case .liveControl: LiveControlView(model: model, session: model.session)
         case .permissions: PermissionSettingsView(model: model)
         case .connections: ConnectionSettingsView(model: model)
-        case .appAccess: AppAccessSettingsView()
-        case .safety: SafetySettingsView()
+        case .appAccess: AppAccessSettingsView(model: model)
+        case .safety: SafetySettingsView(model: model)
         case .diagnostics: DiagnosticsSettingsView(model: model)
         }
     }
@@ -180,8 +180,9 @@ private struct OverviewSettingsView: View {
     }
 }
 
-private struct LiveControlPlaceholderView: View {
+private struct LiveControlView: View {
     @ObservedObject var model: BridgeSettingsModel
+    @ObservedObject var session: AutomationSessionCoordinator
 
     var body: some View {
         PageContainer(title: "实时操控", subtitle: "查看当前被 Agent 读取或操作的应用。") {
@@ -193,7 +194,7 @@ private struct LiveControlPlaceholderView: View {
                     .background(Color.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
             }
 
-            if model.activeTargets.isEmpty {
+            if session.targets.isEmpty {
                 SettingsCard {
                     ContentUnavailableView("等待操控活动", systemImage: "rectangle.inset.filled.and.cursorarrow", description: Text("有应用被读取或操作后，这里会显示实时画面和动作。"))
                         .frame(maxWidth: .infinity, minHeight: 360)
@@ -201,14 +202,14 @@ private struct LiveControlPlaceholderView: View {
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
-                        ForEach(model.activeTargets, id: \.pid) { target in
+                        ForEach(session.targets, id: \.pid) { target in
                             Button {
                                 model.selectedTargetPID = target.pid
                             } label: {
                                 VStack(alignment: .leading, spacing: 8) {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 8).fill(Color.black.opacity(0.06))
-                                        if let image = model.livePreviews[target.pid] {
+                                        if let image = session.frames[target.pid] {
                                             Image(nsImage: image).resizable().aspectRatio(contentMode: .fit)
                                         } else {
                                             ProgressView()
@@ -239,12 +240,12 @@ private struct LiveControlPlaceholderView: View {
                                 AppIconView(pid: target.pid, size: 32)
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(target.name).font(.headline)
-                                    Text("本地 MCP · \(target.action)").font(.caption).foregroundStyle(.secondary)
+                                    Text("\(target.source) · \(target.action)").font(.caption).foregroundStyle(.secondary)
                                 }
                                 Spacer()
                                 Label("实时", systemImage: "dot.radiowaves.left.and.right").foregroundStyle(.green)
                             }
-                            WindowPreviewView(target: target, image: model.livePreviews[target.pid], error: model.previewErrors[target.pid])
+                            WindowPreviewView(target: target, image: session.frames[target.pid], error: session.errors[target.pid])
                                 .frame(minHeight: 330)
                         }
                     }
@@ -254,7 +255,7 @@ private struct LiveControlPlaceholderView: View {
                     SettingsCard {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("操控映射").font(.headline)
-                            mappingRow(symbol: "sparkles", title: "来源", value: "本地 MCP 客户端")
+                            mappingRow(symbol: "sparkles", title: "来源", value: selectedTarget?.source ?? "本地 MCP")
                             mappingRow(symbol: "point.3.connected.trianglepath.dotted", title: "经过", value: "App MCP Bridge")
                             mappingRow(symbol: "app", title: "目标", value: selectedTarget?.name ?? "—")
                         }
@@ -277,7 +278,7 @@ private struct LiveControlPlaceholderView: View {
                 }
 
                 HStack {
-                    Text("\(model.liveRefreshStatus) · 关闭窗口或离开本页后，实时画面会停止刷新。")
+                    Text("\(session.status) · 关闭窗口或离开本页后，实时画面会停止刷新。")
                         .font(.caption).foregroundStyle(.secondary)
                     Spacer()
                     Button("停止所有操作", role: .destructive) {
@@ -292,7 +293,7 @@ private struct LiveControlPlaceholderView: View {
     }
 
     private var selectedTarget: ControlledTarget? {
-        model.activeTargets.first { $0.pid == model.selectedTargetPID } ?? model.activeTargets.first
+        session.targets.first { $0.pid == model.selectedTargetPID } ?? session.targets.first
     }
 
     private func mappingRow(symbol: String, title: String, value: String) -> some View {
@@ -409,24 +410,58 @@ private struct ConnectionSettingsView: View {
 }
 
 private struct AppAccessSettingsView: View {
-    @AppStorage("appAccess.defaultAllow") private var defaultAllow = true
+    @ObservedObject var model: BridgeSettingsModel
 
     var body: some View {
         PageContainer(title: "应用访问", subtitle: "控制 Bridge 可以读取和操作哪些本机应用。") {
             SettingsCard {
-                Toggle("默认允许新应用", isOn: $defaultAllow)
+                Toggle("默认允许新应用", isOn: Binding(
+                    get: { model.accessPolicy.defaultAllow },
+                    set: { model.setDefaultAppAccess($0) }
+                ))
                 Text("关闭后，新应用需要先在这里明确允许。系统应用和密码输入始终受额外保护。")
                     .font(.caption).foregroundStyle(.secondary).padding(.top, 6)
             }
             SettingsCard {
-                ContentUnavailableView("尚未设置单独规则", systemImage: "app.badge.checkmark", description: Text("应用首次出现后可单独允许或阻止。"))
-                    .frame(maxWidth: .infinity, minHeight: 180)
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("正在运行的应用").font(.headline)
+                    ForEach(model.runningApps.filter { $0.appID != "com.juln.app-mcp-bridge" }.prefix(18), id: \.pid) { app in
+                        HStack(spacing: 12) {
+                            AppIconView(pid: app.pid, size: 28)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(app.name).fontWeight(.medium)
+                                Text(app.appID).font(.caption2).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Picker("访问", selection: Binding(
+                                get: { accessChoice(app.appID) },
+                                set: { setAccessChoice($0, appID: app.appID) }
+                            )) {
+                                Text("跟随默认").tag(0)
+                                Text("允许").tag(1)
+                                Text("阻止").tag(2)
+                            }
+                            .labelsHidden().frame(width: 118)
+                        }
+                        if app.pid != model.runningApps.last?.pid { Divider() }
+                    }
+                }
             }
         }
+    }
+
+    private func accessChoice(_ appID: String) -> Int {
+        guard let value = model.accessPolicy.rules[appID] else { return 0 }
+        return value ? 1 : 2
+    }
+
+    private func setAccessChoice(_ choice: Int, appID: String) {
+        model.setAppAccess(choice == 0 ? nil : choice == 1, appID: appID)
     }
 }
 
 private struct SafetySettingsView: View {
+    @ObservedObject var model: BridgeSettingsModel
     @AppStorage("safety.confirmDangerousActions") private var confirmDangerousActions = true
 
     var body: some View {
@@ -441,10 +476,21 @@ private struct SafetySettingsView: View {
                 }
             }
             SettingsCard {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("当前没有等待确认的操作").font(.headline)
-                    Text("出现危险操作时，本页和系统弹窗会同时显示。")
-                        .foregroundStyle(.secondary)
+                if let request = model.pendingDangerousRequest {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label("等待确认：\(request.category.displayName)", systemImage: "exclamationmark.octagon.fill")
+                            .font(.headline).foregroundStyle(.red)
+                        LabeledContent("目标应用", value: request.appName)
+                        LabeledContent("具体动作", value: request.action)
+                        LabeledContent("目标", value: request.target)
+                        LabeledContent("可能影响", value: request.impact)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("当前没有等待确认的操作").font(.headline)
+                        Text("出现危险操作时，本页和系统弹窗会同时显示。")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@ import UIBridgeProtocol
 
 public enum MCPBridge {
     public static func runStdio() async throws {
-        let server = await makeServer(runtime: AutomationRuntime())
+        let server = await makeServer(runtime: AutomationRuntime(activitySource: "本地程序 MCP"))
         let transport = StdioTransport()
         try await server.start(transport: transport)
         await server.waitUntilCompleted()
@@ -144,7 +144,9 @@ public enum MCPBridge {
                         request,
                         highImpact: params.arguments?["high_impact"]?.boolValue ?? false,
                         confirmed: params.arguments?["confirmed"]?.boolValue ?? false,
-                        foregroundApproved: params.arguments?["foreground_approved"]?.boolValue ?? false
+                        foregroundApproved: params.arguments?["foreground_approved"]?.boolValue ?? false,
+                        riskCategory: params.arguments?["risk_category"]?.stringValue.flatMap(DangerousActionCategory.init(rawValue:)) ?? .other,
+                        confirmationSummary: params.arguments?["confirmation_summary"]?.stringValue
                     ))
                 case "element_find":
                     guard let snapshotID = params.arguments?["snapshot_id"]?.stringValue else {
@@ -228,6 +230,8 @@ public enum MCPBridge {
             "verification_value": string("Text expected by the verification"),
             "high_impact": boolean("True for send, publish, delete, purchase, permission change, or submission"),
             "confirmed": boolean("True only after explicit user confirmation for a high-impact action"),
+            "risk_category": string("For high-impact actions: deletion, purchase, permission_change, or other"),
+            "confirmation_summary": string("Short exact action description shown in the App confirmation"),
             "foreground_approved": boolean("True only after the user approves bringing the target app forward"),
         ]),
         "required": .array([.string("snapshot_id"), .string("action"), .string("verification_kind")]),

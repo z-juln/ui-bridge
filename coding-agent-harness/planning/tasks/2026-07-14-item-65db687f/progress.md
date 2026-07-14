@@ -19,9 +19,17 @@
 - 证据：`screenshot:TARGET:/tmp/app-mcp-bridge-settings.png:installed native settings overview rendered correctly`
 - 证据：`command:TARGET:Sources/app-mcp-bridge/:swift build and installed window AX snapshot passed`
 
+### 2026-07-14 14:30 - 统一会话与低负载实时画面服务
+
+- 做了什么：删除设置页定时截图和重复启动的截图进程；新增唯一操控会话中心，由它统一管理活动目标、实时画面、错误和退出清理。实时画面改为持续连接，限制为每个窗口每秒 1 张、最大 720 像素宽、只保留内存最新画面。
+- 验证结果：Debug 构建通过；持续画面命令运行 2.2 秒输出 2 张有效 JPEG、总计 70,673 字节，结束后无残留进程；协议 4 项和安全 6 项自检通过；旧截图轮询代码搜索为空。
+- 下一步：仅在用户电脑空闲时做一次安装版低负载界面验收，确认实时页显示画面且离开页面后内部画面进程退出。
+- 证据：command:TARGET:.build/debug/app-mcp-bridge preview-stream 102:frames=2 total_bytes=70673 max_frame=35352
+- 证据：command:TARGET:swift build && swift run protocol-self-test && swift run safety-self-test:passed
+
 ## 残余
 
-- 实时画面刷新频率与资源占用需要在安装版实测后定值。
+- 实时画面已按低负载参数完成命令级验证，仍需一次安装版界面与退出清理验收。
 - 当前活动记录缺少明确客户端来源，需要在不破坏现有连接的前提下补充。
 
 ## 协调者交接

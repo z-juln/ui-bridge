@@ -11,15 +11,18 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let statusItem: NSStatusItem
     private let token: String
     private var overlayController: ControlOverlayController!
+    private let sessionCoordinator: AutomationSessionCoordinator
     private let settingsModel: BridgeSettingsModel
     private var settingsController: SettingsWindowController!
+    private var confirmationController: DangerousActionConfirmationController!
     private var statusRefreshTimer: Timer?
     private var statusSignature: String?
     private var canOpenOnActivation = false
 
     init(token: String) {
         self.token = token
-        settingsModel = BridgeSettingsModel(token: token)
+        sessionCoordinator = AutomationSessionCoordinator()
+        settingsModel = BridgeSettingsModel(token: token, session: sessionCoordinator)
         NSApplication.shared.setActivationPolicy(.regular)
         let appIcon = Self.makeAppIcon()
         NSApplication.shared.applicationIconImage = appIcon
@@ -28,16 +31,20 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         super.init()
         overlayController = ControlOverlayController()
         settingsController = SettingsWindowController(model: settingsModel)
+        confirmationController = DangerousActionConfirmationController(model: settingsModel)
 
         updateStatusItem(for: overlayController.activeTargets)
         let menu = makeMenu()
         menu.delegate = self
         statusItem.menu = menu
         overlayController.onTargetsChanged = { [weak self] in
+            self?.sessionCoordinator.updateTargets(self?.overlayController.activeTargets ?? [])
             self?.refreshMenu()
             self?.settingsModel.refresh(targets: self?.overlayController.activeTargets ?? [])
         }
         overlayController.startPolling()
+        sessionCoordinator.updateTargets(overlayController.activeTargets)
+        confirmationController.start()
         startStatusRefreshPolling()
         NSApplication.shared.delegate = self
         DistributedNotificationCenter.default().addObserver(
@@ -62,6 +69,10 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidBecomeActive(_ notification: Notification) {
         guard canOpenOnActivation, settingsController.window?.isVisible != true else { return }
         showSettings()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        sessionCoordinator.clear()
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

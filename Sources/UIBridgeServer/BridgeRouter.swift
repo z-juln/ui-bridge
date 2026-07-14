@@ -61,7 +61,9 @@ struct BridgeRouter: Sendable {
                     input.request,
                     highImpact: input.highImpact ?? false,
                     confirmed: input.confirmed ?? false,
-                    foregroundApproved: input.foregroundApproved ?? false
+                    foregroundApproved: input.foregroundApproved ?? false,
+                    riskCategory: input.riskCategory ?? .other,
+                    confirmationSummary: input.confirmationSummary
                 ))
             } catch { return bridgeFailure(error) }
         case ("POST", "/v1/elements/find"):
@@ -152,6 +154,8 @@ private struct ActionInput: Decodable {
     let highImpact: Bool?
     let confirmed: Bool?
     let foregroundApproved: Bool?
+    let riskCategory: DangerousActionCategory?
+    let confirmationSummary: String?
 }
 
 private struct ElementFindInput: Decodable {

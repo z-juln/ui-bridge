@@ -51,5 +51,9 @@ let package = Package(
             name: "core-self-test",
             dependencies: ["UIBridgeMacCore"]
         ),
+        .executableTarget(
+            name: "safety-self-test",
+            dependencies: ["UIBridgeMacCore"]
+        ),
     ]
 )

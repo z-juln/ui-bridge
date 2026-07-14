@@ -11,6 +11,7 @@ struct ControlledTarget: Sendable {
     let pointer: UIBPoint?
     let phase: AutomationActivityPhase
     let action: String
+    let source: String
     let lastSeen: Date
 }
 
@@ -74,6 +75,8 @@ final class ControlOverlayController: NSObject {
         let cutoff = Date().addingTimeInterval(-Self.targetRetention)
         return targets.compactMap { pid, state in
             guard state.lastSeen >= cutoff else { return nil }
+            guard let runningApp = NSRunningApplication(processIdentifier: pid),
+                  runningApp.bundleIdentifier != "com.juln.app-mcp-bridge" else { return nil }
             return ControlledTarget(
                 pid: pid,
                 name: state.name,
@@ -82,6 +85,7 @@ final class ControlOverlayController: NSObject {
                 pointer: state.record.pointer,
                 phase: state.record.phase,
                 action: state.record.action ?? "读取界面",
+                source: state.record.source ?? "本地 MCP",
                 lastSeen: state.lastSeen
             )
         }.sorted { $0.lastSeen > $1.lastSeen }

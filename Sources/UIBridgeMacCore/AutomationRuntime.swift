@@ -14,8 +14,11 @@ public final class AutomationRuntime: @unchecked Sendable {
     private var contexts: [String: SnapshotContext] = [:]
     private var screenshots: [String: Data] = [:]
     private var stopped = false
+    private let activitySource: String
 
-    public init() {}
+    public init(activitySource: String = "本地调用") {
+        self.activitySource = activitySource
+    }
 
     public func createSnapshot(
         pid: Int32,
@@ -26,6 +29,13 @@ public final class AutomationRuntime: @unchecked Sendable {
     ) async throws -> Snapshot {
         guard let app = AppDiscovery.listRunningApplications().first(where: { $0.pid == pid }) else {
             throw BridgeError(code: .appNotFound, message: "No running application has pid \(pid).", retryable: true)
+        }
+        guard AppAccessPolicyStore.load().allows(appID: app.appID) else {
+            throw BridgeError(
+                code: .invalidRequest,
+                message: "Access to \(app.name) is blocked by the App MCP Bridge application policy.",
+                suggestedAction: "Allow this application in App MCP Bridge → 应用访问."
+            )
         }
         guard let window = WindowDiscovery.listWindows(pid: pid).first(where: { $0.windowID == windowID }) else {
             throw BridgeError(code: .elementNotFound, message: "Window \(windowID) does not belong to pid \(pid).", retryable: true)
@@ -66,7 +76,7 @@ public final class AutomationRuntime: @unchecked Sendable {
             )
             if let captured { screenshots[captured.descriptor.handle] = captured.pngData }
         }
-        AutomationActivityCenter.publish(phase: .observed, snapshot: snapshot)
+        AutomationActivityCenter.publish(phase: .observed, snapshot: snapshot, source: activitySource)
         return snapshot
     }
 
@@ -191,7 +201,14 @@ public final class AutomationRuntime: @unchecked Sendable {
         )
     }
 
-    public func execute(_ request: ActionRequest, highImpact: Bool, confirmed: Bool, foregroundApproved: Bool = false) async throws -> ActionResult {
+    public func execute(
+        _ request: ActionRequest,
+        highImpact: Bool,
+        confirmed: Bool,
+        foregroundApproved: Bool = false,
+        riskCategory: DangerousActionCategory = .other,
+        confirmationSummary: String? = nil
+    ) async throws -> ActionResult {
         guard !lock.withLock({ stopped }) else {
             throw BridgeError(code: .invalidRequest, message: "This automation session was stopped. Start a new MCP connection or service session to resume.")
         }
@@ -203,6 +220,33 @@ public final class AutomationRuntime: @unchecked Sendable {
                 focusChanged: false,
                 evidence: ActionEvidence(condition: "explicit_user_confirmation_required")
             )
+        }
+        if highImpact {
+            guard let context = lock.withLock({ contexts[request.snapshotID] }) else {
+                throw BridgeError(code: .snapshotStale, message: "Snapshot is expired or unknown.", retryable: true)
+            }
+            let appName = AppDiscovery.listRunningApplications().first(where: { $0.pid == context.snapshot.pid })?.name
+                ?? context.snapshot.appID
+            let targetDescription: String = switch request.target {
+            case .element(let handle): "界面控件 \(handle.suffix(12))"
+            case .coordinate(let point): "窗口位置 (\(Int(point.x)), \(Int(point.y)))"
+            }
+            let approved = await DangerousActionConfirmationCenter.requestApproval(
+                category: riskCategory,
+                appName: appName,
+                action: confirmationSummary ?? request.action.rawValue,
+                target: targetDescription,
+                impact: riskCategory == .other ? "该操作可能产生难以撤销的结果" : "将执行一次\(riskCategory.displayName)操作"
+            )
+            guard approved else {
+                return ActionResult(
+                    actionID: UUID().uuidString,
+                    status: .confirmationRequired,
+                    deliveryUsed: "none",
+                    focusChanged: false,
+                    evidence: ActionEvidence(condition: "app_second_confirmation_required_or_rejected")
+                )
+            }
         }
         guard request.verification != nil else {
             throw BridgeError(code: .invalidRequest, message: "Every action must include a verification expectation.")
@@ -219,13 +263,19 @@ public final class AutomationRuntime: @unchecked Sendable {
         AutomationActivityCenter.publish(
             phase: .actionStarted,
             snapshot: context.snapshot,
-            pointer: activityPointer
+            pointer: activityPointer,
+            source: activitySource,
+            action: request.action.rawValue,
+            risk: highImpact ? riskCategory.rawValue : nil
         )
         defer {
             AutomationActivityCenter.publish(
                 phase: .actionFinished,
                 snapshot: context.snapshot,
-                pointer: activityPointer
+                pointer: activityPointer,
+                source: activitySource,
+                action: request.action.rawValue,
+                risk: highImpact ? riskCategory.rawValue : nil
             )
         }
         let delivered: ActionResult

@@ -3,103 +3,76 @@ import SwiftUI
 import UIBridgeMacCore
 
 @MainActor
-final class BridgeSettingsModel: ObservableObject {
+final class BridgeSettingsModel: NSObject, ObservableObject {
     @Published var selectedSection: SettingsSection = .overview {
-        didSet { updateLiveRefresh() }
+        didSet {
+            session.setViewerActive(windowVisible && selectedSection == .liveControl)
+        }
     }
     @Published var permissions = PermissionInspector.current()
-    @Published var activeTargets: [ControlledTarget] = []
     @Published var lastRefreshed = Date()
     @Published var selectedTargetPID: Int32?
-    @Published var livePreviews: [Int32: NSImage] = [:]
-    @Published var previewErrors: [Int32: String] = [:]
     @Published var recentEvents: [AutomationActivityRecord] = []
     @Published var operationsStopped = false
-    @Published var liveRefreshStatus = "等待活动"
+    @Published var pendingDangerousRequest: DangerousActionConfirmationRequest?
+    @Published var runningApps = AppDiscovery.listRunningApplications()
+    @Published var accessPolicy = AppAccessPolicyStore.load()
 
-    private var liveRefreshTask: Task<Void, Never>?
+    let session: AutomationSessionCoordinator
     private let token: String
 
-    init(token: String) {
+    init(token: String, session: AutomationSessionCoordinator) {
         self.token = token
+        self.session = session
+        super.init()
     }
 
     let connectionURL = "http://127.0.0.1:8765/mcp"
 
     var serviceReady: Bool { true }
+    var activeTargets: [ControlledTarget] { session.targets }
 
     func refresh(targets: [ControlledTarget]? = nil) {
         permissions = PermissionInspector.current()
-        if let targets { activeTargets = targets }
+        if let targets { session.updateTargets(targets) }
         recentEvents = AutomationActivityCenter.recent()
-        if selectedTargetPID == nil || !activeTargets.contains(where: { $0.pid == selectedTargetPID }) {
-            selectedTargetPID = activeTargets.first?.pid
+        runningApps = AppDiscovery.listRunningApplications()
+        accessPolicy = AppAccessPolicyStore.load()
+        if selectedTargetPID == nil || !session.targets.contains(where: { $0.pid == selectedTargetPID }) {
+            selectedTargetPID = session.targets.first?.pid
         }
         lastRefreshed = Date()
     }
 
+    func setDefaultAppAccess(_ allowed: Bool) {
+        try? AppAccessPolicyStore.setDefaultAllow(allowed)
+        accessPolicy = AppAccessPolicyStore.load()
+    }
+
+    func setAppAccess(_ allowed: Bool?, appID: String) {
+        try? AppAccessPolicyStore.setAllowed(allowed, appID: appID)
+        accessPolicy = AppAccessPolicyStore.load()
+    }
+
     func setWindowVisible(_ visible: Bool) {
         windowVisible = visible
-        updateLiveRefresh()
+        session.setViewerActive(visible && selectedSection == .liveControl)
     }
 
     private var windowVisible = false
-    private var livePageVisible = false
-
     func beginLivePreview() {
-        livePageVisible = true
-        updateLiveRefresh()
+        session.setViewerActive(windowVisible && selectedSection == .liveControl)
     }
 
     func endLivePreview() {
-        livePageVisible = false
-        updateLiveRefresh()
-    }
-
-    private func updateLiveRefresh() {
-        liveRefreshTask?.cancel()
-        liveRefreshTask = nil
-        guard windowVisible, livePageVisible, selectedSection == .liveControl else { return }
-        liveRefreshTask = Task { [weak self] in
-            while !Task.isCancelled {
-                guard let self else { return }
-                self.refresh()
-                self.liveRefreshStatus = "正在刷新 \(self.activeTargets.count) 个窗口"
-                await self.captureVisibleTargets()
-                try? await Task.sleep(for: .milliseconds(900))
-            }
-        }
-    }
-
-    private func captureVisibleTargets() async {
-        let targets = Array(activeTargets.prefix(6))
-        for target in targets where !Task.isCancelled {
-            do {
-                let windowID = target.windowID
-                let capture = try await Task.detached {
-                    try await WindowCapture.capture(windowID: windowID, handle: "live-\(target.pid)")
-                }.value
-                if let image = NSImage(data: capture.pngData) {
-                    livePreviews[target.pid] = image
-                    previewErrors[target.pid] = nil
-                    liveRefreshStatus = "画面已更新"
-                }
-            } catch {
-                previewErrors[target.pid] = error.localizedDescription
-                liveRefreshStatus = "画面读取失败"
-            }
-        }
-        let valid = Set(targets.map(\.pid))
-        livePreviews = livePreviews.filter { valid.contains($0.key) }
-        previewErrors = previewErrors.filter { valid.contains($0.key) }
+        session.setViewerActive(false)
     }
 
     func stopAllOperations() async {
         do {
             _ = try await LocalBridgeClient(token: token).call(tool: "emergency_stop", argumentsJSON: nil)
             operationsStopped = true
-            activeTargets = []
-            livePreviews = [:]
+            session.clear()
         } catch {
             // The diagnostics page will still expose a stopped or unreachable service.
         }

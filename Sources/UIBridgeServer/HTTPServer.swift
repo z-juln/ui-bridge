@@ -14,7 +14,7 @@ public final class HTTPServer: @unchecked Sendable {
     }
 
     public static func make(port: UInt16 = 8765, token: String) async throws -> HTTPServer {
-        let runtime = AutomationRuntime()
+        let runtime = AutomationRuntime(activitySource: "本地地址 MCP")
         let mcpHTTP = try await MCPHTTPHandler.make(runtime: runtime)
         return HTTPServer(port: port, token: token, runtime: runtime, mcpHTTP: mcpHTTP)
     }
