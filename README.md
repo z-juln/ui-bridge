@@ -113,7 +113,8 @@ TOKEN=$('/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' token)
     "app-mcp-bridge": {
       "url": "http://127.0.0.1:8765/mcp",
       "headers": {
-        "Authorization": "Bearer $TOKEN"
+        "Authorization": "Bearer $TOKEN",
+        "X-App-MCP-Client": "WorkBuddy"
       }
     }
   }
@@ -134,6 +135,8 @@ TOKEN=$('/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' token)
 ```
 
 两种方式提供相同工具。详细权限和排错说明见 `skills/macos-ui-control/references/setup.md`。
+本地地址连接应通过 `X-App-MCP-Client` 传入客户端显示名；直接启动连接会从 MCP
+初始化信息自动识别 Cursor、WorkBuddy 或其他客户端。实时操控页据此显示真实来源。
 
 首次检查发现缺少辅助功能或屏幕录制权限时，服务会主动弹窗。选择“前往设置”即可
 打开对应的系统设置页；同一次运行不会重复弹出相同提醒。

@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT=${0:A:h:h}
 SOURCE="$ROOT/.build/app/App MCP Bridge.app"
 DESTINATION="/Applications/App MCP Bridge.app"
-LEGACY_RUNTIME_NAME="macos-ui-"bridge
+LEGACY_RUNTIME_NAME="macos-ui-bridge"
 LEGACY_BUNDLE_LABEL="com.juln.${LEGACY_RUNTIME_NAME}"
 LEGACY_DESTINATION="/Applications/macOS UI Bridge.app"
 LEGACY_LAUNCH_AGENT="$HOME/Library/LaunchAgents/${LEGACY_BUNDLE_LABEL}.plist"

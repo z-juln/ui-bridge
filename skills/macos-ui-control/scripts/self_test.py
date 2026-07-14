@@ -15,6 +15,7 @@ INSTALLED_BINARY = Path("/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp
 BINARY = Path(os.environ["UIBRIDGE_BINARY"]) if "UIBRIDGE_BINARY" in os.environ else (
     INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "app-mcp-bridge"
 )
+CLIENT_NAME = os.environ.get("UIBRIDGE_CLIENT_NAME", "app-mcp-bridge-self-test")
 
 
 def main() -> int:
@@ -35,7 +36,7 @@ def main() -> int:
             "jsonrpc": "2.0", "id": 1, "method": "initialize",
             "params": {
                 "protocolVersion": "2025-06-18", "capabilities": {},
-                "clientInfo": {"name": "app-mcp-bridge-self-test", "version": "1.0"},
+                "clientInfo": {"name": CLIENT_NAME, "version": "1.0"},
             },
         })
         initialized = receive(process, 1)

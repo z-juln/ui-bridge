@@ -5,13 +5,23 @@ import UIBridgeProtocol
 
 public enum MCPBridge {
     public static func runStdio() async throws {
-        let server = await makeServer(runtime: AutomationRuntime(activitySource: "本地程序 MCP"))
+        let source = ClientSource("本地程序 MCP")
+        let server = await makeServer(runtime: AutomationRuntime(), source: { source.value })
         let transport = StdioTransport()
-        try await server.start(transport: transport)
+        try await server.start(transport: transport) { info, _ in
+            source.update(displayName(for: info))
+        }
         await server.waitUntilCompleted()
     }
 
-    public static func makeServer(runtime: AutomationRuntime) async -> Server {
+    public static func makeServer(runtime: AutomationRuntime, activitySource: String = "本地 MCP") async -> Server {
+        await makeServer(runtime: runtime, source: { activitySource })
+    }
+
+    private static func makeServer(
+        runtime: AutomationRuntime,
+        source: @escaping @Sendable () -> String
+    ) async -> Server {
         let server = Server(
             name: "app-mcp-bridge",
             version: "0.1.0",
@@ -133,7 +143,8 @@ public enum MCPBridge {
                         windowID: windowID,
                         includeScreenshot: params.arguments?["include_screenshot"]?.boolValue ?? false,
                         maxElements: params.arguments?["max_elements"]?.intValue ?? 1_000,
-                        maxDepth: params.arguments?["max_depth"]?.intValue ?? 20
+                        maxDepth: params.arguments?["max_depth"]?.intValue ?? 20,
+                        activitySource: source()
                     )
                     return try success(snapshot)
                 case "action_run":
@@ -146,7 +157,8 @@ public enum MCPBridge {
                         confirmed: params.arguments?["confirmed"]?.boolValue ?? false,
                         foregroundApproved: params.arguments?["foreground_approved"]?.boolValue ?? false,
                         riskCategory: params.arguments?["risk_category"]?.stringValue.flatMap(DangerousActionCategory.init(rawValue:)) ?? .other,
-                        confirmationSummary: params.arguments?["confirmation_summary"]?.stringValue
+                        confirmationSummary: params.arguments?["confirmation_summary"]?.stringValue,
+                        activitySource: source()
                     ))
                 case "element_find":
                     guard let snapshotID = params.arguments?["snapshot_id"]?.stringValue else {
@@ -213,6 +225,14 @@ public enum MCPBridge {
         }
 
         return server
+    }
+
+    private static func displayName(for info: Client.Info) -> String {
+        let candidate = info.title ?? info.name
+        let lowercased = candidate.lowercased()
+        if lowercased.contains("cursor") { return "Cursor" }
+        if lowercased.contains("workbuddy") || lowercased.contains("codebuddy") { return "WorkBuddy" }
+        return candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "本地程序 MCP" : candidate
     }
 
     private static let actionSchema: Value = .object([
@@ -318,6 +338,21 @@ public enum MCPBridge {
 
     private static func failure(_ message: String) -> CallTool.Result {
         .init(content: [.text(text: message, annotations: nil, _meta: nil)], isError: true)
+    }
+}
+
+private final class ClientSource: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storedValue: String
+
+    init(_ value: String) {
+        storedValue = value
+    }
+
+    var value: String { lock.withLock { storedValue } }
+
+    func update(_ value: String) {
+        lock.withLock { storedValue = value }
     }
 }
 

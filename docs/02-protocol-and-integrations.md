@@ -267,6 +267,8 @@ Cursor 3.6.31 已实测能加载此配置。当前直接启动模式仍可能要
 当前 macOS 版本通过“自定义连接器 → 配置 MCP”界面实测读取 `~/.workbuddy/mcp.json`，支持 `streamable-http` 类型、
 本地 URL、自定义请求头和超时。配置脚本会保留现有 `connector-proxy` 与其他服务，
 只增加 `app-mcp-bridge`；发现早期连接项时，备份配置后迁移并删除旧项。
+配置脚本还会写入 `X-App-MCP-Client: WorkBuddy`，供 App 的实时操控页区分客户端来源。
+stdio 连接不需要额外配置，Bridge 会读取 MCP 初始化时提供的客户端名称。
 
 ## 9. 配套 Skill
 

@@ -51,7 +51,8 @@ struct BridgeRouter: Sendable {
                     windowID: input.windowID,
                     includeScreenshot: input.includeScreenshot ?? false,
                     maxElements: input.maxElements ?? 1_000,
-                    maxDepth: input.maxDepth ?? 20
+                    maxDepth: input.maxDepth ?? 20,
+                    activitySource: request.headers["x-app-mcp-client"] ?? "本地地址 API"
                 ))
             } catch { return bridgeFailure(error) }
         case ("POST", "/v1/actions"):
@@ -63,7 +64,8 @@ struct BridgeRouter: Sendable {
                     confirmed: input.confirmed ?? false,
                     foregroundApproved: input.foregroundApproved ?? false,
                     riskCategory: input.riskCategory ?? .other,
-                    confirmationSummary: input.confirmationSummary
+                    confirmationSummary: input.confirmationSummary,
+                    activitySource: request.headers["x-app-mcp-client"] ?? "本地地址 API"
                 ))
             } catch { return bridgeFailure(error) }
         case ("POST", "/v1/elements/find"):

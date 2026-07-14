@@ -25,7 +25,8 @@ public final class AutomationRuntime: @unchecked Sendable {
         windowID: UInt32,
         includeScreenshot: Bool = false,
         maxElements: Int = 1_000,
-        maxDepth: Int = 20
+        maxDepth: Int = 20,
+        activitySource sourceOverride: String? = nil
     ) async throws -> Snapshot {
         guard let app = AppDiscovery.listRunningApplications().first(where: { $0.pid == pid }) else {
             throw BridgeError(code: .appNotFound, message: "No running application has pid \(pid).", retryable: true)
@@ -76,7 +77,11 @@ public final class AutomationRuntime: @unchecked Sendable {
             )
             if let captured { screenshots[captured.descriptor.handle] = captured.pngData }
         }
-        AutomationActivityCenter.publish(phase: .observed, snapshot: snapshot, source: activitySource)
+        AutomationActivityCenter.publish(
+            phase: .observed,
+            snapshot: snapshot,
+            source: sourceOverride ?? activitySource
+        )
         return snapshot
     }
 
@@ -207,7 +212,8 @@ public final class AutomationRuntime: @unchecked Sendable {
         confirmed: Bool,
         foregroundApproved: Bool = false,
         riskCategory: DangerousActionCategory = .other,
-        confirmationSummary: String? = nil
+        confirmationSummary: String? = nil,
+        activitySource sourceOverride: String? = nil
     ) async throws -> ActionResult {
         guard !lock.withLock({ stopped }) else {
             throw BridgeError(code: .invalidRequest, message: "This automation session was stopped. Start a new MCP connection or service session to resume.")
@@ -231,6 +237,13 @@ public final class AutomationRuntime: @unchecked Sendable {
             case .element(let handle): "界面控件 \(handle.suffix(12))"
             case .coordinate(let point): "窗口位置 (\(Int(point.x)), \(Int(point.y)))"
             }
+            AutomationActivityCenter.publish(
+                phase: .confirmationRequested,
+                snapshot: context.snapshot,
+                source: sourceOverride ?? activitySource,
+                action: confirmationSummary ?? request.action.rawValue,
+                risk: riskCategory.rawValue
+            )
             let approved = await DangerousActionConfirmationCenter.requestApproval(
                 category: riskCategory,
                 appName: appName,
@@ -239,6 +252,13 @@ public final class AutomationRuntime: @unchecked Sendable {
                 impact: riskCategory == .other ? "该操作可能产生难以撤销的结果" : "将执行一次\(riskCategory.displayName)操作"
             )
             guard approved else {
+                AutomationActivityCenter.publish(
+                    phase: .confirmationRejected,
+                    snapshot: context.snapshot,
+                    source: sourceOverride ?? activitySource,
+                    action: confirmationSummary ?? request.action.rawValue,
+                    risk: riskCategory.rawValue
+                )
                 return ActionResult(
                     actionID: UUID().uuidString,
                     status: .confirmationRequired,
@@ -264,7 +284,7 @@ public final class AutomationRuntime: @unchecked Sendable {
             phase: .actionStarted,
             snapshot: context.snapshot,
             pointer: activityPointer,
-            source: activitySource,
+            source: sourceOverride ?? activitySource,
             action: request.action.rawValue,
             risk: highImpact ? riskCategory.rawValue : nil
         )
@@ -273,7 +293,7 @@ public final class AutomationRuntime: @unchecked Sendable {
                 phase: .actionFinished,
                 snapshot: context.snapshot,
                 pointer: activityPointer,
-                source: activitySource,
+                source: sourceOverride ?? activitySource,
                 action: request.action.rawValue,
                 risk: highImpact ? riskCategory.rawValue : nil
             )
@@ -292,7 +312,8 @@ public final class AutomationRuntime: @unchecked Sendable {
             windowID: context.snapshot.windowID,
             includeScreenshot: context.includedScreenshot,
             maxElements: context.maxElements,
-            maxDepth: context.maxDepth
+            maxDepth: context.maxDepth,
+            activitySource: sourceOverride ?? activitySource
         )
         let evidence = request.verification.flatMap {
             VerificationEngine.verify(expectation: $0, before: context.snapshot, after: after)

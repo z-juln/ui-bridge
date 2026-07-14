@@ -6,7 +6,7 @@ ENDPOINT="http://127.0.0.1:8765/mcp"
 TOKEN=$("$APP_EXECUTABLE" token)
 CURSOR_MCP_CONFIG=${CURSOR_MCP_CONFIG:-"$HOME/.cursor/mcp.json"}
 WORKBUDDY_MCP_CONFIG=${WORKBUDDY_MCP_CONFIG:-"$HOME/.workbuddy/mcp.json"}
-LEGACY_CONNECTION_NAME="macos-ui-"bridge
+LEGACY_CONNECTION_NAME="macos-ui-bridge"
 
 update_config() {
   local config_file=$1
@@ -25,7 +25,7 @@ update_config() {
       .mcpServers = (.mcpServers // {}) |
       .mcpServers["app-mcp-bridge"] = (
         if $client == "workbuddy" then
-          {url: $endpoint, headers: {Authorization: ("Bearer " + $token)}, type: "streamable-http", timeout: 30000}
+          {url: $endpoint, headers: {Authorization: ("Bearer " + $token), "X-App-MCP-Client": "WorkBuddy"}, type: "streamable-http", timeout: 30000}
         else
           {command: "/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge", args: ["mcp"]}
         end
@@ -36,7 +36,7 @@ update_config() {
     jq -n --arg endpoint "$ENDPOINT" --arg token "$TOKEN" --arg client "$client" '
       {mcpServers: {"app-mcp-bridge": (
         if $client == "workbuddy" then
-          {url: $endpoint, headers: {Authorization: ("Bearer " + $token)}, type: "streamable-http", timeout: 30000}
+          {url: $endpoint, headers: {Authorization: ("Bearer " + $token), "X-App-MCP-Client": "WorkBuddy"}, type: "streamable-http", timeout: 30000}
         else
           {command: "/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge", args: ["mcp"]}
         end

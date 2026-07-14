@@ -60,6 +60,16 @@
 - 证据：command:TARGET:apps_list frontmost:before=com.openai.codex after=com.openai.codex
 - 证据：diagnostic:TARGET:preview-diagnostics:worker_first_frame_written count=2
 
+### 2026-07-14 16:00 - 真实客户端映射与事件状态
+
+- 做了什么：让直接连接从 MCP 初始化信息识别 Cursor，让本地地址连接从配置请求头识别 WorkBuddy；实时页改为第一屏同时显示实时画面、客户端到应用的链路和事件，并补齐待确认、取消、执行和复查状态。修复改名后遗留的安装与客户端配置脚本语法错误。
+- 验证结果：安装版中 Cursor 直接连接和 WorkBuddy 本地地址连接都完成真实窗口只读快照，活动记录分别保留正确来源；后台同时建立 Cursor→Google Chrome 与 WorkBuddy→Cursor 两个实时画面进程，前台应用保持 Google Chrome；离开实时页后两个画面进程全部退出。原生辅助功能树确认第一屏同时包含两条客户端链路和两条实时事件。
+- 下一步：完成诊断导出和任务最终审查。
+- 证据：command:TARGET:skills/macos-ui-control/scripts/self_test.py:Cursor stdio snapshot passed
+- 证据：command:TARGET:/mcp:WorkBuddy HTTP snapshot passed with client identity
+- 证据：ui:TARGET:App MCP Bridge 实时操控页:real preview, two client routes and events visible together
+- 证据：command:TARGET:pgrep preview-stream:two apps active, zero after leaving page
+
 ## 残余
 
 - 实时画面主链路已完成安装版验收。

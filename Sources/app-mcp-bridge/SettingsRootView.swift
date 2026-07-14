@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import UIBridgeMacCore
 
 struct SettingsRootView: View {
     @ObservedObject var model: BridgeSettingsModel
@@ -234,46 +235,44 @@ private struct LiveControlView: View {
                 }
 
                 if let target = selectedTarget {
-                    SettingsCard {
-                        VStack(alignment: .leading, spacing: 13) {
-                            HStack {
-                                AppIconView(pid: target.pid, size: 32)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(target.name).font(.headline)
-                                    Text("\(target.source) · \(target.action)").font(.caption).foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Label("实时", systemImage: "dot.radiowaves.left.and.right").foregroundStyle(.green)
-                            }
-                            WindowPreviewView(target: target, image: session.frames[target.pid], error: session.errors[target.pid])
-                                .frame(minHeight: 330)
-                        }
-                    }
-                }
-
-                HStack(alignment: .top, spacing: 14) {
-                    SettingsCard {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("操控映射").font(.headline)
-                            mappingRow(symbol: "sparkles", title: "来源", value: selectedTarget?.source ?? "本地 MCP")
-                            mappingRow(symbol: "point.3.connected.trianglepath.dotted", title: "经过", value: "App MCP Bridge")
-                            mappingRow(symbol: "app", title: "目标", value: selectedTarget?.name ?? "—")
-                        }
-                    }
-                    SettingsCard {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("最近事件").font(.headline)
-                            ForEach(Array(model.recentEvents.suffix(4).reversed()), id: \.eventID) { event in
+                    HStack(alignment: .top, spacing: 14) {
+                        SettingsCard {
+                            VStack(alignment: .leading, spacing: 13) {
                                 HStack {
-                                    Circle().fill(event.phase == .actionStarted ? .blue : .green).frame(width: 7, height: 7)
-                                    Text(event.appName).lineLimit(1)
-                                    Text(event.action ?? "读取界面").foregroundStyle(.secondary)
+                                    AppIconView(pid: target.pid, size: 32)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(target.name).font(.headline)
+                                        Text("\(target.source) · \(target.action)").font(.caption).foregroundStyle(.secondary)
+                                    }
                                     Spacer()
-                                    Text(event.createdAt, style: .time).foregroundStyle(.tertiary)
+                                    Label("实时", systemImage: "dot.radiowaves.left.and.right").foregroundStyle(.green)
                                 }
-                                .font(.caption)
+                                WindowPreviewView(target: target, image: session.frames[target.pid], error: session.errors[target.pid])
+                                    .frame(minHeight: 340)
                             }
                         }
+
+                        VStack(spacing: 14) {
+                            SettingsCard {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("客户端 → Bridge → 应用").font(.headline).padding(.bottom, 5)
+                                    ForEach(routeEvents, id: \.eventID) { event in
+                                        compactRouteRow(event)
+                                        if event.eventID != routeEvents.last?.eventID { Divider() }
+                                    }
+                                }
+                            }
+                            SettingsCard {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("实时事件").font(.headline).padding(.bottom, 5)
+                                    ForEach(Array(model.recentEvents.suffix(5).reversed()), id: \.eventID) { event in
+                                        compactEventRow(event)
+                                        if event.eventID != model.recentEvents.suffix(5).first?.eventID { Divider() }
+                                    }
+                                }
+                            }
+                        }
+                        .frame(width: 330)
                     }
                 }
 
@@ -296,12 +295,103 @@ private struct LiveControlView: View {
         session.targets.first { $0.pid == model.selectedTargetPID } ?? session.targets.first
     }
 
-    private func mappingRow(symbol: String, title: String, value: String) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: symbol).foregroundStyle(.blue).frame(width: 22)
-            Text(title).foregroundStyle(.secondary)
+    private var routeEvents: [AutomationActivityRecord] {
+        var keys = Set<String>()
+        var result: [AutomationActivityRecord] = []
+        for event in model.recentEvents.reversed() {
+            let key = "\(event.source ?? "本地 MCP"):\(event.pid)"
+            guard keys.insert(key).inserted else { continue }
+            result.append(event)
+            if result.count == 4 { break }
+        }
+        return result
+    }
+
+    private func clientBadge(_ source: String?) -> some View {
+        let name = source ?? "MCP"
+        return Text(String(name.prefix(1)).uppercased())
+            .font(.headline)
+            .frame(width: 38, height: 38)
+            .background(Color.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+    }
+
+    private func compactRouteRow(_ event: AutomationActivityRecord) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(spacing: 8) {
+                clientBadge(event.source)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(event.source ?? "本地 MCP").font(.caption.weight(.semibold)).lineLimit(1)
+                    Text("经 App MCP Bridge").font(.caption2).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "arrow.right").foregroundStyle(.secondary)
+                AppIconView(pid: event.pid, size: 26)
+                Text(event.appName).font(.caption.weight(.semibold)).lineLimit(1)
+            }
+            HStack {
+                Text(eventDetail(event)).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                Spacer()
+                Text(phaseLabel(event.phase))
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(phaseColor(event.phase))
+                    .padding(.horizontal, 7).padding(.vertical, 3)
+                    .background(phaseColor(event.phase).opacity(0.1), in: Capsule())
+            }
+        }
+        .padding(.vertical, 8)
+    }
+
+    private func compactEventRow(_ event: AutomationActivityRecord) -> some View {
+        HStack(spacing: 8) {
+            Text(event.createdAt, style: .time)
+                .font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
+                .frame(width: 54, alignment: .leading)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(event.source ?? "本地 MCP").font(.caption.weight(.semibold)).lineLimit(1)
+                Text(eventDescription(event)).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+            }
             Spacer()
-            Text(value).fontWeight(.medium)
+            Circle().fill(phaseColor(event.phase)).frame(width: 7, height: 7)
+        }
+        .padding(.vertical, 7)
+    }
+
+    private func phaseLabel(_ phase: AutomationActivityPhase) -> String {
+        switch phase {
+        case .observed: "只读"
+        case .confirmationRequested: "待确认"
+        case .confirmationRejected: "已取消"
+        case .actionStarted: "执行中"
+        case .actionFinished: "已复查"
+        }
+    }
+
+    private func phaseColor(_ phase: AutomationActivityPhase) -> Color {
+        switch phase {
+        case .observed, .actionStarted: .blue
+        case .actionFinished: .green
+        case .confirmationRequested: .orange
+        case .confirmationRejected: .red
+        }
+    }
+
+    private func eventDescription(_ event: AutomationActivityRecord) -> String {
+        switch event.phase {
+        case .observed: "读取了 \(event.appName) 的窗口"
+        case .confirmationRequested: "请求在 \(event.appName) 执行高影响操作"
+        case .confirmationRejected: "取消了 \(event.appName) 的高影响操作"
+        case .actionStarted: "正在对 \(event.appName) 执行 \(event.action ?? "操作")"
+        case .actionFinished: "完成 \(event.appName) 的操作并重新读取"
+        }
+    }
+
+    private func eventDetail(_ event: AutomationActivityRecord) -> String {
+        switch event.phase {
+        case .observed: "正在读取窗口结构"
+        case .confirmationRequested: "执行前等待 App 二次确认"
+        case .confirmationRejected: "操作未执行"
+        case .actionStarted: "正在执行 \(event.action ?? "操作")"
+        case .actionFinished: "已重新读取界面结果"
         }
     }
 }

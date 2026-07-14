@@ -4,6 +4,8 @@ import UIBridgeProtocol
 
 public enum AutomationActivityPhase: String, Sendable {
     case observed
+    case confirmationRequested = "confirmation_requested"
+    case confirmationRejected = "confirmation_rejected"
     case actionStarted = "action_started"
     case actionFinished = "action_finished"
 }
@@ -46,7 +48,7 @@ public enum AutomationActivityCenter {
             windowBounds: snapshot.windowBounds,
             pointer: pointer,
             source: source,
-            action: action ?? (phase == .observed ? "读取界面" : (phase == .actionStarted ? "执行操作" : "验证结果")),
+            action: action ?? defaultAction(for: phase),
             risk: risk
         )
         persist(record)
@@ -71,6 +73,16 @@ public enum AutomationActivityCenter {
             userInfo: info,
             deliverImmediately: true
         )
+    }
+
+    private static func defaultAction(for phase: AutomationActivityPhase) -> String {
+        switch phase {
+        case .observed: "读取界面"
+        case .confirmationRequested: "等待确认"
+        case .confirmationRejected: "已取消"
+        case .actionStarted: "执行操作"
+        case .actionFinished: "复查结果"
+        }
     }
 
     public static func latest() -> AutomationActivityRecord? {
