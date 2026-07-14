@@ -6,6 +6,23 @@ struct HTTPRequest: Sendable {
     let headers: [String: String]
     let body: Data
 
+    static func expectedLength(_ data: Data) -> Int? {
+        guard let separator = data.range(of: Data("\r\n\r\n".utf8)),
+              let headerPart = String(data: data[..<separator.lowerBound], encoding: .utf8) else { return nil }
+        var contentLength = 0
+        for line in headerPart.components(separatedBy: "\r\n").dropFirst() {
+            guard let colon = line.firstIndex(of: ":") else { continue }
+            let key = line[..<colon].trimmingCharacters(in: .whitespaces)
+            if key.caseInsensitiveCompare("Content-Length") == .orderedSame {
+                guard let length = Int(line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)), length >= 0 else {
+                    return nil
+                }
+                contentLength = length
+            }
+        }
+        return separator.upperBound + contentLength
+    }
+
     static func parse(_ data: Data) -> HTTPRequest? {
         guard let separator = data.range(of: Data("\r\n\r\n".utf8)),
               let headerPart = String(data: data[..<separator.lowerBound], encoding: .utf8) else { return nil }

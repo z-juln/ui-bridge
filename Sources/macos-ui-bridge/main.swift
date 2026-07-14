@@ -7,7 +7,16 @@ import UIBridgeServer
 enum UIBridgeCommand {
     @MainActor private static var appShell: AppShell?
 
-    static func main() async throws {
+    static func main() async {
+        do {
+            try await run()
+        } catch {
+            FileHandle.standardError.write(Data("macos-ui-bridge: \(error.localizedDescription)\n".utf8))
+            Foundation.exit(EXIT_FAILURE)
+        }
+    }
+
+    @MainActor private static func run() async throws {
         let arguments = Array(CommandLine.arguments.dropFirst())
         let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.path
         let isBundledAppLaunch = arguments.isEmpty && (
@@ -39,10 +48,23 @@ enum UIBridgeCommand {
             let token = try tokenStore.loadOrCreate()
             let server = try await HTTPServer.make(port: 8765, token: token)
             try server.start()
+            let state = ServiceStateStore()
+            try state.save(pid: getpid())
+            defer { state.clear() }
             appShell = AppShell(token: token)
             appShell?.run()
         case "mcp":
             try await MCPBridge.runStdio()
+        case "call":
+            guard arguments.indices.contains(1) else {
+                throw LocalBridgeClientError.invalidArguments("usage: macos-ui-bridge call <tool> ['{...}'] [--port 8765]")
+            }
+            let token = try tokenStore.loadOrCreate()
+            let data = try await LocalBridgeClient(token: token, port: parsePort(arguments) ?? 8765).call(
+                tool: arguments[1],
+                argumentsJSON: arguments.indices.contains(2) && !arguments[2].hasPrefix("--") ? arguments[2] : nil
+            )
+            print(String(decoding: data, as: UTF8.self))
         case "start":
             let port = parsePort(arguments) ?? 8765
             let state = ServiceStateStore()
@@ -74,7 +96,7 @@ enum UIBridgeCommand {
                 print("not running")
             }
         default:
-            print("macos-ui-bridge <start|stop|serve|mcp|status|permissions|token|version>")
+            print("macos-ui-bridge <start|stop|serve|mcp|call|status|permissions|token|version>")
         }
     }
 

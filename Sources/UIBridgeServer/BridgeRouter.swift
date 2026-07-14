@@ -76,6 +76,20 @@ struct BridgeRouter: Sendable {
                     limit: input.limit ?? 50
                 ))
             } catch { return bridgeFailure(error) }
+        case ("POST", "/v1/plans/check"):
+            do {
+                let input = try decoder.decode(PlanCheckInput.self, from: request.body)
+                return encode(try runtime.checkPlan(
+                    snapshotID: input.snapshotID,
+                    elementHandle: input.elementHandle,
+                    action: input.action,
+                    coordinate: input.coordinate,
+                    delivery: input.delivery ?? .background,
+                    highImpact: input.highImpact ?? false,
+                    confirmed: input.confirmed ?? false,
+                    foregroundApproved: input.foregroundApproved ?? false
+                ))
+            } catch { return bridgeFailure(error) }
         case ("POST", "/v1/screenshots/get"):
             do {
                 let input = try decoder.decode(ScreenshotInput.self, from: request.body)
@@ -147,6 +161,17 @@ private struct ElementFindInput: Decodable {
     let enabled: Bool?
     let settable: Bool?
     let limit: Int?
+}
+
+private struct PlanCheckInput: Decodable {
+    let snapshotID: String
+    let elementHandle: String?
+    let action: ActionKind
+    let coordinate: UIBPoint?
+    let delivery: DeliveryPreference?
+    let highImpact: Bool?
+    let confirmed: Bool?
+    let foregroundApproved: Bool?
 }
 
 private struct ScreenshotInput: Decodable {

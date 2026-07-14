@@ -43,18 +43,41 @@ public final class HTTPServer: @unchecked Sendable {
 
     private func accept(_ connection: NWConnection) {
         connection.start(queue: queue)
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 1_048_576) { [weak self] data, _, _, error in
+        receiveRequest(on: connection, buffer: Data())
+    }
+
+    private func receiveRequest(on connection: NWConnection, buffer: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 1_048_576) { [weak self] data, _, isComplete, error in
             guard let self else { return }
-            Task {
-                let response: HTTPResponse
-                if let data, let request = HTTPRequest.parse(data) {
-                    response = await self.router.route(request)
-                } else {
-                    response = HTTPResponse(status: 400, body: Data("{\"error\":\"bad_request\"}".utf8))
-                }
-                connection.send(content: response.serialized(), completion: .contentProcessed { _ in connection.cancel() })
+            var received = buffer
+            if let data { received.append(data) }
+            if received.count > 1_048_576 {
+                self.sendBadRequest(on: connection)
+                return
             }
-            if error != nil { connection.cancel() }
+            if let expectedLength = HTTPRequest.expectedLength(received), received.count >= expectedLength {
+                let requestData = Data(received.prefix(expectedLength))
+                Task {
+                    let response: HTTPResponse
+                    if let request = HTTPRequest.parse(requestData) {
+                        response = await self.router.route(request)
+                    } else {
+                        response = HTTPResponse(status: 400, body: Data("{\"error\":\"bad_request\"}".utf8))
+                    }
+                    connection.send(content: response.serialized(), completion: .contentProcessed { _ in connection.cancel() })
+                }
+                return
+            }
+            if error != nil || isComplete {
+                self.sendBadRequest(on: connection)
+            } else {
+                self.receiveRequest(on: connection, buffer: received)
+            }
         }
+    }
+
+    private func sendBadRequest(on connection: NWConnection) {
+        let response = HTTPResponse(status: 400, body: Data("{\"error\":\"bad_request\"}".utf8))
+        connection.send(content: response.serialized(), completion: .contentProcessed { _ in connection.cancel() })
     }
 }
