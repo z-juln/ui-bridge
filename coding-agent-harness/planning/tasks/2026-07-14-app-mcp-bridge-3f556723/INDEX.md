@@ -13,7 +13,7 @@ Task Contract: harness-task/v1
 | Long-running | `yes` |
 | Created | 2026-07-14 |
 
-## 任务审计元数据
+## Task Audit Metadata
 
 | Field | Value |
 | --- | --- |
@@ -24,23 +24,22 @@ Task Contract: harness-task/v1
 | Template Source | templates-zh-CN/planning/INDEX.md |
 | Task Creator | zjl <zjl5@meitu.com> |
 | Task Creator Source | git-config |
-| Human Review Status | not-confirmed |
-| Confirmation ID | n/a |
-| Confirmed At | n/a |
-| Reviewer | n/a |
-| Reviewer Email | n/a |
-| Confirm Text | n/a |
-| Evidence Checked | n/a |
-| Review Commit SHA | n/a |
+| Human Review Status | confirmed |
+| Confirmation ID | HRC-202607140447 |
+| Confirmed At | 2026-07-14 04:47 |
+| Reviewer | Human Reviewer |
+| Reviewer Email | zjl5@meitu.com |
+| Confirm Text | 2026-07-14-app-mcp-bridge-3f556723 |
+| Evidence Checked | TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/review.md |
+| Review Commit SHA | pending |
 | Audit Source | native-index |
-| Audit Status | created |
+| Audit Status | commit-pending |
 | Exception Reason | n/a |
-| Message | n/a |
+| Message | confirmed from dashboard workbench |
 | Migration Status | native |
 | Migrated From | n/a |
 | Legacy Extra Fields | {} |
 | Migration Notes | n/a |
-
 ## 核心合同文件
 
 | 文件 | 用途 |
