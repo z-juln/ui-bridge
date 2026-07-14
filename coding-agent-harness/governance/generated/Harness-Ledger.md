@@ -15,7 +15,7 @@ Repo Governance / CI-CD changes remain routed through their reference standards 
 | HL-2026-07-10-macos-ui-bridge-96db7c45 | task | none | 实现 macOS 通用 UI Bridge 第一轮 | closed | done | coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/task_plan.md | agent-reviewed | checked | coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/walkthrough.md | state-conflicts:1 | 2026-07-14 |
 | HL-2026-07-14-workbuddy-cursor-24d76f05 | task | none | 实现 WorkBuddy Cursor 真实写入闭环 | closed | none | coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/task_plan.md | pending | pending | pending | Human review confirmed; real client write loop finalized | 2026-07-14 |
 | HL-2026-07-14-macos-ui-bridge-627e70e9 | task | none | 彻底移除 macos-ui-bridge 旧名称 | planned | none | coding-agent-harness/planning/tasks/2026-07-14-macos-ui-bridge-627e70e9/task_plan.md | pending | pending | pending | task registered by CLI | 2026-07-14 |
-| HL-2026-07-14-app-mcp-bridge-3f556723 | task | none | 统一 App MCP Bridge 内部名称 | review | none | coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/task_plan.md | coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/review.md | pending | pending | App package, installed identity, runtime, client connections and validation all use the new name | 2026-07-14 |
+| HL-2026-07-14-app-mcp-bridge-3f556723 | task | none | 统一 App MCP Bridge 内部名称 | closed | none | coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/task_plan.md | pending | pending | pending | Human review confirmed; internal name migration finalized | 2026-07-14 |
 
 ## Field Rules
 
