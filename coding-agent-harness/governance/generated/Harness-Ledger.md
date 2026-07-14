@@ -13,7 +13,7 @@ Repo Governance / CI-CD changes remain routed through their reference standards 
 | ID | Scope | Module | Task | State | Queues | Plan | Review | Lessons Check | Closeout | Residual | Updated |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | HL-2026-07-10-macos-ui-bridge-96db7c45 | task | none | 实现 macOS 通用 UI Bridge 第一轮 | closed | done | coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/task_plan.md | agent-reviewed | checked | coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/walkthrough.md | state-conflicts:1 | 2026-07-14 |
-| HL-2026-07-14-workbuddy-cursor-24d76f05 | task | none | 实现 WorkBuddy Cursor 真实写入闭环 | planned | none | coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/task_plan.md | pending | pending | pending | task registered by CLI | 2026-07-14 |
+| HL-2026-07-14-workbuddy-cursor-24d76f05 | task | none | 实现 WorkBuddy Cursor 真实写入闭环 | active | none | coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/task_plan.md | pending | pending | pending | 开始建立隔离测试夹具并验证两个真实客户端写入 | 2026-07-14 |
 
 ## Field Rules
 
