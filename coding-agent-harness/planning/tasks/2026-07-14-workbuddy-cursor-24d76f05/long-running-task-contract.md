@@ -104,13 +104,13 @@
 
 ## 交付物（Deliverables）
 
-- [ ] 代码 / 配置改动
-- [ ] 测试 / 回归证据
-- [ ] 文档更新
-- [ ] 如要求审查，`review.md` 报告
-- [ ] `progress.md` / `findings.md` 更新
-- [ ] Harness Ledger 更新
-- [ ] 收口记录
-- [ ] Lessons 反思与检查：`lesson_candidates.md` 已进入 `no-candidate-accepted` / `needs-promotion` / `promoted` / `rejected`
-- [ ] PR / commit / 发布说明
-- [ ] 残余风险摘要
+- [x] 代码 / 配置改动
+- [x] 测试 / 回归证据
+- [x] 文档更新
+- [x] 如要求审查，`review.md` 报告
+- [x] `progress.md` / `findings.md` 更新
+- [x] Harness Ledger 更新
+- [x] 收口记录
+- [x] Lessons 反思与检查：`lesson_candidates.md` 已进入 `no-candidate-accepted` / `needs-promotion` / `promoted` / `rejected`
+- [x] PR / commit / 发布说明
+- [x] 残余风险摘要

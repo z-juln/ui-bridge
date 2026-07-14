@@ -57,6 +57,13 @@
 - 下一步：运行 Harness 检查并提交审查材料。
 - 证据：command:TARGET:swift build:通过；command:TARGET:swift run protocol-self-test:4 checks passed；command:TARGET:swift run core-self-test:代表性 TextEdit 窗口通过；command:TARGET:python3 skills/macos-ui-control/scripts/self_test.py:self-test passed；command:TARGET:scripts/install-app.sh:签名、安装、运行通过
 
+### 2026-07-14 11:31 - 最终回归与审查提交
+
+- 做了什么：在干净工作树上重新运行构建、协议、核心、Skill、Harness、已安装 App 状态和健康检查，并提交 Agent 审查材料。
+- 验证结果：全部通过；任务材料完整、无开放重要发现，生命周期进入“审查中”，可由用户确认。
+- 下一步：推送当前分支；用户确认后再由 Harness 工作台完成最终状态确认。
+- 证据：command:TARGET:npx --yes coding-agent-harness check --profile target-project .:passed；command:TARGET:git status --short:clean；report:TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/review.md:review submission ARS-202607140323
+
 ## 残余
 
 - 三个未保存 TextEdit 测试文稿仍打开，用于用户核对；内容均为唯一测试标记，可直接关闭且不保存。
