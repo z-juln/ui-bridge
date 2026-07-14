@@ -42,10 +42,19 @@
 - 证据：ui:TARGET:App MCP Bridge 实时操控页:目标存在但画面未连接
 - 证据：command:TARGET:pgrep preview-stream:退出页面后无残留
 
+### 2026-07-14 15:25 - 实时画面安装版验收通过
+
+- 做了什么：增加只记录阶段、不记录画面内容的诊断入口，确认画面服务已写出、主 App 已收到，唯一阻塞点是界面事件投递；改为项目现有操作提示已经验证过的原生事件循环投递。
+- 验证结果：安装版实时页显示飞书真实缩略图和大画面，状态为“实时画面已连接”，来源、动作和最近事件正常；切回总览后画面进程立即退出，无残留。每个窗口仍限制为每秒 1 张、最大 720 像素宽。
+- 下一步：继续完成诊断页导出和任务最终审查，不再改动实时画面主链路。
+- 证据：ui:TARGET:App MCP Bridge 实时操控页:真实缩略图、大画面和已连接状态可见
+- 证据：diagnostic:TARGET:preview-diagnostics:worker_first_frame_written -> coordinator_frame_received -> coordinator_frame_applied
+- 证据：command:TARGET:pgrep preview-stream:离开实时页后无残留
+
 ## 残余
 
-- 实时画面已按低负载参数完成命令级验证，仍需一次安装版界面与退出清理验收。
-- 当前活动记录缺少明确客户端来源，需要在不破坏现有连接的前提下补充。
+- 实时画面主链路已完成安装版验收。
+- 诊断导出和任务最终审查仍待完成。
 
 ## 协调者交接
 

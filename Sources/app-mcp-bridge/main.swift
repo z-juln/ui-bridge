@@ -86,6 +86,10 @@ enum UIBridgeCommand {
                 throw LocalBridgeClientError.invalidArguments("preview-stream requires a window id")
             }
             try await PreviewStreamCommand.run(windowID: windowID)
+        case "preview-diagnostics":
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            print(String(decoding: try encoder.encode(PreviewDiagnosticCenter.recent()), as: UTF8.self))
         case "start":
             let port = parsePort(arguments) ?? 8765
             let state = ServiceStateStore()

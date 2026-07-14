@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 
 @MainActor
-final class AutomationSessionCoordinator: ObservableObject {
+final class AutomationSessionCoordinator: NSObject, ObservableObject {
     @Published private(set) var targets: [ControlledTarget] = []
     @Published private(set) var frames: [Int32: NSImage] = [:]
     @Published private(set) var errors: [Int32: String] = [:]
@@ -15,6 +15,7 @@ final class AutomationSessionCoordinator: ObservableObject {
 
     private var streams: [Int32: ActiveStream] = [:]
     private var viewerActive = false
+    nonisolated private let pendingUpdates = PendingPreviewUpdates()
 
     func updateTargets(_ newTargets: [ControlledTarget]) {
         targets = Array(newTargets.prefix(6))
@@ -61,6 +62,7 @@ final class AutomationSessionCoordinator: ObservableObject {
     }
 
     private func startStream(for target: ControlledTarget) {
+        PreviewDiagnosticCenter.record("coordinator_launch_requested", windowID: target.windowID)
         guard let executable = Bundle.main.executableURL else {
             errors[target.pid] = "无法找到画面服务"
             return
@@ -69,30 +71,61 @@ final class AutomationSessionCoordinator: ObservableObject {
             executable: executable,
             windowID: target.windowID,
             onFrame: { [weak self] data in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self, self.viewerActive,
-                          self.streams[target.pid]?.windowID == target.windowID,
-                          let image = NSImage(data: data) else { return }
-                    self.frames[target.pid] = image
-                    self.errors[target.pid] = nil
-                    self.status = "实时画面已连接"
-                }
+                PreviewDiagnosticCenter.record("coordinator_frame_received", windowID: target.windowID, detail: "bytes=\(data.count)")
+                self?.enqueueFrame(data, for: target)
             },
             onStopped: { [weak self] message in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self, self.viewerActive,
-                          self.streams[target.pid]?.windowID == target.windowID else { return }
-                    self.errors[target.pid] = message
-                    self.status = "部分窗口无法显示"
-                }
+                self?.enqueueError(message, for: target)
             }
         )
         streams[target.pid] = ActiveStream(windowID: target.windowID, capture: capture)
         do {
             try capture.start()
+            PreviewDiagnosticCenter.record("coordinator_process_started", windowID: target.windowID)
         } catch {
             errors[target.pid] = error.localizedDescription
             status = "部分窗口无法显示"
+        }
+    }
+
+    nonisolated private func enqueueFrame(_ data: Data, for target: ControlledTarget) {
+        pendingUpdates.setFrame(data, for: target)
+        schedulePendingUpdate()
+    }
+
+    nonisolated private func enqueueError(_ message: String, for target: ControlledTarget) {
+        pendingUpdates.setError(message, for: target)
+        schedulePendingUpdate()
+    }
+
+    nonisolated private func schedulePendingUpdate() {
+        performSelector(
+            onMainThread: #selector(applyPendingUpdates),
+            with: nil,
+            waitUntilDone: false,
+            modes: [RunLoop.Mode.common.rawValue]
+        )
+    }
+
+    @objc private func applyPendingUpdates() {
+        let updates = pendingUpdates.take()
+        for update in updates {
+            guard viewerActive,
+                  streams[update.target.pid]?.windowID == update.target.windowID else { continue }
+            switch update.value {
+            case .frame(let data):
+                guard let image = NSImage(data: data) else {
+                    errors[update.target.pid] = "画面格式无效"
+                    continue
+                }
+                frames[update.target.pid] = image
+                errors[update.target.pid] = nil
+                status = "实时画面已连接"
+                PreviewDiagnosticCenter.record("coordinator_frame_applied", windowID: update.target.windowID)
+            case .error(let message):
+                errors[update.target.pid] = message
+                status = "部分窗口无法显示"
+            }
         }
     }
 
@@ -102,6 +135,43 @@ final class AutomationSessionCoordinator: ObservableObject {
         frames.removeAll()
         errors.removeAll()
         captures.forEach { $0.stop() }
+        if !captures.isEmpty {
+            PreviewDiagnosticCenter.record("coordinator_streams_stopped", windowID: 0, detail: "count=\(captures.count)")
+        }
+    }
+}
+
+private struct PendingPreviewUpdate: Sendable {
+    enum Value: Sendable {
+        case frame(Data)
+        case error(String)
+    }
+
+    let target: ControlledTarget
+    let value: Value
+}
+
+private final class PendingPreviewUpdates: @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [Int32: PendingPreviewUpdate] = [:]
+
+    func setFrame(_ data: Data, for target: ControlledTarget) {
+        lock.withLock {
+            values[target.pid] = PendingPreviewUpdate(target: target, value: .frame(data))
+        }
+    }
+
+    func setError(_ message: String, for target: ControlledTarget) {
+        lock.withLock {
+            values[target.pid] = PendingPreviewUpdate(target: target, value: .error(message))
+        }
+    }
+
+    func take() -> [PendingPreviewUpdate] {
+        lock.withLock {
+            defer { values.removeAll() }
+            return Array(values.values)
+        }
     }
 }
 
@@ -153,6 +223,11 @@ private final class WindowPreviewClient: @unchecked Sendable {
         }
         self.process = process
         try process.run()
+        PreviewDiagnosticCenter.record(
+            "client_process_running",
+            windowID: windowID,
+            detail: "child_pid=\(process.processIdentifier)"
+        )
     }
 
     func stop() {
@@ -166,6 +241,7 @@ private final class WindowPreviewClient: @unchecked Sendable {
     }
 
     private func consume(_ data: Data) {
+        PreviewDiagnosticCenter.record("client_bytes_received", windowID: windowID, detail: "bytes=\(data.count)")
         let frames: [Data] = lock.withLock {
             buffer.append(data)
             var decoded: [Data] = []
@@ -181,6 +257,9 @@ private final class WindowPreviewClient: @unchecked Sendable {
                 buffer.removeSubrange(0..<total)
             }
             return decoded
+        }
+        if let first = frames.first {
+            PreviewDiagnosticCenter.record("client_frame_decoded", windowID: windowID, detail: "bytes=\(first.count)")
         }
         frames.forEach(onFrame)
     }
