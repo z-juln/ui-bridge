@@ -25,7 +25,7 @@ flowchart LR
 
 | Phase ID | Kind | Depends On | State | Completion | Output | Required Evidence | Exit Command | Actor | Evidence Status | Blocking Risk | Owner / Handoff |
 | --- | --- | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| INIT-01 | init | none | planned | 0 | 任务计划和执行策略已确认 | `task_plan.md`; `execution_strategy.md` | `harness task-start 2026-07-14-item-65db687f` | agent | missing | none | coordinator |
+| INIT-01 | init | none | done | 100 | 任务计划和执行策略已确认 | `task_plan.md`; `execution_strategy.md` | `harness task-start 2026-07-14-item-65db687f` | agent | present | none | coordinator |
 | EXEC-01 | execution | INIT-01 | planned | 0 | 设置窗口、导航、总览和真实状态 | 构建、安装版窗口截图 | `harness task-phase 2026-07-14-item-65db687f EXEC-01 --state done --completion 100 --evidence present` | agent | missing | 布局与现有菜单生命周期冲突 | coordinator |
 | EXEC-02 | execution | EXEC-01 | planned | 0 | 多应用真实画面、映射和事件 | 真实窗口截图、资源占用记录 | `harness task-phase 2026-07-14-item-65db687f EXEC-02 --state done --completion 100 --evidence present` | agent | missing | 持续截图性能与隐私 | coordinator |
 | EXEC-03 | execution | EXEC-02 | planned | 0 | 应用访问、安全确认和诊断 | 门禁自检、安装版拒绝/允许证据 | `harness task-phase 2026-07-14-item-65db687f EXEC-03 --state done --completion 100 --evidence present` | agent | missing | 跨进程确认被绕过 | coordinator |
