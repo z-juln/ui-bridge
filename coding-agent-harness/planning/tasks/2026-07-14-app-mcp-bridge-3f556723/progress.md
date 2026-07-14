@@ -1,41 +1,16 @@
 # 统一 App MCP Bridge 内部名称 - 进度
 
-## 状态：未开始
-
-`## 状态` 是受控机器字段，只能使用以下值之一：
-
-- `未开始`
-- `计划中`
-- `进行中`
-- `审查中`
-- `已阻塞`
-- `已完成`
-
-不要把 `计划审阅中`、`等待 coordinator pass`、`本地审查就绪` 等细粒度协作状态写入本字段。
-这些状态应记录到进度记录、残余或协调者交接中。
+## 状态：计划中
 
 ## 进度记录
 
-证据使用 `type:path:summary` 格式。
+### 2026-07-14 11:50 - 任务规划
 
-允许的 `type`：`command`, `diff`, `fixture`, `screenshot`, `review`, `report`。
-
-证据较长或数量较多时，不要粘贴全文；放入 `artifacts/INDEX.md` 并在这里引用 ID。
-
-### [YYYY-MM-DD HH:MM] - [阶段名称]
-
-- 做了什么：[具体操作]
-- 验证结果：[运行了什么检查，结果如何]
-- 下一步：[下一步动作]
-- 证据：[type:path:summary]
+- 做了什么：确认旧名称仍来自内部可执行程序、包目标、签名标识、本地目录和启动项；确定完整迁移范围。
+- 验证结果：当前 App 展示名已正确，但包内程序仍为旧名称，因此 macOS 崩溃报告显示旧名。
+- 下一步：完成代码、App 包、本地状态和客户端配置迁移。
+- 证据：command:TARGET:Resources/App-Info.plist:CFBundleExecutable 和 CFBundleIdentifier 仍使用旧值
 
 ## 残余
 
-- [遗留问题；如无写“无”]
-
-## 协调者交接（Coordinator，启用模块并行时填写）
-
-- Global sync status：pending-coordinator-pass / synced / n/a
-- Registry update needed：[module key, step, status, branch, updated / 不适用]
-- Harness Ledger update needed：[task plan path, review path, closeout status / 不适用]
-- 负责人：coordinator / 不适用
+- 新内部标识安装后需重新授予 macOS 权限。
