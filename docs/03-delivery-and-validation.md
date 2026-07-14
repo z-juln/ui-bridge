@@ -1,6 +1,6 @@
 # App MCP Bridge：macOS 实施、测试与确认项
 
-状态：macOS 第一版开发中
+状态：macOS 第一轮已验收
 
 ## 1. 推荐项目结构
 

@@ -1,6 +1,6 @@
 # App MCP Bridge：macOS 产品与架构设计
 
-状态：macOS 第一版开发中
+状态：macOS 第一轮已验收
 
 产品名称为 `App MCP Bridge`，不把平台写进产品名，为后续增加 Windows 实现保留空间。
 当前安装包仍只支持 macOS；对外 MCP 连接名统一为 `app-mcp-bridge`。安装包内部的

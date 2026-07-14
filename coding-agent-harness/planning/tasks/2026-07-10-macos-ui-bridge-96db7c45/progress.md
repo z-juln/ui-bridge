@@ -4,9 +4,9 @@
 
 ## 当前阶段
 
-- 阶段：MCP 与 Agent 接入。
-- 最近完成：快照与已验证动作已开放到 MCP/HTTP，并通过临时 TextEdit 真实写入回归。
-- 下一步：更新已安装 App，补齐其余动作类型与代表应用回归。
+- 阶段：第一轮最终收口。
+- 最近完成：App、MCP 连接、Skill、权限、可见反馈和四类应用回归均已完成并复核。
+- 下一步：确认本任务收口；WorkBuddy/Cursor 真实写入闭环转入独立后续任务。
 
 ## 进度记录
 
@@ -306,6 +306,13 @@
 - 验证：安装版本地地址和直接启动方式都返回新连接名，10 个工具完整可用；Cursor 与 WorkBuddy 配置均只保留新连接项，两项系统权限继续为 true。
 - 证据：`command:TARGET:skills/macos-ui-control/scripts/self_test.py:stdio and HTTP MCP identify as app-mcp-bridge; client configs migrated`
 
+### 2026-07-14 - 第一轮最终验收材料更新
+
+- 做了什么：按当前实现更新审查、walkthrough、发现记录、任务摘要和交接信息；移除 WorkBuddy 未接入、临时签名、旧 App 名、9 工具等过时事实。
+- 验收结论：macOS 本地开发版范围全部通过，无阻塞发现；正式分发、完整 Xcode 测试和真实客户端写入闭环作为后续独立工作。
+- 后续路由：新建 WorkBuddy/Cursor 真实写入闭环任务，不继续扩张本任务范围。
+- 证据：`command:TARGET:coding-agent-harness:final task package and target-project check`
+
 ## 残余
 
 - 完整 Xcode 未安装，标准 Xcode 测试目标与正式签名/公证暂不可执行；Swift 自检与真实应用回归可继续。
@@ -314,8 +321,8 @@
 ## 交接
 
 - 当前 Owner：coordinator。
-- 恢复命令：`git status --short && git log --oneline -8`。
-- 下一文件：本目录 `task_plan.md` 的阶段 1。
+- 恢复命令：`git status --short && git log --oneline -8 && npx --yes coding-agent-harness task-list --json .`。
+- 下一任务：WorkBuddy/Cursor 真实写入与回读确认闭环。
 
 ### [2026-07-10 08:58] - task-start
 

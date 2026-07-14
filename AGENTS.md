@@ -9,7 +9,7 @@
 - 技术栈：Swift 6、macOS 14.4+、AXUIElement、ScreenCaptureKit、官方 MCP Swift SDK。
 - 仓库形态：单仓、单协调者、可跨 Agent 接力。
 - 第一轮入口：无界面服务 App、本地 HTTP、MCP stdio、MCP Streamable HTTP、通用 Skill。
-- 默认分支：`main`。
+- 默认分支：`master`。
 
 ## 不可违反的规则
 

@@ -49,7 +49,7 @@ Task Package Index: required
 ## 工作树
 
 - 路径：当前 checkout。
-- 分支：`main`。
+- 分支：`master`。
 - Owner：coordinator。
 - 未使用 worktree：当前单 Agent 串行开发，用户要求通过提交接力而非并行 worker。
 

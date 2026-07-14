@@ -18,11 +18,11 @@
 | 核心 | 通用能力探测 | 禁止应用专属固定流程 | accepted |
 | 协作 | 串行小提交 + Harness 任务包 | 用户可随时换 Agent 接力 | accepted |
 
-## 待验证
+## 后续已验证
 
-- Swift SDK 与当前 Xcode/macOS 工具链版本。
-- ScreenCaptureKit 单窗口截图在后台与跨 Space 的实际行为。
-- WorkBuddy 当前版本支持 MCP 还是仅支持 HTTP/Skill 命令。
+- 官方 MCP Swift SDK 已在当前 Command Line Tools 环境完成构建和真实往返。
+- ScreenCaptureKit 已完成单窗口真实截图、后台读取和窗口范围校验。
+- WorkBuddy 4.24.8 已通过自定义连接器使用本地 Streamable HTTP MCP，识别全部 10 个工具并执行多轮只读任务。
 
 ## 环境发现
 
