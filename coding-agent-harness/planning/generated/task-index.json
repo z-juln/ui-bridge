@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "task-index/v2",
+  "scannerVersion": "task-scanner/2026-05-25-phase-kind",
+  "sourceRoot": "TARGET:.",
+  "harnessRoot": "TARGET:coding-agent-harness",
+  "planningRoot": "TARGET:coding-agent-harness/planning",
+  "generatedRoot": "TARGET:coding-agent-harness/governance/generated",
+  "generatedAt": "2026-07-14T02:16:58.015Z",
+  "sourceFileHashes": {
+    "TASKS/2026-07-10-macos-ui-bridge-96db7c45": "524ebabb30d8f0d8213e7d477a63ceb028f7a4969feccf3739a53ee340900920"
+  },
+  "scope": "all",
+  "taskScopes": {
+    "all": 1,
+    "activeCycle": 1,
+    "reviewWorkbench": 1,
+    "archiveHistory": 0,
+    "tombstoneHistory": 0,
+    "taskIndexDefault": 1
+  },
+  "tasks": [
+    {
+      "taskKey": "TASKS/2026-07-10-macos-ui-bridge-96db7c45",
+      "id": "TASKS/2026-07-10-macos-ui-bridge-96db7c45",
+      "title": "实现 macOS 通用 UI Bridge 第一轮",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closed",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "confirmed",
+      "reviewQueueState": "not-in-queue",
+      "reviewSubmitted": true,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/review.md",
+      "closeoutStatus": "closed",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-10-macos-ui-bridge-96db7c45",
+      "completion": 100,
+      "lessonCandidateStatus": "no-candidate-accepted",
+      "lessonCandidateReviewDecision": "no-candidate-accepted",
+      "lessonCandidatePromotionState": "not-promoted",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [],
+      "risks": [
+        {
+          "id": "F-001",
+          "severity": "P2",
+          "open": false,
+          "blocksRelease": false,
+          "disposition": "accepted-risk",
+          "waiverBy": "",
+          "summary": "App 使用稳定的本机开发身份，但尚未使用可公开分发的开发者签名和公证"
+        },
+        {
+          "id": "F-002",
+          "severity": "P3",
+          "open": false,
+          "blocksRelease": false,
+          "disposition": "closed",
+          "waiverBy": "",
+          "summary": "WorkBuddy 产品界面接入曾缺少实测"
+        }
+      ],
+      "residual": "none",
+      "materialsReady": true,
+      "materialIssues": [],
+      "taskQueues": [
+        "finalized"
+      ],
+      "queues": [
+        "finalized"
+      ],
+      "queueReasons": [],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "",
+      "repairActions": [],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/review.md"
+        },
+        {
+          "kind": "lesson-candidates",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/lesson_candidates.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/walkthrough.md"
+        }
+      ]
+    }
+  ]
+}
