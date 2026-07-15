@@ -100,6 +100,15 @@
 - 证据：document:TARGET:docs/05-future-web-plan.md:future browser page and embedded WebView boundaries recorded
 - 证据：url:URL:https://github.com/z-juln/ui-bridge:repository renamed and origin reachable
 
+### 2026-07-15 19:10 - 外部项目首页与未来能力计划收口
+
+- 做了什么：将原 README 通过 Git 移入本地开发文档，重写面向外部读者的项目首页；把 Web 方向细化为内嵌 Chromium、现有 Chrome、密码与 Cookie 导入计划；新增原生 App、网页和 WebView 共用的操作经验库计划。
+- 验证结果：项目首页能独立说明定位、现有能力、工作方式、快速开始、安全边界、路线图和文档入口；所有本地相对链接有效；开发命令和原有接入说明完整保留。
+- 下一步：未来进入 Web 或经验库实现前，分别建立独立任务并先完成技术验证；当前实现任务继续等待新身份辅助功能授权后的综合回归。
+- 证据：document:TARGET:README.md:external project introduction and navigation complete
+- 证据：document:TARGET:docs/05-future-web-plan.md:Codex-aligned browser and profile import plan recorded
+- 证据：document:TARGET:docs/06-experience-library-plan.md:cross native app and web experience lifecycle recorded
+
 ## 残余
 
 - 实时画面主链路已完成安装版验收。

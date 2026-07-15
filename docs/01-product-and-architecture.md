@@ -9,6 +9,10 @@
 浏览器页面和内嵌 WebView 属于已确认的未来方向，但尚未进入当前完成范围。规划边界和待定问题见
 [`05-future-web-plan.md`](05-future-web-plan.md)。
 
+原生 App、网页和内嵌 WebView 将共用操作经验库。经验只保存稳定的定位依据、动作前条件和
+验证方式，不保存密码、Cookie、固定坐标或界面正文，规划见
+[`06-experience-library-plan.md`](06-experience-library-plan.md)。
+
 ## 1. 目标
 
 构建一个常驻本机、带状态界面的界面桥，让 Cursor、WorkBuddy、Codex、Claude Code
@@ -48,6 +52,7 @@
 - 远程控制另一台电脑。
 - 云端账户、团队后台或多租户管理。
 - 浏览器页面和内嵌 WebView 的专用读取、执行与验证通道。
+- 用户教学、官方经验包和跨 App/Web 操作经验库。
 - 绕过验证码、安全警告、系统权限或应用自身限制。
 - 基于大模型的通用视觉识别服务。
 - 为每个应用编写大量固定坐标脚本。
