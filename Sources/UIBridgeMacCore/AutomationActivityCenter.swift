@@ -27,7 +27,7 @@ public struct AutomationActivityRecord: Codable, Sendable {
 extension AutomationActivityPhase: Codable {}
 
 public enum AutomationActivityCenter {
-    public static let notification = Notification.Name("com.juln.app-mcp-bridge.activity")
+    public static let notification = Notification.Name("com.juln.ui-bridge.activity")
 
     public static func publish(
         phase: AutomationActivityPhase,
@@ -99,9 +99,8 @@ public enum AutomationActivityCenter {
     }
 
     private static var stateURL: URL {
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/app-mcp-bridge", isDirectory: true)
-            .appendingPathComponent("activity.json")
+        UIBridgePaths.migrateLegacyDataIfNeeded()
+        return UIBridgePaths.applicationSupportDirectory.appendingPathComponent("activity.json")
     }
 
     private static var historyURL: URL {

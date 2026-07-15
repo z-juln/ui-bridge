@@ -1,4 +1,5 @@
 import Foundation
+import UIBridgeMacCore
 
 struct PreviewDiagnosticRecord: Codable, Sendable {
     let createdAt: Date
@@ -11,8 +12,7 @@ struct PreviewDiagnosticRecord: Codable, Sendable {
 
 enum PreviewDiagnosticCenter {
     private static var directory: URL {
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/app-mcp-bridge/preview-diagnostics", isDirectory: true)
+        UIBridgePaths.applicationSupportDirectory.appendingPathComponent("preview-diagnostics", isDirectory: true)
     }
 
     static func record(_ stage: String, windowID: UInt32, detail: String? = nil) {

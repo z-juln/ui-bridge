@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import UIBridgeMacCore
 
 public struct ServiceStateStore: Sendable {
     public let directory: URL
@@ -7,8 +8,8 @@ public struct ServiceStateStore: Sendable {
     public var logFile: URL { directory.appendingPathComponent("service.log") }
 
     public init(directory: URL? = nil) {
-        self.directory = directory ?? FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent(".app-mcp-bridge", isDirectory: true)
+        if directory == nil { UIBridgePaths.migrateLegacyDataIfNeeded() }
+        self.directory = directory ?? UIBridgePaths.stateDirectory
     }
 
     public func runningPID() -> Int32? {

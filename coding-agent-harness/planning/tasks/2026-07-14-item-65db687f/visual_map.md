@@ -55,7 +55,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  CLIENT["Cursor / WorkBuddy"] --> BRIDGE["App MCP Bridge"]
+  CLIENT["Cursor / WorkBuddy"] --> BRIDGE["UI Bridge"]
   BRIDGE --> ACTIVITY["有界活动记录"]
   ACTIVITY --> LIVE["实时操控页"]
   BRIDGE --> RISK{"删除 / 购买 / 权限变更?"}

@@ -42,11 +42,10 @@ public enum AppAccessPolicyStore {
     }
 
     private static var url: URL {
-        if let override = ProcessInfo.processInfo.environment["APP_MCP_BRIDGE_ACCESS_POLICY_PATH"], !override.isEmpty {
+        if let override = ProcessInfo.processInfo.environment["UI_BRIDGE_ACCESS_POLICY_PATH"], !override.isEmpty {
             return URL(fileURLWithPath: override)
         }
-        return FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/app-mcp-bridge", isDirectory: true)
-            .appendingPathComponent("app-access.json")
+        UIBridgePaths.migrateLegacyDataIfNeeded()
+        return UIBridgePaths.applicationSupportDirectory.appendingPathComponent("app-access.json")
     }
 }

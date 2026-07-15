@@ -31,18 +31,18 @@ public final class AutomationRuntime: @unchecked Sendable {
         guard let app = AppDiscovery.listRunningApplications().first(where: { $0.pid == pid }) else {
             throw BridgeError(code: .appNotFound, message: "No running application has pid \(pid).", retryable: true)
         }
-        guard app.appID != "com.juln.app-mcp-bridge" else {
+        guard app.appID != "com.juln.ui-bridge" else {
             throw BridgeError(
                 code: .invalidRequest,
-                message: "App MCP Bridge cannot automate its own application process.",
+                message: "UI Bridge cannot automate its own application process.",
                 suggestedAction: "Choose the external application that should be inspected or operated."
             )
         }
         guard AppAccessPolicyStore.load().allows(appID: app.appID) else {
             throw BridgeError(
                 code: .invalidRequest,
-                message: "Access to \(app.name) is blocked by the App MCP Bridge application policy.",
-                suggestedAction: "Allow this application in App MCP Bridge → 应用访问."
+                message: "Access to \(app.name) is blocked by the UI Bridge application policy.",
+                suggestedAction: "Allow this application in UI Bridge → 应用访问."
             )
         }
         guard let window = WindowDiscovery.listWindows(pid: pid).first(where: { $0.windowID == windowID }) else {

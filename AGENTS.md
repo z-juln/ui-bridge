@@ -1,8 +1,9 @@
-# App MCP Bridge Agent 入口
+# UI Bridge Agent 入口
 
-本仓库当前开发 App MCP Bridge 的 macOS 实现，通过本地 HTTP、MCP 和 Skill
+本仓库当前开发 UI Bridge 的 macOS 实现，通过本地 HTTP、MCP 和 Skill
 供 Cursor、WorkBuddy 及其他 Agent 使用。详细产品范围见 `docs/`，当前任务事实见
-`coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/`。
+`coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/`。早期任务编号中的旧产品名
+属于不可改写的审计身份，不代表当前运行名称。
 
 ## 项目概况
 
@@ -67,7 +68,7 @@
 
 - 构建：`swift build`
 - 基础自检：`swift run protocol-self-test`
-- 状态：`swift run app-mcp-bridge status`
+- 状态：`swift run ui-bridge status`
 - Harness 检查：`npx --yes coding-agent-harness check --profile target-project .`
 
 ## 完成标准

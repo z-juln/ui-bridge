@@ -96,7 +96,7 @@ enum DiagnosticReportBuilder {
     static func summary(_ report: DiagnosticReport) -> String {
         let clients = report.activity.clientNames.isEmpty ? "无" : report.activity.clientNames.joined(separator: "、")
         return """
-        App MCP Bridge 诊断摘要
+        UI Bridge 诊断摘要
         版本：\(report.appVersion)
         本地服务：\(report.service.reachable ? "正常" : "无法连接")
         辅助功能：\(report.permissions.accessibility ? "正常" : "未授权")

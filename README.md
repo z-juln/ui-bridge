@@ -1,7 +1,9 @@
-# App MCP Bridge
+# UI Bridge
 
-本机 macOS 桌面操作服务，当前提供通用应用/窗口发现、控件树核心、窗口截图、
+本机界面操作服务。当前 macOS 版本提供通用应用/窗口发现、控件树核心、窗口截图、
 动作执行前检查、动作验证、带令牌保护的本地 HTTP 接口、MCP 接入和通用 Skill。
+未来将把浏览器页面和内嵌 WebView 纳入同一目标模型，具体接入方式尚未确定，见
+[`docs/05-future-web-plan.md`](docs/05-future-web-plan.md)。
 
 ## 构建与自检
 
@@ -19,15 +21,15 @@ python3 skills/macos-ui-control/scripts/self_test.py
 ./scripts/install-app.sh
 ```
 
-安装位置为 `/Applications/App MCP Bridge.app`。首次打开会提示缺少的系统权限；
+安装位置为 `/Applications/UI Bridge.app`。首次打开会提示缺少的系统权限；
 选择“前往设置”后，App 会以自己的名称登记到对应权限列表。
 
-产品名不包含平台名称，便于以后增加 Windows 版本。当前版本仍只支持 macOS；
-MCP 连接名、安装后的程序文件名和 macOS 身份均已统一为 `app-mcp-bridge`。
+产品名不绑定应用、平台或接入协议，便于以后增加 Web 和 Windows。当前版本仍只支持 macOS 原生界面；
+MCP 连接名、安装后的程序文件名和 macOS 身份均已统一为 `ui-bridge`。
 
 首次构建会在本机创建一个只供此项目使用的长期程序身份，因此之后重新构建、覆盖安装时会沿用已有权限。
-从旧构建方式升级到这一版时，需要在系统设置里将两项权限各关闭再开启一次；这是
-最后一次迁移，后续重装不再需要重复授权。
+从旧名称升级到 `UI Bridge` 时，macOS 会把它视为新应用，需要重新授予辅助功能和录屏权限；
+旧应用、启动项、连接配置和本地数据会自动迁移或清理。
 
 App 提供完整设置与实时操控窗口，启动后也会在程序坞和菜单栏显示图标。菜单栏可
 打开设置、检查权限、复制 MCP 连接配置或退出服务。第一次点“检查系统权限”时，
@@ -48,27 +50,27 @@ curl http://127.0.0.1:8765/health
 普通打开设置会把 App 带到前台；调试或自动验收时可在后台显示指定页面，不改变
 用户当前正在使用的应用：
 
-    '/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' show liveControl --background
+    '/Applications/UI Bridge.app/Contents/MacOS/ui-bridge' show liveControl --background
 
 登录后的自动启动同样使用后台方式，不主动弹出窗口或抢占焦点。
 
 ## 启动服务
 
 ```bash
-swift run app-mcp-bridge start
-swift run app-mcp-bridge status
+swift run ui-bridge start
+swift run ui-bridge status
 ```
 
 默认只监听 `127.0.0.1:8765`。查看令牌：
 
 ```bash
-swift run app-mcp-bridge token
+swift run ui-bridge token
 ```
 
 检查接口：
 
 ```bash
-TOKEN=$(swift run app-mcp-bridge token 2>/dev/null)
+TOKEN=$(swift run ui-bridge token 2>/dev/null)
 curl http://127.0.0.1:8765/health
 curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8765/v1/permissions
 curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8765/v1/apps
@@ -77,7 +79,7 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8765/v1/apps
 停止：
 
 ```bash
-swift run app-mcp-bridge stop
+swift run ui-bridge stop
 ```
 
 当前接口：
@@ -102,7 +104,7 @@ swift run app-mcp-bridge stop
 推荐连接已运行 App 的本地地址。先执行：
 
 ```bash
-TOKEN=$('/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' token)
+TOKEN=$('/Applications/UI Bridge.app/Contents/MacOS/ui-bridge' token)
 ```
 
 再把 `$TOKEN` 替换成上一步输出：
@@ -110,7 +112,7 @@ TOKEN=$('/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' token)
 ```json
 {
   "mcpServers": {
-    "app-mcp-bridge": {
+    "ui-bridge": {
       "url": "http://127.0.0.1:8765/mcp",
       "headers": {
         "Authorization": "Bearer $TOKEN",
@@ -126,8 +128,8 @@ TOKEN=$('/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge' token)
 ```json
 {
   "mcpServers": {
-    "app-mcp-bridge": {
-      "command": "/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge",
+    "ui-bridge": {
+      "command": "/Applications/UI Bridge.app/Contents/MacOS/ui-bridge",
       "args": ["mcp"]
     }
   }

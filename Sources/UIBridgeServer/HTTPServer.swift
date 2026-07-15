@@ -5,7 +5,7 @@ import UIBridgeMacCore
 public final class HTTPServer: @unchecked Sendable {
     public let port: UInt16
     private let router: BridgeRouter
-    private let queue = DispatchQueue(label: "com.juln.app-mcp-bridge.http")
+    private let queue = DispatchQueue(label: "com.juln.ui-bridge.http")
     private var listener: NWListener?
 
     private init(port: UInt16 = 8765, token: String, runtime: AutomationRuntime, mcpHTTP: MCPHTTPHandler?) {

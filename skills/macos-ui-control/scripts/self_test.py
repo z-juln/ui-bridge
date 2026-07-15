@@ -11,11 +11,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[3]
-INSTALLED_BINARY = Path("/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge")
+INSTALLED_BINARY = Path("/Applications/UI Bridge.app/Contents/MacOS/ui-bridge")
 BINARY = Path(os.environ["UIBRIDGE_BINARY"]) if "UIBRIDGE_BINARY" in os.environ else (
-    INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "app-mcp-bridge"
+    INSTALLED_BINARY if INSTALLED_BINARY.is_file() else ROOT / ".build" / "debug" / "ui-bridge"
 )
-CLIENT_NAME = os.environ.get("UIBRIDGE_CLIENT_NAME", "app-mcp-bridge-self-test")
+CLIENT_NAME = os.environ.get("UIBRIDGE_CLIENT_NAME", "ui-bridge-self-test")
 
 
 def main() -> int:
@@ -53,7 +53,7 @@ def main() -> int:
         tool_names = [tool["name"] for tool in listed["result"]["tools"]]
         apps = json.loads(called["result"]["content"][0]["text"])
         required = {"permissions_get", "apps_list", "windows_list", "snapshot_get", "plan_check", "action_run"}
-        if server_name != "app-mcp-bridge" or not required.issubset(tool_names) or not isinstance(apps, list):
+        if server_name != "ui-bridge" or not required.issubset(tool_names) or not isinstance(apps, list):
             raise RuntimeError("MCP response did not match the expected bridge contract")
 
         ordered_apps = sorted(apps, key=lambda app: not app.get("isFrontmost", False))

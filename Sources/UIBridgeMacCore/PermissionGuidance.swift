@@ -32,7 +32,7 @@ public enum PermissionGuidance {
 
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "App MCP Bridge 需要系统权限"
+        alert.messageText = "UI Bridge 需要系统权限"
         alert.informativeText = "缺少\(missing.joined(separator: "、"))权限。授权后才能可靠读取和操作应用界面。"
         alert.addButton(withTitle: "前往设置")
         alert.addButton(withTitle: "稍后")

@@ -1,12 +1,12 @@
 import Foundation
+import UIBridgeMacCore
 
 public struct TokenStore: Sendable {
     public let tokenFile: URL
 
     public init(tokenFile: URL? = nil) {
-        self.tokenFile = tokenFile ?? FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent(".app-mcp-bridge", isDirectory: true)
-            .appendingPathComponent("token", isDirectory: false)
+        if tokenFile == nil { UIBridgePaths.migrateLegacyDataIfNeeded() }
+        self.tokenFile = tokenFile ?? UIBridgePaths.stateDirectory.appendingPathComponent("token", isDirectory: false)
     }
 
     public func loadOrCreate() throws -> String {

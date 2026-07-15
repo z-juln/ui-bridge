@@ -12,7 +12,7 @@ enum UIBridgeCommand {
         do {
             try await run()
         } catch {
-            FileHandle.standardError.write(Data("app-mcp-bridge: \(error.localizedDescription)\n".utf8))
+            FileHandle.standardError.write(Data("ui-bridge: \(error.localizedDescription)\n".utf8))
             Foundation.exit(EXIT_FAILURE)
         }
     }
@@ -21,7 +21,7 @@ enum UIBridgeCommand {
         let arguments = Array(CommandLine.arguments.dropFirst())
         let executablePath = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.path
         let isBundledAppLaunch = arguments.isEmpty && (
-            Bundle.main.bundleIdentifier == "com.juln.app-mcp-bridge"
+            Bundle.main.bundleIdentifier == "com.juln.ui-bridge"
                 || executablePath.contains(".app/Contents/MacOS/")
         )
         let command = arguments.first ?? (isBundledAppLaunch ? "app" : "help")
@@ -29,7 +29,7 @@ enum UIBridgeCommand {
 
         switch command {
         case "version":
-            print("app-mcp-bridge 0.1.0-dev")
+            print("ui-bridge 0.1.0-dev")
         case "permissions":
             let status = PermissionInspector.current()
             print("accessibility=\(status.accessibilityTrusted) screenCapture=\(status.screenCaptureAllowed == true)")
@@ -41,7 +41,7 @@ enum UIBridgeCommand {
             let token = try tokenStore.loadOrCreate()
             let server = try await HTTPServer.make(port: port, token: token)
             try server.start()
-            print("app-mcp-bridge listening on http://127.0.0.1:\(port)")
+            print("ui-bridge listening on http://127.0.0.1:\(port)")
             while !Task.isCancelled {
                 try await Task.sleep(for: .seconds(3_600))
             }
@@ -58,7 +58,7 @@ enum UIBridgeCommand {
             try await MCPBridge.runStdio()
         case "call":
             guard arguments.indices.contains(1) else {
-                throw LocalBridgeClientError.invalidArguments("usage: app-mcp-bridge call <tool> ['{...}'] [--port 8765]")
+                throw LocalBridgeClientError.invalidArguments("usage: ui-bridge call <tool> ['{...}'] [--port 8765]")
             }
             let token = try tokenStore.loadOrCreate()
             let data = try await LocalBridgeClient(token: token, port: parsePort(arguments) ?? 8765).call(
@@ -78,7 +78,7 @@ enum UIBridgeCommand {
             let request = (background ? "background:" : "foreground:") + requestedSection
             try Data(request.utf8).write(to: AppShell.showSettingsRequestURL, options: .atomic)
             if !background {
-                NSRunningApplication.runningApplications(withBundleIdentifier: "com.juln.app-mcp-bridge")
+                NSRunningApplication.runningApplications(withBundleIdentifier: "com.juln.ui-bridge")
                     .first?
                     .activate(options: [.activateAllWindows])
                 DistributedNotificationCenter.default().postNotificationName(
@@ -144,7 +144,7 @@ enum UIBridgeCommand {
                 print("not running")
             }
         default:
-            print("app-mcp-bridge <start|stop|serve|mcp|call|show|status|permissions|token|version|diagnostic-report>")
+            print("ui-bridge <start|stop|serve|mcp|call|show|status|permissions|token|version|diagnostic-report>")
         }
     }
 

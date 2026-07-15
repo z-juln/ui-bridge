@@ -5,7 +5,7 @@ Task Package Index: required
 
 ## 目标
 
-WorkBuddy 与 Cursor 均能通过 App MCP Bridge 对独立临时 TextEdit 文稿完成真实写入，并由最新界面快照确认结果。
+WorkBuddy 与 Cursor 均能通过 UI Bridge 对独立临时 TextEdit 文稿完成真实写入，并由最新界面快照确认结果。
 
 ## 范围
 

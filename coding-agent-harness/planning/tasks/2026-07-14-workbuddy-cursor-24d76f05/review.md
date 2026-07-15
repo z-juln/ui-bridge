@@ -60,7 +60,7 @@
 
 | Evidence ID | Type | Path | Summary |
 | --- | --- | --- | --- |
-| E-001 | diff | TARGET:Sources/app-mcp-bridge/LocalBridgeClient.swift | 本机凭据不出现在 Agent 命令中，调用映射完整 |
+| E-001 | diff | TARGET:Sources/ui-bridge/LocalBridgeClient.swift | 本机凭据不出现在 Agent 命令中，调用映射完整 |
 | E-002 | command | TARGET:swift build | 编译通过 |
 | E-003 | command | TARGET:swift run protocol-self-test | 4 checks passed |
 | E-004 | command | TARGET:swift run core-self-test | TextEdit 代表窗口通过 |

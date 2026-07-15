@@ -20,7 +20,7 @@ struct BridgeRouter: Sendable {
     func route(_ request: HTTPRequest) async -> HTTPResponse {
         if request.path == "/health" {
             guard request.method == "GET" else { return json(status: 405, ["error": "method_not_allowed"]) }
-            return json(["status": "ok", "service": "app-mcp-bridge"])
+            return json(["status": "ok", "service": "ui-bridge"])
         }
         guard request.headers["authorization"] == "Bearer \(token)" else {
             return json(status: 401, ["error": "unauthorized"])

@@ -4,9 +4,8 @@ import UIBridgeMacCore
 
 @MainActor
 final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
-    static let showSettingsNotification = Notification.Name("com.juln.app-mcp-bridge.show-settings")
-    static let showSettingsRequestURL = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent("Library/Application Support/app-mcp-bridge", isDirectory: true)
+    static let showSettingsNotification = Notification.Name("com.juln.ui-bridge.show-settings")
+    static let showSettingsRequestURL = UIBridgePaths.applicationSupportDirectory
         .appendingPathComponent("show-settings.request")
     private let statusItem: NSStatusItem
     private let token: String
@@ -20,6 +19,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var canOpenOnActivation = false
 
     init(token: String) {
+        UIBridgePaths.migrateLegacyDataIfNeeded()
         self.token = token
         sessionCoordinator = AutomationSessionCoordinator()
         settingsModel = BridgeSettingsModel(token: token, session: sessionCoordinator)
@@ -118,7 +118,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func makeMenu() -> NSMenu {
-        let menu = NSMenu(title: "App MCP Bridge")
+        let menu = NSMenu(title: "UI Bridge")
         populateMenu(menu)
         return menu
     }
@@ -143,7 +143,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func populateMenu(_ menu: NSMenu) {
-        menu.addItem(item(title: "打开 App MCP Bridge…", action: #selector(showSettings)))
+        menu.addItem(item(title: "打开 UI Bridge…", action: #selector(showSettings)))
         menu.addItem(.separator())
         let status = NSMenuItem(title: "服务运行中 · 127.0.0.1:8765", action: nil, keyEquivalent: "")
         status.isEnabled = false
@@ -165,7 +165,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(item(title: "检查系统权限", action: #selector(checkPermissions)))
         menu.addItem(item(title: "复制 MCP 连接配置", action: #selector(copyConnection)))
         menu.addItem(.separator())
-        menu.addItem(item(title: "退出 App MCP Bridge", action: #selector(quitApp), key: "q"))
+        menu.addItem(item(title: "退出 UI Bridge", action: #selector(quitApp), key: "q"))
     }
 
     private func item(title: String, action: Selector, key: String = "") -> NSMenuItem {
@@ -245,7 +245,7 @@ final class AppShell: NSObject, NSApplicationDelegate, NSMenuDelegate {
             statusItem.length = NSStatusItem.squareLength
             statusItem.button?.image = Self.makeMenuBarIcon()
             statusItem.button?.imageScaling = .scaleProportionallyDown
-            statusItem.button?.toolTip = "App MCP Bridge"
+            statusItem.button?.toolTip = "UI Bridge"
             return
         }
 

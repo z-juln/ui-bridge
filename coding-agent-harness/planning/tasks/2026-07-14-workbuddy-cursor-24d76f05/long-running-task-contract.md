@@ -2,7 +2,7 @@
 
 ## 目标
 
-让 WorkBuddy 与 Cursor 都通过 App MCP Bridge 完成一次隔离、可回读验证的真实写入。
+让 WorkBuddy 与 Cursor 都通过 UI Bridge 完成一次隔离、可回读验证的真实写入。
 
 ## 范围
 

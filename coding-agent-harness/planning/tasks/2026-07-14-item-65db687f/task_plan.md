@@ -34,7 +34,7 @@ Task Package Index: required
 
 | ID | 类型 | 路径 | 为什么需要 | 使用者 |
 | --- | --- | --- | --- | --- |
-| C-001 | code | `TARGET:Sources/app-mcp-bridge/` | 现有菜单栏、活动提示和 App 生命周期 | coordinator |
+| C-001 | code | `TARGET:Sources/ui-bridge/` | 现有菜单栏、活动提示和 App 生命周期 | coordinator |
 | C-002 | code | `TARGET:Sources/UIBridgeMacCore/AutomationActivityCenter.swift` | 现有真实活动来源 | coordinator |
 | C-003 | public-doc | `TARGET:docs/01-product-and-architecture.md` | 产品边界和隐私规则 | coordinator |
 | C-004 | private-plan | `TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/` | 已完成能力与回归证据 | coordinator |
@@ -55,6 +55,8 @@ Task Package Index: required
 - [x] 实时页展示真实客户端到目标应用的映射，并区分只读、执行、复查、待确认和取消事件。
 - [x] 诊断页展示真实服务、权限、客户端和画面状态，可复制摘要并主动导出脱敏报告。
 - [x] 删除、购买、权限变更必须 App 内二次确认，拒绝或超时不执行。
+- [x] 产品、App、命令、连接、系统身份和本地状态统一为 UI Bridge / `ui-bridge`，旧名称只用于升级迁移和历史审计。
+- [x] 浏览器页面与内嵌 WebView 的未来方向已形成独立边界文档，明确细节待定且当前未实现。
 - [ ] 安装版构建、自检、真实只读与安全写入回归通过。
 
 ## 工作树（Worktree）

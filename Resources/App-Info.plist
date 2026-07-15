@@ -5,17 +5,17 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>zh_CN</string>
     <key>CFBundleDisplayName</key>
-    <string>App MCP Bridge</string>
+    <string>UI Bridge</string>
 	<key>CFBundleExecutable</key>
-	<string>app-mcp-bridge</string>
+	<string>ui-bridge</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
     <key>CFBundleIdentifier</key>
-    <string>com.juln.app-mcp-bridge</string>
+    <string>com.juln.ui-bridge</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>App MCP Bridge</string>
+    <string>UI Bridge</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

@@ -25,7 +25,7 @@ struct SettingsRootView: View {
                     .resizable()
                     .frame(width: 34, height: 34)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("App MCP Bridge").font(.headline)
+                    Text("UI Bridge").font(.headline)
                     Text("本机应用操控中心").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
@@ -321,7 +321,7 @@ private struct LiveControlView: View {
                 clientBadge(event.source)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(event.source ?? "本地 MCP").font(.caption.weight(.semibold)).lineLimit(1)
-                    Text("经 App MCP Bridge").font(.caption2).foregroundStyle(.secondary)
+                    Text("经 UI Bridge").font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "arrow.right").foregroundStyle(.secondary)
@@ -515,7 +515,7 @@ private struct AppAccessSettingsView: View {
             SettingsCard {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("正在运行的应用").font(.headline)
-                    ForEach(model.runningApps.filter { $0.appID != "com.juln.app-mcp-bridge" }.prefix(18), id: \.pid) { app in
+                    ForEach(model.runningApps.filter { $0.appID != "com.juln.ui-bridge" }.prefix(18), id: \.pid) { app in
                         HStack(spacing: 12) {
                             AppIconView(pid: app.pid, size: 28)
                             VStack(alignment: .leading, spacing: 1) {

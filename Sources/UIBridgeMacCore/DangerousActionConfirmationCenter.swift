@@ -38,11 +38,11 @@ public enum DangerousActionConfirmationCenter {
     public static let defaultTimeout: TimeInterval = 60
 
     public static var directory: URL {
-        if let override = ProcessInfo.processInfo.environment["APP_MCP_BRIDGE_CONFIRMATION_DIR"], !override.isEmpty {
+        if let override = ProcessInfo.processInfo.environment["UI_BRIDGE_CONFIRMATION_DIR"], !override.isEmpty {
             return URL(fileURLWithPath: override, isDirectory: true)
         }
-        return FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/app-mcp-bridge/confirmations", isDirectory: true)
+        UIBridgePaths.migrateLegacyDataIfNeeded()
+        return UIBridgePaths.applicationSupportDirectory.appendingPathComponent("confirmations", isDirectory: true)
     }
 
     public static var heartbeatURL: URL { directory.appendingPathComponent("app-heartbeat") }

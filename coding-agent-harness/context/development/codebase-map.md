@@ -12,7 +12,7 @@ Confidence: medium
 | `Sources/UIBridgeMacCore` | macOS 应用、窗口、控件、截图和动作 |
 | `Sources/UIBridgeServer` | HTTP、鉴权、会话、队列 |
 | `Sources/UIBridgeMCP` | MCP 工具适配 |
-| `Sources/app-mcp-bridge` | CLI 和服务启动入口 |
+| `Sources/ui-bridge` | CLI 和服务启动入口 |
 | `Tests/` | 单元、契约和集成测试 |
 | `skills/macos-ui-control` | 通用 Agent Skill |
 | `docs/` | 产品和协议设计 |

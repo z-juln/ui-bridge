@@ -1,10 +1,10 @@
 #!/bin/zsh
 set -euo pipefail
 
-STATE_DIR="$HOME/Library/Application Support/macOS UI Bridge"
+STATE_DIR="$HOME/Library/Application Support/UI Bridge"
 KEYCHAIN="$STATE_DIR/local-signing.keychain-db"
-KEYCHAIN_PASSWORD="macos-ui-bridge-local-development"
-IDENTITY="macOS UI Bridge Local Development"
+KEYCHAIN_PASSWORD="ui-bridge-local-development"
+IDENTITY="UI Bridge Local Development"
 
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR"

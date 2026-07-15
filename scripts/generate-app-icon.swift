@@ -9,7 +9,7 @@ guard CommandLine.arguments.count == 2 else {
 let output = URL(fileURLWithPath: CommandLine.arguments[1])
 let fileManager = FileManager.default
 let iconset = fileManager.temporaryDirectory
-    .appendingPathComponent("app-mcp-bridge-\(UUID().uuidString).iconset")
+    .appendingPathComponent("ui-bridge-\(UUID().uuidString).iconset")
 try fileManager.createDirectory(at: iconset, withIntermediateDirectories: true)
 defer { try? fileManager.removeItem(at: iconset) }
 

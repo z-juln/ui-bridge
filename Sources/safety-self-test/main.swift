@@ -6,9 +6,9 @@ import UIBridgeMacCore
 enum SafetySelfTest {
     static func main() async throws {
         let directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent("app-mcp-bridge-safety-\(UUID().uuidString)", isDirectory: true)
-        setenv("APP_MCP_BRIDGE_CONFIRMATION_DIR", directory.path, 1)
-        setenv("APP_MCP_BRIDGE_ACCESS_POLICY_PATH", directory.appendingPathComponent("app-access.json").path, 1)
+            .appendingPathComponent("ui-bridge-safety-\(UUID().uuidString)", isDirectory: true)
+        setenv("UI_BRIDGE_CONFIRMATION_DIR", directory.path, 1)
+        setenv("UI_BRIDGE_ACCESS_POLICY_PATH", directory.appendingPathComponent("app-access.json").path, 1)
         defer { try? FileManager.default.removeItem(at: directory) }
 
         DangerousActionConfirmationCenter.writeHeartbeat()

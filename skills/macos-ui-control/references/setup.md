@@ -17,7 +17,7 @@ The self-test is read-only. A successful run prints the server name, tool names,
 Prefer the running App's authenticated local endpoint. Obtain its token:
 
 ```bash
-/Applications/App\ MCP\ Bridge.app/Contents/MacOS/app-mcp-bridge token
+/Applications/UI\ Bridge.app/Contents/MacOS/ui-bridge token
 ```
 
 Configure the endpoint and replace `TOKEN_FROM_COMMAND`:
@@ -25,7 +25,7 @@ Configure the endpoint and replace `TOKEN_FROM_COMMAND`:
 ```json
 {
   "mcpServers": {
-    "app-mcp-bridge": {
+    "ui-bridge": {
       "url": "http://127.0.0.1:8765/mcp",
       "headers": { "Authorization": "Bearer TOKEN_FROM_COMMAND" }
     }
@@ -38,8 +38,8 @@ If the client does not support local HTTP MCP, use stdio:
 ```json
 {
   "mcpServers": {
-    "app-mcp-bridge": {
-      "command": "/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge",
+    "ui-bridge": {
+      "command": "/Applications/UI Bridge.app/Contents/MacOS/ui-bridge",
       "args": ["mcp"]
     }
   }
@@ -62,7 +62,7 @@ WorkBuddy's own **自定义连接器 → 配置 MCP** screen reports the same fi
 Do not treat a visible tool list or a read-only snapshot as proof that a client can automate an app. Use a new, unsaved TextEdit document containing no user data, then run this prompt separately in Cursor and WorkBuddy:
 
 ```text
-Use only app-mcp-bridge. Run a real write test against the currently open blank TextEdit window. Call apps_list and windows_list, get a fresh snapshot, find the editable document text area, call plan_check for set_value with exact text APP_MCP_BRIDGE_CLIENT_TEST, then call action_run. Use the returned new_snapshot_id to read again and verify the document value exactly matches. Do not save or close the document and do not operate any other app. Report every tool actually called and its result.
+Use only ui-bridge. Run a real write test against the currently open blank TextEdit window. Call apps_list and windows_list, get a fresh snapshot, find the editable document text area, call plan_check for set_value with exact text UI_BRIDGE_CLIENT_TEST, then call action_run. Use the returned new_snapshot_id to read again and verify the document value exactly matches. Do not save or close the document and do not operate any other app. Report every tool actually called and its result.
 ```
 
 Acceptance requires all of the following:
@@ -78,29 +78,29 @@ Use a different marker for each client. Close the test documents without saving 
 
 Prefer the same authenticated URL when supported. Otherwise create a local stdio MCP server:
 
-- command: `/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge`
+- command: `/Applications/UI Bridge.app/Contents/MacOS/ui-bridge`
 - arguments: `mcp`
-- working directory: `/Users/juln/Desktop/workspace/app-mcp-bridge` when the client requests one
+- working directory: the checked-out repository root when the client requests one
 
 The client must launch one process per MCP connection. Do not run the `mcp` command manually in a terminal for normal use.
 
 If WorkBuddy can read the HTTP connection but does not expose `plan_check` or `action_run`, use the installed App's safe local call entry. It reads the local credential internally, so do not put a token in a prompt, shell command, or file:
 
 ```bash
-BRIDGE="/Applications/App MCP Bridge.app/Contents/MacOS/app-mcp-bridge"
+BRIDGE="/Applications/UI Bridge.app/Contents/MacOS/ui-bridge"
 "$BRIDGE" call apps_list
 "$BRIDGE" call windows_list '{"pid":1234}'
 "$BRIDGE" call snapshot_get '{"pid":1234,"window_id":5678}'
 "$BRIDGE" call element_find '{"snapshot_id":"SNAPSHOT","role":"AXTextArea","settable":true}'
 "$BRIDGE" call plan_check '{"snapshot_id":"SNAPSHOT","element_handle":"HANDLE","action":"set_value"}'
-"$BRIDGE" call action_run '{"snapshot_id":"SNAPSHOT","element_handle":"HANDLE","action":"set_value","text":"APP_MCP_BRIDGE_CLIENT_TEST","verification_kind":"element_value_contains","verification_value":"APP_MCP_BRIDGE_CLIENT_TEST"}'
+"$BRIDGE" call action_run '{"snapshot_id":"SNAPSHOT","element_handle":"HANDLE","action":"set_value","text":"UI_BRIDGE_CLIENT_TEST","verification_kind":"element_value_contains","verification_value":"UI_BRIDGE_CLIENT_TEST"}'
 ```
 
 For an Agent prompt, require one `call` command at a time and forbid scripts, pipes, redirects, variables, repository files, and token reads. Always use the action result's new snapshot for the final `element_find`. After a WorkBuddy test, run `git status --short`: WorkBuddy may create its own memory note even when the requested Bridge flow has finished; remove only test-created files after checking their contents.
 
 ## macOS permissions
 
-When using the recommended local endpoint, grant Accessibility and Screen Recording only to **App MCP Bridge.app**. Cursor and WorkBuddy do not need those permissions. Call `permissions_get`; when access is missing, the Bridge App opens its native guidance.
+When using the recommended local endpoint, grant Accessibility and Screen Recording only to **UI Bridge.app**. Cursor and WorkBuddy do not need those permissions. Call `permissions_get`; when access is missing, the Bridge App opens its native guidance.
 
 Only the fallback stdio mode runs automation inside the client-launched process. In that mode, the launching client may also need macOS permissions, so prefer the local endpoint.
 

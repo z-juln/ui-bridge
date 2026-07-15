@@ -10,7 +10,7 @@ enum PreviewStreamCommand {
         let writer = PreviewFrameWriter()
         let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
         guard let window = content.windows.first(where: { $0.windowID == windowID }) else {
-            throw NSError(domain: "AppMCPBridge", code: 2, userInfo: [NSLocalizedDescriptionKey: "目标窗口已关闭或不可捕获"])
+            throw NSError(domain: "UIBridge", code: 2, userInfo: [NSLocalizedDescriptionKey: "目标窗口已关闭或不可捕获"])
         }
         PreviewDiagnosticCenter.record("worker_window_found", windowID: windowID)
         writer.windowID = windowID
@@ -41,7 +41,7 @@ enum PreviewStreamCommand {
 }
 
 private final class PreviewFrameWriter: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sendable {
-    let queue = DispatchQueue(label: "com.juln.app-mcp-bridge.preview-service", qos: .userInitiated)
+    let queue = DispatchQueue(label: "com.juln.ui-bridge.preview-service", qos: .userInitiated)
     private let imageContext = CIContext(options: [.cacheIntermediates: false])
     private let output = FileHandle.standardOutput
     var windowID: UInt32 = 0

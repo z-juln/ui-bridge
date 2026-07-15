@@ -63,7 +63,7 @@ final class BridgeSettingsModel: NSObject, ObservableObject {
     func exportDiagnosticReport() {
         let panel = NSSavePanel()
         panel.title = "导出脱敏诊断报告"
-        panel.nameFieldStringValue = "app-mcp-bridge-diagnostics.json"
+        panel.nameFieldStringValue = "ui-bridge-diagnostics.json"
         panel.allowedContentTypes = [.json]
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -168,7 +168,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         let content = SettingsRootView(model: model)
         let hosting = NSHostingController(rootView: content)
         let window = NSWindow(contentViewController: hosting)
-        window.title = "App MCP Bridge"
+        window.title = "UI Bridge"
         window.setContentSize(NSSize(width: 1_080, height: 720))
         window.minSize = NSSize(width: 900, height: 600)
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]

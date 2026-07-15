@@ -23,7 +23,7 @@ public enum MCPBridge {
         source: @escaping @Sendable () -> String
     ) async -> Server {
         let server = Server(
-            name: "app-mcp-bridge",
+            name: "ui-bridge",
             version: "0.1.0",
             instructions: "Inspect and operate macOS applications through live system state.",
             capabilities: .init(tools: .init(listChanged: false))

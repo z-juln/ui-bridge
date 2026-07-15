@@ -3,14 +3,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "app-mcp-bridge",
+    name: "ui-bridge",
     platforms: [.macOS(.v14)],
     products: [
         .library(name: "UIBridgeProtocol", targets: ["UIBridgeProtocol"]),
         .library(name: "UIBridgeMacCore", targets: ["UIBridgeMacCore"]),
         .library(name: "UIBridgeServer", targets: ["UIBridgeServer"]),
         .library(name: "UIBridgeMCP", targets: ["UIBridgeMCP"]),
-        .executable(name: "app-mcp-bridge", targets: ["app-mcp-bridge"]),
+        .executable(name: "ui-bridge", targets: ["ui-bridge"]),
     ],
     dependencies: [
         .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.12.1"),
@@ -39,7 +39,7 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "app-mcp-bridge",
+            name: "ui-bridge",
             dependencies: ["UIBridgeProtocol", "UIBridgeMacCore", "UIBridgeServer", "UIBridgeMCP"],
             swiftSettings: [.unsafeFlags(["-parse-as-library"])]
         ),

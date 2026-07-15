@@ -25,14 +25,14 @@
 ### 2026-07-14 10:18 - 任务规划
 
 - 做了什么：把真实写入定义为两个客户端各自对独立 TextEdit 文稿执行计划检查、写入和最新快照回读；明确不碰用户现有文稿。
-- 验证结果：第一轮任务已最终确认、标记完成并推送；Bridge 健康检查为 ok；本机两个客户端均已有 `app-mcp-bridge` 连接配置。
+- 验证结果：第一轮任务已最终确认、标记完成并推送；Bridge 健康检查为 ok；本机两个客户端均已有 `ui-bridge` 连接配置。
 - 下一步：实现隔离测试夹具并从 WorkBuddy 发起第一轮真实写入。
 - 证据：command:TARGET:coding-agent-harness/governance/generated/Closeout-Index.md:第一轮任务已 finalized；command:TARGET:scripts/configure-mcp-clients.sh:两个客户端连接已配置
 
 ### 2026-07-14 10:40 - Cursor 真实写入通过
 
-- 做了什么：新建独立未保存的 TextEdit 空白文稿，从 Cursor 的 `app-mcp-bridge` 连接发起写入；Cursor 依次发现应用和窗口、读取快照、定位输入区、检查写入方案、执行写入，并用动作返回的新快照回读。
-- 验证结果：`action_run` 返回 `confirmed`；新快照中的文本精确等于 `APP_MCP_BRIDGE_CURSOR_20260714_1030`；另从 TextEdit 界面独立读取，内容再次完全一致。未保存、未关闭，也未操作其他应用。
+- 做了什么：新建独立未保存的 TextEdit 空白文稿，从 Cursor 的 `ui-bridge` 连接发起写入；Cursor 依次发现应用和窗口、读取快照、定位输入区、检查写入方案、执行写入，并用动作返回的新快照回读。
+- 验证结果：`action_run` 返回 `confirmed`；新快照中的文本精确等于 `UI_BRIDGE_CURSOR_20260714_1030`；另从 TextEdit 界面独立读取，内容再次完全一致。未保存、未关闭，也未操作其他应用。
 - 下一步：完成 WorkBuddy 同等闭环并运行全套项目检查。
 - 证据：report:TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/walkthrough.md:Cursor 真实客户端写入与独立回读证据
 
@@ -46,7 +46,7 @@
 ### 2026-07-14 11:16 - WorkBuddy 真实写入通过
 
 - 做了什么：为 WorkBuddy 增加不暴露本机凭据的 `call` 入口；WorkBuddy 逐条调用应用、窗口、快照、控件查找、方案检查和写入，并用动作返回的新快照回读。
-- 验证结果：`plan_check` 返回 `ready`，`action_run` 返回 `confirmed`，新快照回读与独立 TextEdit 界面都精确等于 `APP_MCP_BRIDGE_WB_20260714_1055`。WorkBuddy 额外生成的 `.workbuddy/memory/2026-07-14.md` 已检查并删除。
+- 验证结果：`plan_check` 返回 `ready`，`action_run` 返回 `confirmed`，新快照回读与独立 TextEdit 界面都精确等于 `UI_BRIDGE_WB_20260714_1055`。WorkBuddy 额外生成的 `.workbuddy/memory/2026-07-14.md` 已检查并删除。
 - 下一步：完成构建、自检、安装和 Harness 检查，提交最终文档。
 - 证据：report:TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/walkthrough.md:WorkBuddy 真实客户端写入与独立回读证据；command:TARGET:git status --short:测试记忆文件已清理
 

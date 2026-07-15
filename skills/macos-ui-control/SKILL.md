@@ -1,6 +1,6 @@
 ---
 name: macos-ui-control
-description: Inspect and safely operate native macOS application interfaces through the local app-mcp-bridge MCP server. Use for discovering running apps and windows, checking Accessibility or Screen Recording readiness, reading live UI state, and completing general desktop UI tasks in any Mac app when no purpose-built API or connector is available.
+description: Inspect and safely operate native macOS application interfaces through the local ui-bridge MCP server. Use for discovering running apps and windows, checking Accessibility or Screen Recording readiness, reading live UI state, and completing general desktop UI tasks in any Mac app when no purpose-built API or connector is available.
 ---
 
 # macOS UI Control
@@ -9,7 +9,7 @@ Use the bridge as a last-mile UI tool for any macOS app. Prefer an app API, conn
 
 ## Connect
 
-Require the `app-mcp-bridge` MCP server. If its tools are absent, read [references/setup.md](references/setup.md), guide the user through setup, and stop before attempting UI work.
+Require the `ui-bridge` MCP server. If its tools are absent, read [references/setup.md](references/setup.md), guide the user through setup, and stop before attempting UI work.
 
 Start every task with `permissions_get`. The bridge presents a native dialog with a direct System Settings button when a permission is missing. Tell the user to complete that dialog and wait for authorization. Never replace this flow with a long manual settings tutorial unless the dialog cannot open, and never claim an action happened when permission or tool support is absent.
 

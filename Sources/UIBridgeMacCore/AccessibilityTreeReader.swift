@@ -78,7 +78,7 @@ public final class AccessibilityTreeReader: @unchecked Sendable {
             throw BridgeError(
                 code: .permissionMissing,
                 message: "Accessibility permission is required to read application controls.",
-                suggestedAction: "Grant Accessibility permission to App MCP Bridge in System Settings."
+                suggestedAction: "Grant Accessibility permission to UI Bridge in System Settings."
             )
         }
 

@@ -76,7 +76,7 @@ final class ControlOverlayController: NSObject {
         return targets.compactMap { pid, state in
             guard state.lastSeen >= cutoff else { return nil }
             guard let runningApp = NSRunningApplication(processIdentifier: pid),
-                  runningApp.bundleIdentifier != "com.juln.app-mcp-bridge" else { return nil }
+                  runningApp.bundleIdentifier != "com.juln.ui-bridge" else { return nil }
             return ControlledTarget(
                 pid: pid,
                 name: state.name,
