@@ -125,7 +125,14 @@ TOKEN=$('/Applications/UI Bridge.app/Contents/MacOS/ui-bridge' token)
 }
 ```
 
-如果客户端不支持本地地址，使用直接启动方式：
+连接失败时，先独立启动 App，再让客户端重连：
+
+```bash
+open -g "/Applications/UI Bridge.app"
+```
+
+禁止通过 `swift run`、`ui-bridge start`、`serve`、`mcp`、`nohup` 或 shell 后台任务恢复
+App。只有客户端明确不支持本地地址时，才使用下面的兼容方式，且不能作为连接失败后的自动降级：
 
 ```json
 {

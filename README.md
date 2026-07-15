@@ -77,7 +77,7 @@ python3 skills/macos-ui-control/scripts/self_test.py
 
 - 内嵌 Chromium 浏览器和现有 Chrome 连接。
 - 与 Codex 一致的 Chrome 用户、密码和 Cookie 本地导入体验。
-- 用户框选教学，以及原生 App、网页共用的操作经验库。
+- 自动沉淀、验证、更新和淘汰原生 App、网页共用的操作经验。
 - Windows 原生应用支持。
 - 正式签名、公证、安装包、自动更新和公开发布渠道。
 
@@ -94,5 +94,5 @@ python3 skills/macos-ui-control/scripts/self_test.py
 | [交付与验证](docs/03-delivery-and-validation.md) | 测试策略、验收场景和质量门槛 |
 | [当前状态](docs/04-current-status.md) | 已完成、未完成和当前限制 |
 | [Web Bridge 计划](docs/05-future-web-plan.md) | 内嵌浏览器、Chrome 连接与资料导入 |
-| [操作经验库计划](docs/06-experience-library-plan.md) | App 与 Web 共用的教学、复用和失效机制 |
+| [操作经验库计划](docs/06-experience-library-plan.md) | App 与 Web 共用的自动学习、复用和失效机制 |
 | [本地开发与使用](docs/development-and-operations.md) | 构建、安装、命令、接口和排错 |

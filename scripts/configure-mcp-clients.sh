@@ -24,24 +24,24 @@ update_config() {
     fi
     jq --arg endpoint "$ENDPOINT" --arg token "$TOKEN" --arg client "$client" --arg old "$OLD_CONNECTION_NAME" --arg early "$EARLY_CONNECTION_NAME" '
       .mcpServers = (.mcpServers // {}) |
-      .mcpServers["ui-bridge"] = (
-        if $client == "workbuddy" then
-          {url: $endpoint, headers: {Authorization: ("Bearer " + $token), "X-App-MCP-Client": "WorkBuddy"}, type: "streamable-http", timeout: 30000}
-        else
-          {command: "/Applications/UI Bridge.app/Contents/MacOS/ui-bridge", args: ["mcp"]}
-        end
-      ) |
+      .mcpServers["ui-bridge"] = ({
+        url: $endpoint,
+        headers: {
+          Authorization: ("Bearer " + $token),
+          "X-App-MCP-Client": (if $client == "workbuddy" then "WorkBuddy" else "Cursor" end)
+        }
+      } + (if $client == "workbuddy" then {type: "streamable-http", timeout: 30000} else {} end)) |
       del(.mcpServers[$old], .mcpServers[$early])
     ' "$config_file" > "$temp"
   else
     jq -n --arg endpoint "$ENDPOINT" --arg token "$TOKEN" --arg client "$client" '
-      {mcpServers: {"ui-bridge": (
-        if $client == "workbuddy" then
-          {url: $endpoint, headers: {Authorization: ("Bearer " + $token), "X-App-MCP-Client": "WorkBuddy"}, type: "streamable-http", timeout: 30000}
-        else
-          {command: "/Applications/UI Bridge.app/Contents/MacOS/ui-bridge", args: ["mcp"]}
-        end
-      )}}
+      {mcpServers: {"ui-bridge": ({
+        url: $endpoint,
+        headers: {
+          Authorization: ("Bearer " + $token),
+          "X-App-MCP-Client": (if $client == "workbuddy" then "WorkBuddy" else "Cursor" end)
+        }
+      } + (if $client == "workbuddy" then {type: "streamable-http", timeout: 30000} else {} end))}}
     ' > "$temp"
   fi
 

@@ -14,7 +14,7 @@ The self-test is read-only. A successful run prints the server name, tool names,
 
 ## Cursor
 
-Prefer the running App's authenticated local endpoint. Obtain its token:
+Use the running App's authenticated local endpoint. Obtain its token:
 
 ```bash
 /Applications/UI\ Bridge.app/Contents/MacOS/ui-bridge token
@@ -27,13 +27,42 @@ Configure the endpoint and replace `TOKEN_FROM_COMMAND`:
   "mcpServers": {
     "ui-bridge": {
       "url": "http://127.0.0.1:8765/mcp",
-      "headers": { "Authorization": "Bearer TOKEN_FROM_COMMAND" }
+      "headers": {
+        "Authorization": "Bearer TOKEN_FROM_COMMAND",
+        "X-App-MCP-Client": "Cursor"
+      }
     }
   }
 }
 ```
 
-If the client does not support local HTTP MCP, use stdio:
+Do not use stdio as automatic recovery when this endpoint is temporarily unavailable. The installed App must run as an independent macOS application so it keeps the stable permission identity, menu state, live previews, and confirmation UI.
+
+### Recover a failed connection
+
+1. Check `http://127.0.0.1:8765/health`.
+2. If unavailable, launch the installed App through Launch Services:
+
+```bash
+open -g "/Applications/UI Bridge.app"
+```
+
+3. Wait for the health endpoint, then retry or reload the configured `ui-bridge` MCP server once.
+4. Never run `ui-bridge start`, `ui-bridge serve`, `ui-bridge mcp`, `swift run`, `nohup`, or a shell background process to recover the App.
+5. Never silently replace the configured HTTP server with stdio.
+
+Cursor may require two independent user approvals:
+
+- A terminal approval if the Agent itself executes the `open` command.
+- MCP tool approval before a tool call. Cursor asks by default unless the user enables auto-run or allowlists the tool/server.
+
+Neither approval authenticates UI Bridge. With a valid local token, App startup and HTTP connection have no separate OAuth step. If the App is healthy but Cursor kept the failed server disabled, the user may need to click retry or enable once in Cursor's MCP settings.
+
+Cursor's current MCP approval behavior is documented at <https://docs.cursor.com/context/model-context-protocol>.
+
+### Compatibility-only stdio mode
+
+Use stdio only when the client was deliberately configured for it and cannot use the local HTTP endpoint:
 
 ```json
 {
@@ -76,13 +105,13 @@ Use a different marker for each client. Close the test documents without saving 
 
 ## WorkBuddy and other MCP clients
 
-Prefer the same authenticated URL when supported. Otherwise create a local stdio MCP server:
+Prefer the same authenticated URL when supported. Otherwise, and only as a deliberate compatibility choice, create a local stdio MCP server:
 
 - command: `/Applications/UI Bridge.app/Contents/MacOS/ui-bridge`
 - arguments: `mcp`
 - working directory: the checked-out repository root when the client requests one
 
-The client must launch one process per MCP connection. Do not run the `mcp` command manually in a terminal for normal use.
+The client must launch one process per stdio MCP connection. Do not run the `mcp` command manually in a terminal for normal use, and never switch to this mode merely because the independent App is temporarily offline.
 
 If WorkBuddy can read the HTTP connection but does not expose `plan_check` or `action_run`, use the installed App's safe local call entry. It reads the local credential internally, so do not put a token in a prompt, shell command, or file:
 

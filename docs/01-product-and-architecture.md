@@ -9,7 +9,7 @@
 浏览器页面和内嵌 WebView 属于已确认的未来方向，但尚未进入当前完成范围。规划边界和待定问题见
 [`05-future-web-plan.md`](05-future-web-plan.md)。
 
-原生 App、网页和内嵌 WebView 将共用操作经验库。经验只保存稳定的定位依据、动作前条件和
+原生 App、网页和内嵌 WebView 将共用由 Bridge 自动管理的操作经验库。经验只保存稳定的定位依据、动作前条件和
 验证方式，不保存密码、Cookie、固定坐标或界面正文，规划见
 [`06-experience-library-plan.md`](06-experience-library-plan.md)。
 
@@ -52,7 +52,7 @@
 - 远程控制另一台电脑。
 - 云端账户、团队后台或多租户管理。
 - 浏览器页面和内嵌 WebView 的专用读取、执行与验证通道。
-- 用户教学、官方经验包和跨 App/Web 操作经验库。
+- 自动学习、官方经验包和跨 App/Web 操作经验库。
 - 绕过验证码、安全警告、系统权限或应用自身限制。
 - 基于大模型的通用视觉识别服务。
 - 为每个应用编写大量固定坐标脚本。
@@ -161,14 +161,15 @@ flowchart LR
 
 ### MCP 入口
 
-推荐同时支持：
+推荐同时支持，但默认连接独立运行 App 的本地地址：
 
-- `stdio`：由 Cursor 直接启动 `ui-bridge mcp`。
 - Streamable HTTP：连接已经运行的 App，地址为
   `http://127.0.0.1:8765/mcp`。
+- `stdio`：仅作为客户端无法使用本地 HTTP 时的兼容方式，不得在 App 连接失败后自动切换。
 
-命令行入口只是与服务 App 通信的轻量客户端，不直接操作系统界面。这样升级 MCP
-适配器不会影响系统权限归属。
+App 连接失败时必须通过 macOS Launch Services 独立打开 `/Applications/UI Bridge.app`，
+等待健康检查后重连 MCP。禁止通过子进程、`swift run`、`start`、`serve`、`mcp`、`nohup`
+或 shell 后台任务代替 App。这样系统权限、确认窗口、实时画面和菜单状态始终属于稳定 App 身份。
 
 ### 本地 HTTP 入口
 

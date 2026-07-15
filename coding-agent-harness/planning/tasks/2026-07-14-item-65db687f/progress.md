@@ -109,6 +109,15 @@
 - 证据：document:TARGET:docs/05-future-web-plan.md:Codex-aligned browser and profile import plan recorded
 - 证据：document:TARGET:docs/06-experience-library-plan.md:cross native app and web experience lifecycle recorded
 
+### 2026-07-15 20:00 - 全自动经验与独立 App 连接纪律
+
+- 做了什么：将经验库改为 Bridge 内部全自动生成、影子复测、升降级、替换和淘汰，不再要求用户教学或 Agent 管理；更新通用 Skill，规定 MCP 断开后只能通过 Launch Services 独立打开 UI Bridge.app，再重连一次，禁止用子进程、stdio 或后台命令代替 App；Cursor 和 WorkBuddy 配置脚本统一改为连接 App 的本地 MCP 地址。
+- 验证结果：独立 App 健康检查、Cursor 身份的 HTTP MCP 初始化和工具列表通过；Skill 明确区分 App 启动、MCP 重连和 Cursor 工具批准；经验计划、产品、协议、状态、README 和本地接入文档表述一致。
+- 下一步：未来实现经验引擎时建立独立任务；当前实现任务继续等待新身份辅助功能授权后的综合回归。
+- 证据：command:TARGET:open -g /Applications/UI Bridge.app + /health + /mcp:passed
+- 证据：document:TARGET:skills/macos-ui-control/SKILL.md:independent launch and automatic experience rules recorded
+- 证据：document:TARGET:docs/06-experience-library-plan.md:no manual teaching or Agent experience mutation
+
 ## 残余
 
 - 实时画面主链路已完成安装版验收。
