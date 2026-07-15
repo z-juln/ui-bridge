@@ -1,9 +1,11 @@
-# UI Bridge
+# UI Bridge 本地开发、安装与接入
 
-本机界面操作服务。当前 macOS 版本提供通用应用/窗口发现、控件树核心、窗口截图、
+本文面向本地开发者和接入方。项目介绍请先阅读仓库根目录的 `README.md`。
+
+当前 macOS 版本提供通用应用/窗口发现、控件树核心、窗口截图、
 动作执行前检查、动作验证、带令牌保护的本地 HTTP 接口、MCP 接入和通用 Skill。
-未来将把浏览器页面和内嵌 WebView 纳入同一目标模型，具体接入方式尚未确定，见
-[`docs/05-future-web-plan.md`](docs/05-future-web-plan.md)。
+未来将把浏览器页面和内嵌 WebView 纳入同一目标模型，已确认的产品方案见
+[`05-future-web-plan.md`](05-future-web-plan.md)。
 
 ## 构建与自检
 
@@ -39,7 +41,7 @@ App 会先向 macOS 正式申请缺少
 App 启动时也会自动校验权限；两项都已授权时保持静默，只有确实缺少权限才提示。
 从菜单手动点击“检查系统权限”时，即使权限正常也会显示明确的检查结果。
 
-当前已完成能力和后续范围见 [`docs/04-current-status.md`](docs/04-current-status.md)。
+当前已完成能力和后续范围见 [`04-current-status.md`](04-current-status.md)。
 
 ```bash
 curl http://127.0.0.1:8765/health
