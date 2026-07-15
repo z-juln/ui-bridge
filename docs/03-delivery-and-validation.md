@@ -9,7 +9,7 @@ ui-bridge/
 ├── Sources/                     # App、核心、协议、HTTP 与 MCP
 ├── Tests/                       # 协议和核心测试
 ├── skills/
-│   └── macos-ui-control/        # 通用 macOS Agent Skill
+│   └── ui-bridge-control/       # 跨平台命名的通用 Agent Skill（当前实现 macOS）
 ├── scripts/                     # 构建、安装和客户端配置
 ├── docs/                        # 产品、协议、验证和路线图
 ├── coding-agent-harness/        # 任务计划、证据和交接

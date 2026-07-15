@@ -14,7 +14,7 @@ Confidence: medium
 | `Sources/UIBridgeMCP` | MCP 工具适配 |
 | `Sources/ui-bridge` | CLI 和服务启动入口 |
 | `Tests/` | 单元、契约和集成测试 |
-| `skills/macos-ui-control` | 通用 Agent Skill |
+| `skills/ui-bridge-control` | 通用 Agent Skill（当前实现 macOS，预留 Windows） |
 | `docs/` | 产品和协议设计 |
 | `coding-agent-harness/` | 任务、交接和回归事实 |
 

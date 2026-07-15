@@ -589,8 +589,8 @@ private struct AgentSkillInstallationGuide: View {
 private enum AgentSkillInstaller {
     static var installedSourcePath: String {
         Bundle.main.resourceURL?
-            .appendingPathComponent("skills/macos-ui-control", isDirectory: true)
-            .path ?? "/Applications/UI Bridge.app/Contents/Resources/skills/macos-ui-control"
+            .appendingPathComponent("skills/ui-bridge-control", isDirectory: true)
+            .path ?? "/Applications/UI Bridge.app/Contents/Resources/skills/ui-bridge-control"
     }
 
     static var prompt: String {

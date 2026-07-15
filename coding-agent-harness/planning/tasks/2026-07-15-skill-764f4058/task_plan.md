@@ -42,7 +42,7 @@ Task Package Index: required
 
 ## 步骤
 
-1. 将 `skills/macos-ui-control/` 复制到 App 的只读 Resources。
+1. 将 `skills/ui-bridge-control/` 复制到 App 的只读 Resources。
 2. 在连接页增加教学卡片、弹窗和复制提示词。
 3. 构建安装，检查资源、界面、剪贴板内容和既有回归，再更新文档收口。
 
@@ -50,7 +50,7 @@ Task Package Index: required
 
 - [x] App 包含完整 Skill 目录，源文件与仓库一致。
 - [x] 教学入口不绑定 Agent，不显示猜测性的安装状态。
-- [x] 复制提示词引用真实路径，并明确独立启动 App 的恢复规则。
+- [x] 复制提示词引用真实路径，只说明安装来源、安装动作和结果反馈。
 - [x] 安装版交互、构建和现有自检通过。
 
 ## 工作树（Worktree）

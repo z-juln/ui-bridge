@@ -47,6 +47,16 @@
 - 证据：ui:TARGET:UI Bridge compact skill guide:620x330 layout and copied feedback passed
 - 证据：command:TARGET:clipboard assertions:182 chars and no duplicated runtime rules
 
+### 2026-07-15 23:35 - Skill 改为跨平台名称
+
+- 做了什么：Skill 目录、声明名、触发名、App 内资源路径和安装提示词统一改为 `ui-bridge-control`；当前能力说明继续明确只实现 macOS，未来 Windows 沿用同一个 Skill。
+- 验证结果：Skill 结构校验通过；构建、四组自检、安装和 Harness 检查通过；安装包只包含新目录且与仓库完全一致。后台打开安装版连接页后，弹窗显示新路径，复制反馈正常，剪贴板 183 个字符且不含旧名；测试窗口已收起。
+- 下一步：无；Windows 能力落地时在同一个 Skill 内增加平台分支，不再改名。
+- 证据：command:TARGET:quick_validate.py skills/ui-bridge-control:Skill is valid
+- 证据：command:TARGET:swift build + protocol/core/safety/skill self-tests:all passed
+- 证据：command:TARGET:diff -rq skills/ui-bridge-control /Applications/UI Bridge.app/.../ui-bridge-control:identical
+- 证据：ui:TARGET:UI Bridge Skill installation guide:new source path and copied feedback verified
+
 ## 残余
 
 - 无阻塞残余。首版有意不自动安装、不检测安装状态、不扩展 Skill 内容。

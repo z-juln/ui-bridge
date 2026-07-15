@@ -26,7 +26,7 @@ Cursor、WorkBuddy 等客户端，不扫描或猜测安装状态，也不通过 
 
 ## 第一眼应该看什么
 
-先读 `task_plan.md`，再看连接页、构建脚本和 `skills/macos-ui-control/`。
+先读 `task_plan.md`，再看连接页、构建脚本和 `skills/ui-bridge-control/`。
 
 ## 边界
 

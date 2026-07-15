@@ -7,7 +7,7 @@ From the repository root, build and install the App:
 ```bash
 ./scripts/build-app.sh
 ./scripts/install-app.sh
-python3 skills/macos-ui-control/scripts/self_test.py
+python3 skills/ui-bridge-control/scripts/self_test.py
 ```
 
 The self-test is read-only. A successful run prints the server name, tool names, and the number of running applications.

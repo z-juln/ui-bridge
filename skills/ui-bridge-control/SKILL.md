@@ -1,15 +1,17 @@
 ---
-name: macos-ui-control
-description: Inspect and safely operate native macOS application interfaces through the local ui-bridge MCP server. Use for discovering running apps and windows, checking Accessibility or Screen Recording readiness, reading live UI state, and completing general desktop UI tasks in any Mac app when no purpose-built API or connector is available.
+name: ui-bridge-control
+description: Inspect and safely operate application interfaces through the local ui-bridge MCP server. Use for discovering apps and windows, checking platform permission readiness, reading live UI state, and completing general desktop UI tasks on platforms supported by UI Bridge when no purpose-built API or connector is available.
 ---
 
-# macOS UI Control
+# UI Bridge Control
 
-Use the bridge as a last-mile UI tool for any macOS app. Prefer an app API, connector, or CLI when it can complete the request without driving the interface.
+Use the bridge as a last-mile UI tool for supported desktop apps. Prefer an app API, connector, or CLI when it can complete the request without driving the interface.
+
+The current UI Bridge release implements macOS app control. Do not claim Windows app control until the connected Bridge reports that capability. Keep platform-specific setup in references so the shared workflow can remain cross-platform.
 
 ## Connect
 
-Require the `ui-bridge` MCP server connected to the installed **UI Bridge.app**. Prefer the authenticated local HTTP endpoint so the independently running App owns macOS permissions and visible control state.
+Require the `ui-bridge` MCP server connected to the installed **UI Bridge** application. Prefer the authenticated local HTTP endpoint so the independently running application owns platform permissions and visible control state.
 
 If the tools are absent or the connection fails:
 

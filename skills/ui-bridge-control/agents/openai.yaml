@@ -1,4 +1,4 @@
 interface:
-  display_name: "macOS UI Control"
-  short_description: "Inspect and operate any macOS app through live UI state"
-  default_prompt: "Use $macos-ui-control to inspect a macOS app and safely complete the requested UI task."
+  display_name: "UI Bridge Control"
+  short_description: "Inspect and safely operate apps through UI Bridge"
+  default_prompt: "Use $ui-bridge-control to inspect a supported desktop app and safely complete the requested UI task."

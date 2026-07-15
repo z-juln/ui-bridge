@@ -60,7 +60,7 @@ swift build
 ```bash
 swift run protocol-self-test
 swift run core-self-test
-python3 skills/macos-ui-control/scripts/self_test.py
+python3 skills/ui-bridge-control/scripts/self_test.py
 ```
 
 更完整的安装、命令、接口和客户端配置见
