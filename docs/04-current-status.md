@@ -18,6 +18,7 @@
 - TextEdit、Finder、企业微信和 Electron 类应用的代表性读取或操作验证。
 - 七栏原生设置与调试界面，包括多应用实时画面、客户端映射和脱敏诊断报告导出。
 - 产品、App、命令、连接、系统身份、启动项和本地状态统一更名为 UI Bridge / `ui-bridge`。
+- GitHub 仓库、本地工作区目录和 Codex 项目统一使用 `ui-bridge`。
 
 ## 尚未完成
 

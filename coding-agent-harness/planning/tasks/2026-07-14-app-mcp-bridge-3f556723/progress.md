@@ -52,3 +52,15 @@
 - 下一步：无，本任务文档已收口。
 - 证据：command:TARGET:npx --yes coding-agent-harness check --profile target-project .:passed
 - 证据：command:TARGET:docs/04-current-status.md:已完成、尚未完成和当前限制已统一记录
+
+### 2026-07-15 18:20 - 本地工作区与 Codex 项目收口
+
+- 做了什么：将本地检出目录从 `app-mcp-bridge` 移动为 `ui-bridge`，同步 Codex 已保存工作区与可信项目路径，并将当前任务标题改为 `UI Bridge`。
+- 验证结果：旧目录已不存在，新目录可正常构建和运行自检；GitHub 仍指向 `z-juln/ui-bridge`，Codex 下次重开后会从新路径显示 `ui-bridge` 项目。
+- 下一步：重开 Codex 以刷新当前进程内仍缓存的旧项目标签；无实现残余。
+- 证据：command:TARGET:/Users/juln/Desktop/workspace/ui-bridge:目录存在且 Git 工作区正常
+- 证据：command:TARGET:/Users/juln/Desktop/workspace/app-mcp-bridge:目录不存在
+- 证据：command:TARGET:swift build:passed
+- 证据：command:TARGET:swift run protocol-self-test:4 checks passed
+- 证据：command:TARGET:skills/macos-ui-control/scripts/self_test.py:self-test passed
+- 证据：command:TARGET:npx --yes coding-agent-harness check --profile target-project .:passed
