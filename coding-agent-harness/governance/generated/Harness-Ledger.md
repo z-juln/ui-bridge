@@ -17,6 +17,7 @@ Repo Governance / CI-CD changes remain routed through their reference standards 
 | HL-2026-07-14-macos-ui-bridge-627e70e9 | task | none | 彻底移除 macos-ui-bridge 旧名称 | planned | none | coding-agent-harness/planning/tasks/2026-07-14-macos-ui-bridge-627e70e9/task_plan.md | pending | pending | pending | task registered by CLI | 2026-07-14 |
 | HL-2026-07-14-app-mcp-bridge-3f556723 | task | none | 统一 App MCP Bridge 内部名称 | closed | none | coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/task_plan.md | pending | pending | pending | Human review confirmed; internal name migration finalized | 2026-07-14 |
 | HL-2026-07-14-item-65db687f | task | none | 实现完整设置与实时调试界面 | active | none | coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/task_plan.md | pending | pending | pending | 开始实现完整设置、实时画面与危险操作确认 | 2026-07-14 |
+| HL-2026-07-15-skill-764f4058 | task | none | 实现通用 Skill 安装教学入口 | planned | none | coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/task_plan.md | pending | pending | pending | task registered by CLI | 2026-07-15 |
 
 ## Field Rules
 
