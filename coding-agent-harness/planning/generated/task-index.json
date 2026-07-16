@@ -5,18 +5,23 @@
   "harnessRoot": "TARGET:coding-agent-harness",
   "planningRoot": "TARGET:coding-agent-harness/planning",
   "generatedRoot": "TARGET:coding-agent-harness/governance/generated",
-  "generatedAt": "2026-07-14T02:16:58.015Z",
+  "generatedAt": "2026-07-16T02:52:13.942Z",
   "sourceFileHashes": {
-    "TASKS/2026-07-10-macos-ui-bridge-96db7c45": "524ebabb30d8f0d8213e7d477a63ceb028f7a4969feccf3739a53ee340900920"
+    "TASKS/2026-07-10-macos-ui-bridge-96db7c45": "524ebabb30d8f0d8213e7d477a63ceb028f7a4969feccf3739a53ee340900920",
+    "TASKS/2026-07-14-app-mcp-bridge-3f556723": "39259a609e457e2e00451efd4224eff35ca1ba02728021f00883d214c51df430",
+    "TASKS/2026-07-14-item-65db687f": "40bdc45ad7e9d5a07c06238c2ff04570d16c6d745ba8c8a8b18fc86ee3511fe6",
+    "TASKS/2026-07-14-workbuddy-cursor-24d76f05": "06ddbaa2c4cdc1c94c3103a05e2db2a61d8e72e534ba4fec8197bc8ee5a16458",
+    "TASKS/2026-07-15-skill-764f4058": "57e96da50c840091983838932eb8cd66f3a7dd04225df53a82de987684a0f2f7",
+    "TASKS/2026-07-16-item-e4f4652a": "ae8b8f58c24667c73869619dc6519fd004a8705b3baee5194e0cea95ea578f2c"
   },
   "scope": "all",
   "taskScopes": {
-    "all": 1,
-    "activeCycle": 1,
-    "reviewWorkbench": 1,
+    "all": 6,
+    "activeCycle": 6,
+    "reviewWorkbench": 6,
     "archiveHistory": 0,
     "tombstoneHistory": 0,
-    "taskIndexDefault": 1
+    "taskIndexDefault": 6
   },
   "tasks": [
     {
@@ -135,6 +140,561 @@
         {
           "kind": "walkthrough",
           "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-10-macos-ui-bridge-96db7c45/walkthrough.md"
+        }
+      ]
+    },
+    {
+      "taskKey": "TASKS/2026-07-14-app-mcp-bridge-3f556723",
+      "id": "TASKS/2026-07-14-app-mcp-bridge-3f556723",
+      "title": "统一 App MCP Bridge 内部名称",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closed",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "confirmed",
+      "reviewQueueState": "not-in-queue",
+      "reviewSubmitted": true,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/review.md",
+      "closeoutStatus": "closed",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-14-app-mcp-bridge-3f556723",
+      "completion": 100,
+      "lessonCandidateStatus": "no-candidate-accepted",
+      "lessonCandidateReviewDecision": "no-separate-candidate;-applied-directly-to-task-documentation",
+      "lessonCandidatePromotionState": "not-promoted",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [],
+      "risks": [],
+      "residual": "none",
+      "materialsReady": true,
+      "materialIssues": [],
+      "taskQueues": [
+        "finalized"
+      ],
+      "queues": [
+        "finalized"
+      ],
+      "queueReasons": [],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "",
+      "repairActions": [],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/review.md"
+        },
+        {
+          "kind": "lesson-candidates",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/lesson_candidates.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-app-mcp-bridge-3f556723/walkthrough.md"
+        }
+      ]
+    },
+    {
+      "taskKey": "TASKS/2026-07-14-item-65db687f",
+      "id": "TASKS/2026-07-14-item-65db687f",
+      "title": "实现完整设置与实时调试界面",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closing",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "agent-reviewed",
+      "reviewQueueState": "needs-material",
+      "reviewSubmitted": false,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/review.md",
+      "closeoutStatus": "pending",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-14-item-65db687f",
+      "completion": 100,
+      "lessonCandidateStatus": "no-candidate-accepted",
+      "lessonCandidateReviewDecision": "no-reusable-candidate;-project-specific-decisions-are-documented-locally",
+      "lessonCandidatePromotionState": "not-promoted",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [],
+      "risks": [],
+      "residual": "state-conflicts:1",
+      "materialsReady": false,
+      "materialIssues": [
+        {
+          "code": "missing-review-submission",
+          "severity": "P2",
+          "queue": "missing-materials",
+          "sourcePath": "TARGET:review.md",
+          "sourceLine": 0,
+          "owner": "agent",
+          "message": "Agent has not submitted a strict Agent Review Submission packet.",
+          "allowedWritePaths": [
+            "2026-07-14-item-65db687f/**"
+          ],
+          "forbiddenActions": [
+            "human-confirm",
+            "edit-unrelated-task",
+            "fabricate-evidence"
+          ],
+          "validationCommands": [
+            "node dist/harness.mjs check --profile target-project <target>"
+          ],
+          "confidence": "exact",
+          "repairable": true
+        }
+      ],
+      "taskQueues": [
+        "missing-materials"
+      ],
+      "queues": [
+        "missing-materials"
+      ],
+      "queueReasons": [
+        {
+          "severity": "P2",
+          "queue": "missing-materials",
+          "sourcePath": "TARGET:review.md",
+          "sourceLine": 0,
+          "owner": "agent",
+          "allowedWritePaths": [
+            "2026-07-14-item-65db687f/**"
+          ],
+          "forbiddenActions": [
+            "human-confirm",
+            "edit-unrelated-task",
+            "fabricate-evidence"
+          ],
+          "validationCommands": [
+            "node dist/harness.mjs check --profile target-project <target>"
+          ],
+          "confidence": "exact",
+          "repairable": true,
+          "code": "missing-review-submission",
+          "message": "Agent has not submitted a strict Agent Review Submission packet."
+        }
+      ],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "Please repair task TASKS/2026-07-14-item-65db687f: 实现完整设置与实时调试界面.\n\nTask path: coding-agent-harness/planning/tasks/2026-07-14-item-65db687f\n\nDetected issues:\n- [missing-materials/missing-review-submission] Agent has not submitted a strict Agent Review Submission packet.\n\nAllowed writes:\n- 2026-07-14-item-65db687f/**\n\nForbidden actions:\n- Do not write Human Review Confirmation; only a human can confirm.\n- Do not edit unrelated tasks.\n- Do not fabricate evidence or mark work complete without running checks.\n\nExpected output:\n- Fix the listed task-local materials or blockers.\n- Update progress.md with evidence.\n- Re-run the validation commands below.\n\nValidation commands:\n- node dist/harness.mjs check --profile target-project <target>",
+      "repairActions": [
+        {
+          "kind": "material",
+          "code": "missing-review-submission",
+          "sourcePath": "TARGET:review.md",
+          "message": "Agent has not submitted a strict Agent Review Submission packet."
+        },
+        {
+          "kind": "queue",
+          "code": "missing-review-submission",
+          "sourcePath": "TARGET:review.md",
+          "message": "Agent has not submitted a strict Agent Review Submission packet."
+        }
+      ],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/review.md"
+        },
+        {
+          "kind": "lesson-candidates",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/lesson_candidates.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-item-65db687f/walkthrough.md"
+        }
+      ]
+    },
+    {
+      "taskKey": "TASKS/2026-07-14-workbuddy-cursor-24d76f05",
+      "id": "TASKS/2026-07-14-workbuddy-cursor-24d76f05",
+      "title": "实现 WorkBuddy Cursor 真实写入闭环",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closed",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "confirmed",
+      "reviewQueueState": "not-in-queue",
+      "reviewSubmitted": true,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/review.md",
+      "closeoutStatus": "closed",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-14-workbuddy-cursor-24d76f05",
+      "completion": 100,
+      "lessonCandidateStatus": "no-candidate-accepted",
+      "lessonCandidateReviewDecision": "no-separate-candidate;-applied-directly-to-task-documentation",
+      "lessonCandidatePromotionState": "not-promoted",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [],
+      "risks": [],
+      "residual": "none",
+      "materialsReady": true,
+      "materialIssues": [],
+      "taskQueues": [
+        "finalized"
+      ],
+      "queues": [
+        "finalized"
+      ],
+      "queueReasons": [],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "",
+      "repairActions": [],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/review.md"
+        },
+        {
+          "kind": "lesson-candidates",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/lesson_candidates.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-14-workbuddy-cursor-24d76f05/walkthrough.md"
+        }
+      ]
+    },
+    {
+      "taskKey": "TASKS/2026-07-15-skill-764f4058",
+      "id": "TASKS/2026-07-15-skill-764f4058",
+      "title": "实现通用 Skill 安装教学入口",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closed",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "missing",
+      "reviewQueueState": "not-in-queue",
+      "reviewSubmitted": false,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/review.md",
+      "closeoutStatus": "closed",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-15-skill-764f4058",
+      "completion": 100,
+      "lessonCandidateStatus": "missing",
+      "lessonCandidateReviewDecision": "",
+      "lessonCandidatePromotionState": "",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [
+        "missing-candidate-file"
+      ],
+      "risks": [],
+      "residual": "lesson-issues:1",
+      "materialsReady": true,
+      "materialIssues": [],
+      "taskQueues": [
+        "done"
+      ],
+      "queues": [
+        "done"
+      ],
+      "queueReasons": [],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "",
+      "repairActions": [],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/review.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-15-skill-764f4058/walkthrough.md"
+        }
+      ]
+    },
+    {
+      "taskKey": "TASKS/2026-07-16-item-e4f4652a",
+      "id": "TASKS/2026-07-16-item-e4f4652a",
+      "title": "验证并接入本机视觉文字定位",
+      "currentPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a",
+      "originalPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a",
+      "aliases": [],
+      "identitySource": "path-derived-legacy",
+      "state": "done",
+      "lifecycleState": "closed",
+      "kind": "general",
+      "preset": "none",
+      "presetVersion": "",
+      "evidenceBundle": "",
+      "reviewStatus": "missing",
+      "reviewQueueState": "not-in-queue",
+      "reviewSubmitted": false,
+      "reviewPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/review.md",
+      "closeoutStatus": "closed",
+      "walkthroughPath": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/walkthrough.md",
+      "module": "",
+      "namespace": "main",
+      "taskRootKind": "project-task",
+      "packageRole": "local",
+      "inferredModule": "base",
+      "shortId": "2026-07-16-item-e4f4652a",
+      "completion": 100,
+      "lessonCandidateStatus": "missing",
+      "lessonCandidateReviewDecision": "",
+      "lessonCandidatePromotionState": "",
+      "lessonCandidateRows": [],
+      "lessonCandidateIssues": [
+        "missing-candidate-file"
+      ],
+      "risks": [],
+      "residual": "lesson-issues:1",
+      "materialsReady": true,
+      "materialIssues": [],
+      "taskQueues": [
+        "done"
+      ],
+      "queues": [
+        "done"
+      ],
+      "queueReasons": [],
+      "supersedes": [],
+      "supersededBy": "",
+      "deletionState": "active",
+      "visibilityScopes": [
+        "all",
+        "active-cycle",
+        "review-workbench",
+        "task-index-default"
+      ],
+      "deleteReason": "",
+      "archiveMetadata": {},
+      "hiddenByDefault": false,
+      "repairPrompt": "",
+      "repairActions": [],
+      "documentRefs": [
+        {
+          "kind": "index",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/INDEX.md"
+        },
+        {
+          "kind": "brief",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/brief.md"
+        },
+        {
+          "kind": "task-plan",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/task_plan.md"
+        },
+        {
+          "kind": "execution-strategy",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/execution_strategy.md"
+        },
+        {
+          "kind": "visual-map",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/visual_map.md"
+        },
+        {
+          "kind": "progress",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/progress.md"
+        },
+        {
+          "kind": "findings",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/findings.md"
+        },
+        {
+          "kind": "review",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/review.md"
+        },
+        {
+          "kind": "walkthrough",
+          "path": "TARGET:coding-agent-harness/planning/tasks/2026-07-16-item-e4f4652a/walkthrough.md"
         }
       ]
     }
