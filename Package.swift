@@ -56,6 +56,10 @@ let package = Package(
             dependencies: ["UIBridgeMacCore"]
         ),
         .executableTarget(
+            name: "vision-self-test",
+            dependencies: ["UIBridgeMacCore", "UIBridgeProtocol"]
+        ),
+        .executableTarget(
             name: "dangerous-action-fixture",
             dependencies: []
         ),

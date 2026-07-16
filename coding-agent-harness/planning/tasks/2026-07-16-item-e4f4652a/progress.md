@@ -29,9 +29,17 @@
 - 下一步：实现平台无关结果、Apple Vision 识别器和独立真实窗口探针。
 - 证据：command:TARGET:rg Vision Sources Package.swift:no existing Vision integration
 
+### 2026-07-16 00:45 - Apple Vision 真实中文窗口验证通过
+
+- 做了什么：增加平台无关文字区域结果、Apple Vision 识别器和只读真实窗口自检；使用 UI Bridge 安装版“连接”页连续识别中英文文字。
+- 验证结果：每轮识别 23 个文字区域；“连接”和“Agent Skill”均命中，文字区域中心与对应无障碍区域重合，所有截图与窗口坐标均在边界内。首次进程运行冷启动约 730ms，后续冷调用 303-427ms，热调用 187-214ms。侧边栏图标偶尔被识别成字符，证明本能力适合作为文字候选而不能单独决定点击。
+- 下一步：门槛通过；把识别器接入当前截图的只读 MCP/HTTP 查询，并保留结构优先和安全检查。
+- 证据：command:TARGET:swift run vision-self-test --expect 连接:23 regions, ax_aligned=true, warm 188ms
+- 证据：command:TARGET:swift run vision-self-test --expect Agent Skill:23 regions, ax_aligned=true, warm 187ms
+
 ## 残余
 
-- 尚未获得真实窗口识别结果，正式接入仍受门槛约束。
+- 文字候选验证已通过；无文字图标、Canvas 语义和 Windows 实现不在本任务范围。
 
 ## 协调者交接（Coordinator，启用模块并行时填写）
 
