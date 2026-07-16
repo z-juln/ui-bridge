@@ -48,11 +48,11 @@ Task Package Index: required
 
 ## 验收标准
 
-- [ ] 真实中文窗口关键文字命中，区域位于当前窗口截图内且可映射到窗口坐标。
-- [ ] 返回文字、置信度和区域，不返回截图原文之外的推测；失败为空而不是猜测。
-- [ ] 识别耗时和内存适合作为按需后备路线，不成为正常结构读取的固定成本。
-- [ ] 接入不提供直接点击，仍须使用当前快照、`plan_check` 和写后验证。
-- [ ] 全部现有自检和安装版冒烟通过，文档明确当前 macOS、未来 Windows 对应实现。
+- [x] 真实中文窗口关键文字命中，区域位于当前窗口截图内且可映射到窗口坐标。
+- [x] 返回文字、置信度和区域，不返回截图原文之外的推测；失败为空而不是猜测。
+- [x] 识别耗时和内存适合作为按需后备路线，不成为正常结构读取的固定成本。
+- [x] 接入不提供直接点击，仍须使用当前快照、`plan_check` 和写后验证。
+- [x] 全部现有自检和安装版冒烟通过，文档明确当前 macOS、未来 Windows 对应实现。
 
 ## 工作树（Worktree）
 
@@ -80,7 +80,7 @@ Task Package Index: required
 ## 关联
 
 - 相关 Regression Gate：`coding-agent-harness/governance/regression/Regression-SSoT.md`
-- 审查报告：[路径 / 不适用]
+- 审查报告：不适用
 - Generated Ledger：由 lifecycle CLI / `harness governance rebuild` 重建
 - 前置任务：`2026-07-14-item-65db687f`
 

@@ -18,12 +18,14 @@ public struct VisualTextQueryResult: Codable, Hashable, Sendable {
     public let snapshotID: String
     public let provider: String
     public let durationMilliseconds: Double
+    public let isCached: Bool
     public let regions: [VisualTextRegion]
 
-    public init(snapshotID: String, provider: String, durationMilliseconds: Double, regions: [VisualTextRegion]) {
+    public init(snapshotID: String, provider: String, durationMilliseconds: Double, isCached: Bool, regions: [VisualTextRegion]) {
         self.snapshotID = snapshotID
         self.provider = provider
         self.durationMilliseconds = durationMilliseconds
+        self.isCached = isCached
         self.regions = regions
     }
 }

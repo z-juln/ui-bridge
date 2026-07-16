@@ -52,7 +52,11 @@ def main() -> int:
         server_name = initialized["result"]["serverInfo"]["name"]
         tool_names = [tool["name"] for tool in listed["result"]["tools"]]
         apps = json.loads(called["result"]["content"][0]["text"])
-        required = {"permissions_get", "apps_list", "windows_list", "snapshot_get", "plan_check", "action_run"}
+        required = {
+            "permissions_get", "apps_list", "windows_list", "snapshot_get", "element_find",
+            "visual_text_find", "plan_check", "action_run", "screenshot_get", "emergency_stop",
+            "diagnostics_get",
+        }
         if server_name != "ui-bridge" or not required.issubset(tool_names) or not isinstance(apps, list):
             raise RuntimeError("MCP response did not match the expected bridge contract")
 
@@ -87,6 +91,18 @@ def main() -> int:
         if not snapshot.get("snapshotID") or not snapshot.get("elements"):
             raise RuntimeError("snapshot_get returned no usable accessibility elements")
         target = snapshot["elements"][0]
+        send(process, {
+            "jsonrpc": "2.0", "id": request_id, "method": "tools/call",
+            "params": {"name": "visual_text_find", "arguments": {
+                "snapshot_id": snapshot["snapshotID"], "text": "test",
+            }},
+        })
+        visual_without_screenshot = receive(process, request_id)["result"]
+        request_id += 1
+        if not visual_without_screenshot.get("isError") or "requires a screenshot" not in visual_without_screenshot["content"][0]["text"]:
+            raise RuntimeError(
+                f"visual_text_find did not require current screenshot evidence: {visual_without_screenshot}"
+            )
         send(process, {
             "jsonrpc": "2.0", "id": request_id, "method": "tools/call",
             "params": {"name": "plan_check", "arguments": {

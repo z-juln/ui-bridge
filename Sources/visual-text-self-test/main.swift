@@ -27,7 +27,7 @@ struct VisionSelfTest {
             throw VisionSelfTestError.failed("No visible capturable window found for \(bundleID)")
         }
 
-        let capture = try await WindowCapture.capture(windowID: window.windowID, handle: "vision-self-test")
+        let capture = try await WindowCapture.capture(windowID: window.windowID, handle: "visual-text-self-test")
         let recognizer = AppleVisionTextRecognizer()
         var durations: [Double] = []
         var regions: [VisualTextRegion] = []
@@ -54,7 +54,7 @@ struct VisionSelfTest {
         if let expected {
             let read = try AccessibilityTreeReader().readWindow(
                 pid: app.pid,
-                snapshotID: "vision-self-test",
+                snapshotID: "visual-text-self-test",
                 windowBounds: window.bounds,
                 options: AccessibilityReadOptions(maxElements: 1_000, maxDepth: 20)
             )
@@ -79,7 +79,7 @@ struct VisionSelfTest {
         }.joined(separator: " | ")
         let cold = durations.first ?? 0
         let warm = durations.dropFirst().min() ?? cold
-        print("vision-self-test: provider=apple_vision app=\(app.name) window=\(window.title) regions=\(regions.count) cold_ms=\(Int(cold)) warm_ms=\(Int(warm)) ax_aligned=\(alignedWithAccessibility) sample=\(sample)")
+        print("visual-text-self-test: provider=apple_vision app=\(app.name) window=\(window.title) regions=\(regions.count) cold_ms=\(Int(cold)) warm_ms=\(Int(warm)) ax_aligned=\(alignedWithAccessibility) sample=\(sample)")
     }
 
     private static func value(after flag: String, in arguments: [String]) -> String? {

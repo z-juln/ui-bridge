@@ -23,8 +23,8 @@ flowchart LR
 | Phase ID | Kind | Depends On | State | Completion | Output | Required Evidence | Exit Command | Actor | Evidence Status | Blocking Risk | Owner / Handoff |
 | --- | --- | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | INIT-01 | init | none | done | 100 | 验证门槛和安全边界已明确 | `task_plan.md` | `harness task-start 2026-07-16-item-e4f4652a` | agent | present | none | coordinator |
-| EXEC-01 | execution | INIT-01 | in_progress | 10 | 真实窗口验证；通过后接入只读后备入口 | diff、command 或 artifact path | `harness task-phase 2026-07-16-item-e4f4652a EXEC-01 --state done --completion 100 --evidence present` | agent | partial | 区域或延迟不达门槛则不接入 | coordinator |
-| GATE-01 | gate | EXEC-01 | planned | 0 | 构建、真实窗口和既有回归完成 | progress update 和最终证据说明 | `harness task-complete 2026-07-16-item-e4f4652a --message "<summary>"` | agent | missing | none | coordinator |
+| EXEC-01 | execution | INIT-01 | done | 100 | 真实窗口验证和只读后备入口已完成 | diff、command 或 artifact path | `harness task-phase 2026-07-16-item-e4f4652a EXEC-01 --state done --completion 100 --evidence present` | agent | present | none | coordinator |
+| GATE-01 | gate | EXEC-01 | done | 100 | 构建、真实窗口和既有回归完成 | progress update 和最终证据说明 | `harness task-complete 2026-07-16-item-e4f4652a --message "<summary>"` | agent | present | none | coordinator |
 
 允许的 `State`：`planned`, `in_progress`, `review`, `blocked`, `done`, `skipped`。
 

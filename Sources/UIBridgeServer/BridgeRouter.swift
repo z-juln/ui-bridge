@@ -80,6 +80,16 @@ struct BridgeRouter: Sendable {
                     limit: input.limit ?? 50
                 ))
             } catch { return bridgeFailure(error) }
+        case ("POST", "/v1/visual/text/find"):
+            do {
+                let input = try decoder.decode(VisualTextFindInput.self, from: request.body)
+                return encode(try runtime.findVisualText(
+                    snapshotID: input.snapshotID,
+                    text: input.text,
+                    minimumConfidence: input.minimumConfidence ?? 0.35,
+                    limit: input.limit ?? 50
+                ))
+            } catch { return bridgeFailure(error) }
         case ("POST", "/v1/plans/check"):
             do {
                 let input = try decoder.decode(PlanCheckInput.self, from: request.body)
@@ -166,6 +176,13 @@ private struct ElementFindInput: Decodable {
     let text: String?
     let enabled: Bool?
     let settable: Bool?
+    let limit: Int?
+}
+
+private struct VisualTextFindInput: Decodable {
+    let snapshotID: String
+    let text: String?
+    let minimumConfidence: Double?
     let limit: Int?
 }
 

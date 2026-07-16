@@ -12,6 +12,13 @@ python3 skills/ui-bridge-control/scripts/self_test.py
 
 The self-test is read-only. A successful run prints the server name, tool names, and the number of running applications.
 
+To verify the macOS on-device text fallback against UI Bridge's own Chinese connection page without taking focus:
+
+```bash
+'/Applications/UI Bridge.app/Contents/MacOS/ui-bridge' show connections --background
+swift run visual-text-self-test --bundle-id com.juln.ui-bridge --expect 连接
+```
+
 ## Cursor
 
 Use the running App's authenticated local endpoint. Obtain its token:
@@ -75,7 +82,7 @@ Use stdio only when the client was deliberately configured for it and cannot use
 }
 ```
 
-Restart or reload MCP servers, then confirm that all ten tools are visible, including `snapshot_get`, `plan_check`, `action_run`, and `emergency_stop`.
+Restart or reload MCP servers, then confirm that all eleven tools are visible, including `snapshot_get`, `visual_text_find`, `plan_check`, `action_run`, and `emergency_stop`.
 
 For the local Cursor and WorkBuddy installations, configure both without printing the token:
 

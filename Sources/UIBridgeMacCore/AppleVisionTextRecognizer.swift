@@ -68,3 +68,23 @@ public struct AppleVisionTextRecognizer: Sendable {
         )
     }
 }
+
+public enum VisualTextPrivacyFilter {
+    public static func excludingSecureRegions(
+        _ regions: [VisualTextRegion],
+        secureFrames: [UIBRect]
+    ) -> [VisualTextRegion] {
+        regions.filter { region in
+            let center = UIBPoint(
+                x: region.windowFrame.origin.x + region.windowFrame.size.width / 2,
+                y: region.windowFrame.origin.y + region.windowFrame.size.height / 2
+            )
+            return !secureFrames.contains { frame in
+                center.x >= frame.origin.x
+                    && center.y >= frame.origin.y
+                    && center.x <= frame.origin.x + frame.size.width
+                    && center.y <= frame.origin.y + frame.size.height
+            }
+        }
+    }
+}

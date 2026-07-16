@@ -53,10 +53,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "safety-self-test",
-            dependencies: ["UIBridgeMacCore"]
+            dependencies: ["UIBridgeMacCore", "UIBridgeProtocol"]
         ),
         .executableTarget(
-            name: "vision-self-test",
+            name: "visual-text-self-test",
             dependencies: ["UIBridgeMacCore", "UIBridgeProtocol"]
         ),
         .executableTarget(

@@ -13,6 +13,7 @@
 swift build
 swift run protocol-self-test
 swift run core-self-test
+swift run visual-text-self-test --bundle-id com.juln.ui-bridge --expect 连接
 python3 skills/ui-bridge-control/scripts/self_test.py
 ```
 
@@ -97,6 +98,7 @@ swift run ui-bridge stop
 - `POST /v1/snapshots`
 - `POST /v1/actions`
 - `POST /v1/elements/find`
+- `POST /v1/visual/text/find`
 - `POST /v1/plans/check`
 - `POST /v1/screenshots/get`
 - `POST /v1/emergency-stop`

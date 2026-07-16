@@ -29,10 +29,11 @@ Start every task with `permissions_get`. The bridge presents a native dialog wit
 1. Call `apps_list`; match by bundle identifier and name. Return candidates instead of guessing when multiple apps match.
 2. Call `windows_list` with the selected app's `pid`; prefer a visible, capturable window whose title fits the request.
 3. Refresh app and window state after an app relaunch, navigation, dialog, or unexpected result.
-4. Call `snapshot_get` for the selected pid and window. Use `element_find` to filter by role, text, and state; return candidates instead of choosing an ambiguous match. Request and read a screenshot when the accessibility tree is partial, the visual layout matters, or a coordinate action may be necessary.
-5. Before every write, call `plan_check` with the proposed current handle or coordinate, delivery mode, and impact flags. Follow its readiness result: refresh rejected targets, capture and inspect a requested screenshot, or obtain the requested confirmation. Do not bypass the check.
-6. Call `action_run` only after `plan_check` returns `ready`, using the same target and flags plus a concrete verification condition. Mark external-impact actions as `high_impact`; set `confirmed` only after the user explicitly approves the exact final action.
-7. Trust success only when the returned status is `confirmed`. Continue from `new_snapshot_id`. On `not_observed`, refresh and diagnose instead of repeating the write.
+4. Call `snapshot_get` for the selected pid and window. Use `element_find` to filter by role, text, and state; return candidates instead of choosing an ambiguous match. Request a screenshot when the accessibility tree is partial, the visual layout matters, or a coordinate action may be necessary.
+5. When the tree is partial and visible text may identify the target, call `visual_text_find` on that same screenshot-backed snapshot before asking a cloud model to inspect the image. Treat its regions as read-only text candidates, not clickable controls. It uses the platform's on-device recognizer, may misread icons as characters, and must not be used for password fields.
+6. Before every write, call `plan_check` with the proposed current handle or fresh window-relative coordinate, delivery mode, and impact flags. Follow its readiness result: refresh rejected targets, capture and inspect a requested screenshot, or obtain the requested confirmation. Do not bypass the check.
+7. Call `action_run` only after `plan_check` returns `ready`, using the same target and flags plus a concrete verification condition. Mark external-impact actions as `high_impact`; set `confirmed` only after the user explicitly approves the exact final action.
+8. Trust success only when the returned status is `confirmed`. Continue from `new_snapshot_id`. On `not_observed`, refresh and diagnose instead of repeating the write.
 
 ## Let the bridge manage experience
 

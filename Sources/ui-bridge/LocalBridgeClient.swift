@@ -53,6 +53,18 @@ struct LocalBridgeClient {
                     limit: integer(arguments["limit"])
                 )
             ))
+        case "visual_text_find":
+            guard let snapshotID = arguments["snapshot_id"] as? String else {
+                throw LocalBridgeClientError.invalidArguments("visual_text_find requires snapshot_id")
+            }
+            return try await request(method: "POST", path: "/v1/visual/text/find", body: try JSONEncoder().encode(
+                VisualTextFindEnvelope(
+                    snapshotID: snapshotID,
+                    text: arguments["text"] as? String,
+                    minimumConfidence: number(arguments["minimum_confidence"]),
+                    limit: integer(arguments["limit"])
+                )
+            ))
         case "plan_check":
             return try await request(method: "POST", path: "/v1/plans/check", body: try planBody(arguments))
         case "action_run":
@@ -193,6 +205,13 @@ private struct ElementFindEnvelope: Encodable {
     let text: String?
     let enabled: Bool?
     let settable: Bool?
+    let limit: Int?
+}
+
+private struct VisualTextFindEnvelope: Encodable {
+    let snapshotID: String
+    let text: String?
+    let minimumConfidence: Double?
     let limit: Int?
 }
 

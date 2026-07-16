@@ -106,6 +106,20 @@
 }
 ```
 
+### Visual text region
+
+```json
+{
+  "text": "搜索",
+  "confidence": 0.96,
+  "screenshot_frame": { "x": 200, "y": 80, "width": 72, "height": 28 },
+  "window_frame": { "x": 100, "y": 40, "width": 36, "height": 14 }
+}
+```
+
+这是当前截图中的只读文字候选，不是控件句柄。macOS 由 Apple Vision 在本机识别；未来
+Windows 使用系统对应实现，但保持相同结果格式。密码输入区域会从结果中排除。
+
 ### Action request
 
 ```json
@@ -181,6 +195,15 @@
 
 按 role、label、value、state 和祖先关系搜索当前快照。禁止仅返回模糊匹配的第一项；
 多个结果时必须返回候选及匹配原因。
+
+### `visual_text_find`
+
+当无障碍树为 `partial` 或 `shell_only` 时，从同一份当前窗口截图中按文字查找可见区域。
+调用前必须用 `snapshot_get(include_screenshot=true)` 创建快照。返回识别来源、耗时、缓存状态、
+置信度、截图坐标和窗口坐标；不会生成可点击句柄，也不会执行任何动作。
+
+正常完整结构仍优先使用 `element_find`。识别结果可能把图标误读成字符，只能缩小候选范围；
+若要使用坐标，仍必须把当前窗口坐标交给 `plan_check`，执行后重新读取验证。
 
 ### `plan_check`
 

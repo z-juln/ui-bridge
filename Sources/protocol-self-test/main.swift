@@ -81,12 +81,33 @@ func testPlanCheckRoundTrip() throws {
     try expect(decoded == result, "Plan check JSON round-trip changed data")
 }
 
+func testVisualTextRoundTrip() throws {
+    let result = VisualTextQueryResult(
+        snapshotID: "snap-1",
+        provider: "apple_vision",
+        durationMilliseconds: 18.5,
+        isCached: false,
+        regions: [
+            VisualTextRegion(
+                text: "搜索",
+                confidence: 0.96,
+                screenshotFrame: UIBRect(x: 200, y: 80, width: 72, height: 28),
+                windowFrame: UIBRect(x: 100, y: 40, width: 36, height: 14)
+            )
+        ]
+    )
+    let data = try JSONEncoder().encode(result)
+    let decoded = try JSONDecoder().decode(VisualTextQueryResult.self, from: data)
+    try expect(decoded == result, "Visual text JSON round-trip changed data")
+}
+
 do {
     try testSnapshotRoundTrip()
     try testActionRoundTrip()
     try testErrorCodesAreUnique()
     try testPlanCheckRoundTrip()
-    print("protocol-self-test: 4 checks passed")
+    try testVisualTextRoundTrip()
+    print("protocol-self-test: 5 checks passed")
 } catch {
     fputs("protocol-self-test failed: \(error)\n", stderr)
     exit(1)

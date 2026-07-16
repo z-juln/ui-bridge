@@ -9,10 +9,17 @@ public final class AutomationRuntime: @unchecked Sendable {
         let includedScreenshot: Bool
     }
 
+    private struct VisualTextCacheEntry {
+        let durationMilliseconds: Double
+        let regions: [VisualTextRegion]
+    }
+
     private let treeReader = AccessibilityTreeReader()
+    private let visualTextRecognizer = AppleVisionTextRecognizer()
     private let lock = NSLock()
     private var contexts: [String: SnapshotContext] = [:]
     private var screenshots: [String: Data] = [:]
+    private var visualTextCache: [String: VisualTextCacheEntry] = [:]
     private var stopped = false
     private let activitySource: String
 
@@ -124,6 +131,57 @@ public final class AutomationRuntime: @unchecked Sendable {
             }
             return true
         }.prefix(max(1, min(limit, 200))))
+    }
+
+    public func findVisualText(
+        snapshotID: String,
+        text: String? = nil,
+        minimumConfidence: Double = 0.35,
+        limit: Int = 50
+    ) throws -> VisualTextQueryResult {
+        let snapshot = try snapshot(id: snapshotID)
+        guard let screenshot = snapshot.screenshot else {
+            throw BridgeError(
+                code: .invalidRequest,
+                message: "Visual text lookup requires a screenshot from the same snapshot.",
+                suggestedAction: "Create a new snapshot with include_screenshot=true, then retry once."
+            )
+        }
+        guard let data = lock.withLock({ screenshots[screenshot.handle] }) else {
+            throw BridgeError(code: .snapshotStale, message: "Screenshot is expired or unknown.", retryable: true)
+        }
+
+        let cached = lock.withLock { visualTextCache[screenshot.handle] }
+        let entry: VisualTextCacheEntry
+        let isCached: Bool
+        if let cached {
+            entry = cached
+            isCached = true
+        } else {
+            let start = ContinuousClock.now
+            let recognized = try visualTextRecognizer.recognize(pngData: data, windowSize: snapshot.windowBounds.size)
+            let duration = Self.milliseconds(from: start.duration(to: .now))
+            let secureFrames = snapshot.elements.filter { $0.role == "AXSecureTextField" }.compactMap(\.frameInWindow)
+            let safeRegions = VisualTextPrivacyFilter.excludingSecureRegions(recognized, secureFrames: secureFrames)
+            entry = VisualTextCacheEntry(durationMilliseconds: duration, regions: safeRegions)
+            lock.withLock { visualTextCache[screenshot.handle] = entry }
+            isCached = false
+        }
+
+        let threshold = max(0, min(minimumConfidence, 1))
+        let query = text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let regions = entry.regions.lazy.filter { region in
+            guard region.confidence >= threshold else { return false }
+            guard let query, !query.isEmpty else { return true }
+            return region.text.localizedCaseInsensitiveContains(query)
+        }
+        return VisualTextQueryResult(
+            snapshotID: snapshotID,
+            provider: "apple_vision",
+            durationMilliseconds: entry.durationMilliseconds,
+            isCached: isCached,
+            regions: Array(regions.prefix(max(1, min(limit, 200))))
+        )
     }
 
     public func checkPlan(
@@ -341,13 +399,19 @@ public final class AutomationRuntime: @unchecked Sendable {
             let ids = Array(contexts.keys)
             contexts.removeAll()
             screenshots.removeAll()
+            visualTextCache.removeAll()
             return ids
         }
         for id in snapshotIDs { treeReader.discard(snapshotID: id) }
     }
 
     private func discard(snapshotID: String) {
-        _ = lock.withLock { contexts.removeValue(forKey: snapshotID) }
+        lock.withLock {
+            if let handle = contexts.removeValue(forKey: snapshotID)?.snapshot.screenshot?.handle {
+                screenshots.removeValue(forKey: handle)
+                visualTextCache.removeValue(forKey: handle)
+            }
+        }
         treeReader.discard(snapshotID: snapshotID)
     }
 
@@ -355,7 +419,10 @@ public final class AutomationRuntime: @unchecked Sendable {
         let expired = contexts.values.filter { $0.snapshot.expiresAt <= now }
         for context in expired {
             contexts.removeValue(forKey: context.snapshot.snapshotID)
-            if let handle = context.snapshot.screenshot?.handle { screenshots.removeValue(forKey: handle) }
+            if let handle = context.snapshot.screenshot?.handle {
+                screenshots.removeValue(forKey: handle)
+                visualTextCache.removeValue(forKey: handle)
+            }
             treeReader.discard(snapshotID: context.snapshot.snapshotID)
         }
     }
@@ -377,4 +444,10 @@ public final class AutomationRuntime: @unchecked Sendable {
             )
         }
     }
+
+    private static func milliseconds(from duration: Duration) -> Double {
+        let components = duration.components
+        return Double(components.seconds) * 1_000 + Double(components.attoseconds) / 1_000_000_000_000_000
+    }
+
 }

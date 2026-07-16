@@ -45,10 +45,10 @@
 ## 执行合同
 
 - Owner：coordinator
-- 生命周期状态：进行中
+- 生命周期状态：已完成
 - 必需文件：`INDEX.md`、`brief.md`、`task_plan.md`、`visual_map.md`、`progress.md`、`walkthrough.md`
 - 完成条件：验证证据必须记录到 `progress.md`
 
 ## 当前下一步
 
-实现独立 Apple Vision 识别器和真实窗口探针，先跑门槛验证，再决定是否接入正式入口。
+本任务已完成；后续另开任务评估无文字图标和可选本地小型视觉模型。

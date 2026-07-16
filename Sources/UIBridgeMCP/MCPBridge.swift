@@ -92,6 +92,20 @@ public enum MCPBridge {
                     ])
                 ),
                 Tool(
+                    name: "visual_text_find",
+                    description: "Use on-device platform OCR to find visible text regions in the current screenshot when the accessibility tree is partial. Returns read-only candidates, not clickable elements.",
+                    inputSchema: .object([
+                        "type": .string("object"),
+                        "properties": .object([
+                            "snapshot_id": string("Current snapshot identifier created with include_screenshot=true"),
+                            "text": string("Optional case-insensitive text fragment"),
+                            "minimum_confidence": number("Minimum recognition confidence from 0 to 1, default 0.35"),
+                            "limit": integer("Maximum results, capped at 200"),
+                        ]),
+                        "required": .array([.string("snapshot_id")]),
+                    ])
+                ),
+                Tool(
                     name: "plan_check",
                     description: "Check one proposed UI action against the live snapshot before execution; reports stale targets, screenshot needs, focus consent, and high-impact confirmation requirements.",
                     inputSchema: planCheckSchema
@@ -170,6 +184,16 @@ public enum MCPBridge {
                         text: params.arguments?["text"]?.stringValue,
                         enabled: params.arguments?["enabled"]?.boolValue,
                         settable: params.arguments?["settable"]?.boolValue,
+                        limit: params.arguments?["limit"]?.intValue ?? 50
+                    ))
+                case "visual_text_find":
+                    guard let snapshotID = params.arguments?["snapshot_id"]?.stringValue else {
+                        return failure("snapshot_id is required")
+                    }
+                    return try success(try runtime.findVisualText(
+                        snapshotID: snapshotID,
+                        text: params.arguments?["text"]?.stringValue,
+                        minimumConfidence: numericValue(params.arguments?["minimum_confidence"]) ?? 0.35,
                         limit: params.arguments?["limit"]?.intValue ?? 50
                     ))
                 case "plan_check":

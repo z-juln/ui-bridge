@@ -1,6 +1,7 @@
 import Darwin
 import Foundation
 import UIBridgeMacCore
+import UIBridgeProtocol
 
 @main
 enum SafetySelfTest {
@@ -80,7 +81,24 @@ enum SafetySelfTest {
         guard AppAccessPolicyStore.load().allows(appID: "com.example.allowed") == false else {
             throw Failure("inherited app policy was not restored")
         }
-        print("safety-self-test: 7 checks passed")
+        let visible = VisualTextRegion(
+            text: "普通文字",
+            confidence: 1,
+            screenshotFrame: UIBRect(x: 20, y: 20, width: 60, height: 20),
+            windowFrame: UIBRect(x: 10, y: 10, width: 30, height: 10)
+        )
+        let secret = VisualTextRegion(
+            text: "secret-value",
+            confidence: 1,
+            screenshotFrame: UIBRect(x: 200, y: 200, width: 120, height: 20),
+            windowFrame: UIBRect(x: 100, y: 100, width: 60, height: 10)
+        )
+        let filtered = VisualTextPrivacyFilter.excludingSecureRegions(
+            [visible, secret],
+            secureFrames: [UIBRect(x: 90, y: 90, width: 100, height: 40)]
+        )
+        guard filtered == [visible] else { throw Failure("visual text from a secure field was not excluded") }
+        print("safety-self-test: 8 checks passed")
     }
 
     private static func waitForRequest() async throws -> DangerousActionConfirmationRequest {
